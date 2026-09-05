@@ -1,26 +1,235 @@
 @import "tailwindcss";
 
+/* One theme: a cream sheet with ballpoint ink on it. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --paper: #f7f5ef;
+  --ink: #181b25;
+  --card: #ffffff;
+
+  /* Paper elevation: tight, warm, low-spread — sheets stacked on a desk,
+     not floating glass. */
+  --elev-1: 0 1px 1px rgb(24 27 37 / 0.04), 0 1px 3px rgb(24 27 37 / 0.05);
+  --elev-2: 0 1px 2px rgb(24 27 37 / 0.05), 0 6px 14px -6px rgb(24 27 37 / 0.14);
+  --elev-3: 0 2px 4px rgb(24 27 37 / 0.05), 0 14px 28px -12px rgb(24 27 37 / 0.2);
+  --elev-4: 0 4px 8px rgb(24 27 37 / 0.06), 0 24px 48px -18px rgb(24 27 37 / 0.26);
+
+  /* Ruled-sheet ink. */
+  --rule: rgb(24 27 37 / 0.06);
+  --rule-margin: rgb(184 62 62 / 0.28);
+}
+@theme {
+  /* Ballpoint blue — forms are filled in blue pen. */
+  --color-ballpoint-50: #eef3fe;
+  --color-ballpoint-100: #e0e9fd;
+  --color-ballpoint-200: #c5d4fb;
+  --color-ballpoint-300: #9db6f8;
+  --color-ballpoint-400: #6d90f2;
+  --color-ballpoint-500: #4a6feb;
+  --color-ballpoint-600: #2f53de;
+  --color-ballpoint-700: #2643b8;
+  --color-ballpoint-800: #223a94;
+  --color-ballpoint-900: #1f3477;
+
+  /* Highlighter marks, used sparingly. */
+  --color-marker: #fbf3a0;
+  --color-marker-strong: #eede4e;
+
+  /* Tick green — submitted, approved, done. */
+  --color-tick: #178a50;
+  --color-tick-soft: #e3f4ea;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-card: var(--card);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-bricolage), var(--font-geist-sans), ui-sans-serif,
+    system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --shadow-sm: var(--elev-1);
+  --shadow-md: var(--elev-2);
+  --shadow-lg: var(--elev-3);
+  --shadow-xl: var(--elev-4);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+::selection {
+  background-color: var(--color-marker);
+  color: #181b25;
+}
+
+/* The sheet itself: horizontal rules on a 32px rhythm, faded out at the
+   bottom so the section below isn't fighting them. The vertical margin rule
+   is drawn separately by <MarginRule /> so it can align to the content
+   gutter rather than the viewport. */
+.bg-ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    var(--rule) 31px,
+    var(--rule) 32px
+  );
+  background-position: 0 -1px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+
+/* Same ruling, drawn on the constant-ink CTA slab. */
+.bg-ruled-ink {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    rgb(247 245 239 / 0.07) 31px,
+    rgb(247 245 239 / 0.07) 32px
+  );
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.7) rotate(-16deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94) rotate(-7deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-7deg);
+  }
+}
+.animate-stamp {
+  animation: stamp-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-pop {
+  animation: pop 0.35s ease-out both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-toast {
+  animation: toast-in 0.25s ease-out both;
+}
+
+@keyframes draw-in {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.draw-ring {
+  stroke-dasharray: 302;
+  stroke-dashoffset: 302;
+  animation: draw-in 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+.draw-check {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: draw-in 0.45s ease-out 0.4s forwards;
+}
+
+/* Analytics bars grow in from the left when results load. */
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+.animate-grow-x {
+  animation: grow-x 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: left;
+}
+
+/* Gentle bobbing for the landing hero's floating chips. */
+@keyframes float-a {
+  from {
+    transform: translateY(0) rotate(2deg);
+  }
+  to {
+    transform: translateY(-9px) rotate(2.6deg);
+  }
+}
+.animate-float-a {
+  animation: float-a 4.5s ease-in-out infinite alternate;
+}
+@keyframes float-b {
+  from {
+    transform: translateY(0) rotate(-2deg);
+  }
+  to {
+    transform: translateY(-6px) rotate(-2.8deg);
+  }
+}
+.animate-float-b {
+  animation: float-b 5.5s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-stamp,
+  .animate-pop,
+  .animate-toast,
+  .animate-grow-x,
+  .animate-float-a,
+  .animate-float-b,
+  .draw-check,
+  .draw-ring {
+    animation: none;
+  }
+  .draw-check,
+  .draw-ring {
+    stroke-dashoffset: 0;
+  }
+  .animate-grow-x {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
