@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { LegalPage, Section } from '@/components/legal-page';
 
 export const metadata: Metadata = {
-  title: 'Terms of service · CampusForms',
+  title: 'Terms of service',
   description:
     'The rules for using CampusForms as a student filling a form or as an organizer collecting responses.',
 };

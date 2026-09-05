@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { LegalPage, Section } from '@/components/legal-page';
 
 export const metadata: Metadata = {
-  title: 'Privacy policy · CampusForms',
+  title: 'Privacy policy',
   description:
     'What CampusForms collects when you fill a form or run one, how anonymous forms work, and how to get your data removed.',
 };
