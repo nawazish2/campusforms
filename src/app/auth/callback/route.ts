@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    // The domain trigger rejects non-university accounts here, so this is the
-    // path a personal Gmail account lands on.
+    // The organizer allowlist rejects unknown accounts here, so this is the
+    // path someone who isn't an organizer lands on.
     return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(error.message)}`);
   }
 

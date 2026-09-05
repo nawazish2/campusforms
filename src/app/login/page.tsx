@@ -53,8 +53,8 @@ function LoginCard() {
           Sign in to run forms
         </h1>
         <p className="mt-2.5 text-[15px] leading-relaxed text-ink/60">
-          Organizers sign in with their university Google account. Students
-          don’t need one — they just open the link you share.
+          Organizers sign in with Google. Students don’t need an account —
+          they just open the link you share.
         </p>
 
         {error ? (
@@ -105,8 +105,8 @@ function LoginCard() {
 
         <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink/45">
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-          Only accounts on your university’s domain can sign in. We store your
-          name and email to label the forms you create.
+          Sign-in is limited to approved organizers. We store your name and
+          email to label the forms you create.
         </p>
       </div>
 

@@ -7,7 +7,7 @@ Supabase dashboard's SQL editor — paste each file and run it. The CLI
 | File | What it does |
 |---|---|
 | `0001_init.sql` | `forms` and `responses`, the anonymity and counter triggers, and every RLS policy |
-| `0002_restrict_signups.sql` | Rejects sign-ups from outside the university domain — **edit `allowed_domain` before running it** |
+| `0002_restrict_organizers.sql` | Rejects sign-ups from anyone not in `allowed_organizers` — **add the organizers' emails before running it** |
 
 ## Then, in the dashboard
 
@@ -44,7 +44,7 @@ Supabase dashboard's SQL editor — paste each file and run it. The CLI
 ```sql
 select gen_form_id();                    -- hex id, no error about pgcrypto
 select tgname from pg_trigger            -- did 0002's trigger survive?
-  where tgname = 'enforce_university_domain_on_signup';
+  where tgname = 'enforce_organizer_allowlist_on_signup';
 ```
 
 Then insert a response to an anonymous form using the anon key with a name
