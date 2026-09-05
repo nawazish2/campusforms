@@ -154,13 +154,15 @@ export function useEditableForm(id: string | undefined) {
     };
   }, [db, user, ready, id]);
 
-  // `undefined` means still loading; `null` means it isn't there.
+  // `undefined` means still loading; `null` means it isn't there. With no id
+  // the caller is creating a form, so there is nothing to wait for — without
+  // this the builder would sit on its skeleton forever.
   return {
     db,
     user,
-    form,
+    form: id ? form : null,
     configured,
-    loading: !ready || !user || form === undefined,
+    loading: !ready || !user || (Boolean(id) && form === undefined),
     signedOut: ready && configured && !user,
   };
 }
