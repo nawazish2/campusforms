@@ -53,6 +53,14 @@ export function SiteFooter() {
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t border-ink/[0.07] pt-6 text-[13px] text-ink/45 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 CampusForms — a Google Forms replacement, built for campus.</p>
+          <div className="flex items-center gap-4 sm:ml-auto sm:mr-6">
+            <Link href="/privacy" className="transition hover:text-ballpoint-700">
+              Privacy
+            </Link>
+            <Link href="/terms" className="transition hover:text-ballpoint-700">
+              Terms
+            </Link>
+          </div>
           <p>
             Crafted by <span className="font-medium text-ink/60">Nawazish</span>
           </p>
