@@ -183,6 +183,16 @@ body {
   transform-origin: left;
 }
 
+@keyframes grow-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+.animate-grow-y {
+  animation: grow-y 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: bottom;
+}
+
 /* Gentle bobbing for the landing hero's floating chips. */
 @keyframes float-a {
   from {
@@ -213,6 +223,7 @@ body {
   .animate-pop,
   .animate-toast,
   .animate-grow-x,
+  .animate-grow-y,
   .animate-float-a,
   .animate-float-b,
   .draw-check,
@@ -223,7 +234,8 @@ body {
   .draw-ring {
     stroke-dashoffset: 0;
   }
-  .animate-grow-x {
+  .animate-grow-x,
+  .animate-grow-y {
     transform: none;
   }
 }

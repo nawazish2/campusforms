@@ -365,7 +365,9 @@ export default function FormResultsPage() {
             </p>
           </div>
         ) : tab === 'summary' ? (
-          <div className="mt-5 space-y-4">
+          // Two columns: one card per row left the charts sitting in the
+          // first third of the page with nothing beside them.
+          <div className="mt-5 grid items-start gap-4 xl:grid-cols-2">
             {form.questions.map((q, i) => (
               <QuestionSummaryCard key={q.id} question={q} responses={formResponses} index={i} />
             ))}

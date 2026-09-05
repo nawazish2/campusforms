@@ -60,6 +60,65 @@ function ResultRow({
   );
 }
 
+/**
+ * A five-point scale is an axis, so it gets drawn as one. As five stacked
+ * rows the counts ended up stranded a card's width from the bar they
+ * belonged to, and an empty rating still claimed a full row.
+ */
+function Histogram({
+  distribution,
+  total,
+}: {
+  distribution: { value: number; count: number }[];
+  total: number;
+}) {
+  const peak = Math.max(1, ...distribution.map((d) => d.count));
+  // Ascending, so the axis reads left to right like any other scale.
+  const columns = [...distribution].sort((a, b) => a.value - b.value);
+
+  return (
+    <div className="min-w-0 flex-1">
+      <div className="flex h-24 items-end gap-1.5">
+        {columns.map((d, i) => (
+          <div key={d.value} className="flex h-full flex-1 flex-col justify-end">
+            <span
+              className={cn(
+                'mb-1 text-center font-mono text-[11px] tabular-nums',
+                d.count ? 'text-ink/55' : 'text-ink/25'
+              )}
+            >
+              {d.count}
+            </span>
+            <div
+              className={cn(
+                'animate-grow-y rounded-t-md',
+                d.count === peak ? 'bg-ballpoint-500/30' : 'bg-ballpoint-500/15'
+              )}
+              style={{
+                height: d.count ? `${Math.max((d.count / peak) * 100, 8)}%` : '2px',
+                animationDelay: `${i * 60}ms`,
+              }}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="mt-1.5 flex gap-1.5 border-t border-ink/[0.09] pt-1.5">
+        {columns.map((d) => (
+          <span
+            key={d.value}
+            className="flex-1 text-center font-mono text-[11px] text-ink/45"
+          >
+            {d.value}★
+          </span>
+        ))}
+      </div>
+      <p className="sr-only">
+        {columns.map((d) => `${d.value} stars: ${d.count} of ${total}`).join(', ')}
+      </p>
+    </div>
+  );
+}
+
 export function QuestionSummaryCard({
   question,
   responses,
@@ -98,32 +157,18 @@ export function QuestionSummaryCard({
       </div>
 
       {summary.kind === 'rating' ? (
-        <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
-          <div className="flex shrink-0 items-center gap-4 sm:block">
+        <div className="mt-5 flex items-end gap-6">
+          <div className="shrink-0">
             <p className="font-display text-4xl font-extrabold leading-none tracking-tight">
               {summary.average.toFixed(1)}
               <span className="text-base font-semibold text-ink/35"> / {question.maxRating}</span>
             </p>
-            <div className="sm:mt-2.5">
-              <Stars value={summary.average} max={question.maxRating} />
-              <p className="mt-1.5 text-xs text-ink/45">
-                {pluralize(summary.count, 'rating')}
-              </p>
-            </div>
+            <Stars value={summary.average} max={question.maxRating} className="mt-2.5" />
+            <p className="mt-1.5 text-xs text-ink/45">
+              {pluralize(summary.count, 'rating')}
+            </p>
           </div>
-          <div className="w-full space-y-0.5 sm:max-w-sm">
-            {summary.distribution.map((d, i) => (
-              <ResultRow
-                key={d.value}
-                label={
-                  <span className="font-mono text-[11px] text-ink/55">{d.value} ★</span>
-                }
-                value={d.count}
-                pct={summary.count ? (d.count / summary.count) * 100 : 0}
-                delay={i * 70}
-              />
-            ))}
-          </div>
+          <Histogram distribution={summary.distribution} total={summary.count} />
         </div>
       ) : null}
 
