@@ -111,7 +111,7 @@ export function QuestionSummaryCard({
               </p>
             </div>
           </div>
-          <div className="w-full flex-1 space-y-0.5 sm:max-w-md">
+          <div className="w-full space-y-0.5 sm:max-w-sm">
             {summary.distribution.map((d, i) => (
               <ResultRow
                 key={d.value}
@@ -128,7 +128,7 @@ export function QuestionSummaryCard({
       ) : null}
 
       {summary.kind === 'choice' ? (
-        <div className="mt-4 space-y-0.5">
+        <div className="mt-4 max-w-xl space-y-0.5">
           {summary.bars.map((b, i) => (
             <ResultRow
               key={i}
