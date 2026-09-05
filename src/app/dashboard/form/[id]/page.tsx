@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import {
   ArrowLeft,
-  CalendarClock,
-  CalendarDays,
   Eye,
   FileQuestion,
   FileSpreadsheet,
@@ -23,7 +21,6 @@ import { SetupRequired } from '@/components/setup-required';
 import { CategoryBadge } from '@/components/category-badge';
 import { StatusBadge } from '@/components/status-badge';
 import { AnonymousBadge } from '@/components/anonymous-badge';
-import { StatCard } from '@/components/stat-card';
 import { QuestionSummaryCard } from '@/components/question-summary';
 import { CopyLinkButton } from '@/components/copy-link-button';
 import { QrShare } from '@/components/qr-share';
@@ -310,16 +307,15 @@ export default function FormResultsPage() {
             </div>
             <QrShare link={shareLink} />
           </div>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 xl:grid-cols-3">
-            <StatCard label="Responses" value={stats.total} icon={Inbox} />
-            <StatCard label="Today" value={stats.today} icon={CalendarClock} />
-            <StatCard
-              label="Last response"
-              value={stats.last ? timeAgo(stats.last) : '—'}
-              sub={form.deadline ? `Closes ${fmtDeadline(form.deadline)}` : 'No deadline'}
-              icon={CalendarDays}
+          <dl className="flex h-full flex-col justify-between rounded-2xl border border-ink/[0.08] bg-card px-5 py-1 shadow-sm">
+            <StatRow label="Responses" value={stats.total} />
+            <StatRow label="Today" value={stats.today} />
+            <StatRow label="Last response" value={stats.last ? timeAgo(stats.last) : '—'} />
+            <StatRow
+              label="Deadline"
+              value={form.deadline ? fmtDeadline(form.deadline) : 'None'}
             />
-          </div>
+          </dl>
         </div>
 
         <div className="mt-3">
@@ -471,6 +467,24 @@ export default function FormResultsPage() {
           Delete response
         </Button>
       </Dialog>
+    </div>
+  );
+}
+
+/**
+ * The four numbers live in the narrow column beside the share panel, where
+ * three separate cards left no room for their own labels. One row each, label
+ * and value on the same line, so the column width goes to the text.
+ */
+function StatRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3 border-b border-ink/[0.06] py-3 last:border-0">
+      <dt className="font-mono text-[11px] uppercase tracking-wider text-ink/45">
+        {label}
+      </dt>
+      <dd className="text-right font-display text-[15px] font-bold tracking-tight tabular-nums">
+        {value}
+      </dd>
     </div>
   );
 }
