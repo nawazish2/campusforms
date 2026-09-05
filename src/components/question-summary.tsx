@@ -77,7 +77,7 @@ function Histogram({
   const columns = [...distribution].sort((a, b) => a.value - b.value);
 
   return (
-    <div className="min-w-0 flex-1">
+    <div className="min-w-0 max-w-[280px] flex-1">
       <div className="flex h-24 items-end gap-1.5">
         {columns.map((d, i) => (
           <div key={d.value} className="flex h-full flex-1 flex-col justify-end">
