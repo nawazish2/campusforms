@@ -16,7 +16,6 @@
 
   /* Ruled-sheet ink. */
   --rule: rgb(24 27 37 / 0.06);
-  --rule-margin: rgb(184 62 62 / 0.28);
 }
 @theme {
   /* Ballpoint blue — forms are filled in blue pen. */
@@ -66,9 +65,7 @@ body {
 }
 
 /* The sheet itself: horizontal rules on a 32px rhythm, faded out at the
-   bottom so the section below isn't fighting them. The vertical margin rule
-   is drawn separately by <MarginRule /> so it can align to the content
-   gutter rather than the viewport. */
+   bottom so the section below isn't fighting them. */
 .bg-ruled {
   background-image: repeating-linear-gradient(
     to bottom,

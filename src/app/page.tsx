@@ -74,14 +74,6 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="bg-ruled relative">
-          {/* The margin rule every campus form sheet has, aligned to the
-              content gutter rather than the viewport edge. */}
-          <div
-            className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-[72rem] max-w-full -translate-x-1/2 lg:block"
-            aria-hidden
-          >
-            <span className="absolute inset-y-0 left-6 w-px bg-[var(--rule-margin)]" />
-          </div>
           <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-28 lg:pt-20">
             <div className="animate-fade-up">
               <p className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-card px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55">
