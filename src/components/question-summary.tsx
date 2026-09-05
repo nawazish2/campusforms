@@ -3,9 +3,62 @@
 import { useMemo } from 'react';
 import { summarizeQuestion } from '@/lib/analytics';
 import { QUESTION_TYPE_MAP } from '@/lib/constants';
-import { pluralize, timeAgo } from '@/lib/utils';
+import { cn, pluralize, timeAgo } from '@/lib/utils';
 import type { FormResponse, Question } from '@/lib/types';
 import { Stars } from '@/components/stars';
+
+/**
+ * One result row. The fill is the row itself rather than a separate track
+ * underneath it: a hairline bar stretched across the card put the count an
+ * inch away from the label it belonged to, and made one response look like a
+ * chart. Here the row is the unit, so the label and its number stay together
+ * however wide the card gets.
+ */
+function ResultRow({
+  label,
+  value,
+  pct,
+  lead,
+  delay,
+}: {
+  label: React.ReactNode;
+  value: React.ReactNode;
+  pct: number;
+  lead?: boolean;
+  delay: number;
+}) {
+  return (
+    <div className="relative isolate overflow-hidden rounded-lg">
+      {pct > 0 ? (
+        <div
+          className={cn(
+            'animate-grow-x absolute inset-y-0 left-0 -z-10 rounded-lg',
+            lead ? 'bg-ballpoint-500/15' : 'bg-ballpoint-500/[0.08]'
+          )}
+          style={{ width: `${Math.max(pct, 1.5)}%`, animationDelay: `${delay}ms` }}
+        />
+      ) : null}
+      <div className="flex items-baseline justify-between gap-4 px-2.5 py-2">
+        <span
+          className={cn(
+            'min-w-0 truncate text-[13px]',
+            pct > 0 ? 'font-medium text-ink/80' : 'text-ink/40'
+          )}
+        >
+          {label}
+        </span>
+        <span
+          className={cn(
+            'shrink-0 font-mono text-[11px] tabular-nums',
+            pct > 0 ? 'text-ink/60' : 'text-ink/30'
+          )}
+        >
+          {value}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export function QuestionSummaryCard({
   question,
@@ -22,6 +75,16 @@ export function QuestionSummaryCard({
   );
   const meta = QUESTION_TYPE_MAP[question.type];
 
+  // Only worth calling out a leader once something is actually ahead.
+  const topChoice =
+    summary.kind === 'choice'
+      ? Math.max(0, ...summary.bars.map((b) => b.count))
+      : 0;
+  const hasLeader =
+    summary.kind === 'choice' &&
+    topChoice > 0 &&
+    summary.bars.filter((b) => b.count === topChoice).length === 1;
+
   return (
     <section className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm sm:p-6">
       <div className="flex items-baseline gap-2.5">
@@ -35,52 +98,46 @@ export function QuestionSummaryCard({
       </div>
 
       {summary.kind === 'rating' ? (
-        <div className="mt-5 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10">
-          <div className="shrink-0">
+        <div className="mt-5 flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+          <div className="flex shrink-0 items-center gap-4 sm:block">
             <p className="font-display text-4xl font-extrabold leading-none tracking-tight">
               {summary.average.toFixed(1)}
               <span className="text-base font-semibold text-ink/35"> / {question.maxRating}</span>
             </p>
-            <Stars value={summary.average} max={question.maxRating} className="mt-2.5" />
-            <p className="mt-1.5 text-xs text-ink/45">{pluralize(summary.count, 'rating')}</p>
+            <div className="sm:mt-2.5">
+              <Stars value={summary.average} max={question.maxRating} />
+              <p className="mt-1.5 text-xs text-ink/45">
+                {pluralize(summary.count, 'rating')}
+              </p>
+            </div>
           </div>
-          <div className="flex-1 space-y-2">
+          <div className="w-full flex-1 space-y-0.5 sm:max-w-md">
             {summary.distribution.map((d, i) => (
-              <div key={d.value} className="flex items-center gap-3">
-                <span className="w-9 font-mono text-[11px] text-ink/45">{d.value} ★</span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink/[0.06]">
-                  <div
-                    className="animate-grow-x h-full rounded-full bg-ballpoint-500"
-                    style={{
-                      width: d.count ? `${Math.max(4, (d.count / summary.count) * 100)}%` : '0%',
-                      animationDelay: `${i * 70}ms`,
-                    }}
-                  />
-                </div>
-                <span className="w-6 text-right font-mono text-[11px] text-ink/45">{d.count}</span>
-              </div>
+              <ResultRow
+                key={d.value}
+                label={
+                  <span className="font-mono text-[11px] text-ink/55">{d.value} ★</span>
+                }
+                value={d.count}
+                pct={summary.count ? (d.count / summary.count) * 100 : 0}
+                delay={i * 70}
+              />
             ))}
           </div>
         </div>
       ) : null}
 
       {summary.kind === 'choice' ? (
-        <div className="mt-5 space-y-3.5">
+        <div className="mt-4 space-y-0.5">
           {summary.bars.map((b, i) => (
-            <div key={i}>
-              <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="truncate text-ink/75">{b.label}</span>
-                <span className="shrink-0 font-mono text-[11px] text-ink/45">
-                  {b.count} · {b.pct}%
-                </span>
-              </div>
-              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-ink/[0.06]">
-                <div
-                  className="animate-grow-x h-full rounded-full bg-ballpoint-500"
-                  style={{ width: `${b.pct}%`, animationDelay: `${i * 70}ms` }}
-                />
-              </div>
-            </div>
+            <ResultRow
+              key={i}
+              label={b.label}
+              value={`${b.count} · ${b.pct}%`}
+              pct={b.pct}
+              lead={hasLeader && b.count === topChoice}
+              delay={i * 70}
+            />
           ))}
         </div>
       ) : null}
