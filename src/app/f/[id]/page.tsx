@@ -37,6 +37,18 @@ function PageSkeleton() {
   );
 }
 
+/* Scatter vectors for the success confetti, one entry per particle. */
+const CONFETTI = [
+  { c: 'bg-ballpoint-500', tx: '-72px', ty: '-44px', rot: '-160deg' },
+  { c: 'bg-amber-400', tx: '58px', ty: '-58px', rot: '140deg' },
+  { c: 'bg-tick', tx: '84px', ty: '-10px', rot: '200deg' },
+  { c: 'bg-marker-strong', tx: '-88px', ty: '-16px', rot: '-210deg' },
+  { c: 'bg-violet-400', tx: '-42px', ty: '52px', rot: '150deg' },
+  { c: 'bg-emerald-400', tx: '48px', ty: '56px', rot: '-130deg' },
+  { c: 'bg-ballpoint-300', tx: '10px', ty: '-86px', rot: '90deg' },
+  { c: 'bg-rose-400', tx: '-10px', ty: '80px', rot: '-90deg' },
+] as const;
+
 function ClosedPanel({
   reason,
   formId,
@@ -201,28 +213,45 @@ export default function FillFormPage() {
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-14">
           <div className="rounded-3xl border border-ink/[0.08] bg-card px-6 py-14 text-center shadow-sm sm:px-12">
-            <svg viewBox="0 0 100 100" className="mx-auto size-20" role="img" aria-label="Submitted">
-              <circle
-                cx="50"
-                cy="50"
-                r="46"
-                fill="none"
-                stroke="#178a50"
-                strokeWidth="4"
-                strokeLinecap="round"
-                className="draw-ring"
-                transform="rotate(-90 50 50)"
-              />
-              <path
-                d="M31 52 L45 65 L70 38"
-                fill="none"
-                stroke="#178a50"
-                strokeWidth="6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="draw-check"
-              />
-            </svg>
+            <div className="relative mx-auto size-20">
+              <svg viewBox="0 0 100 100" className="size-20" role="img" aria-label="Submitted">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="46"
+                  fill="none"
+                  stroke="#178a50"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  className="draw-ring"
+                  transform="rotate(-90 50 50)"
+                />
+                <path
+                  d="M31 52 L45 65 L70 38"
+                  fill="none"
+                  stroke="#178a50"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="draw-check"
+                />
+              </svg>
+              <div aria-hidden className="pointer-events-none absolute inset-0">
+                {CONFETTI.map((p, i) => (
+                  <span
+                    key={i}
+                    className={cn('confetti-particle absolute left-1/2 top-1/2 size-2 rounded-[2px]', p.c)}
+                    style={
+                      {
+                        '--tx': p.tx,
+                        '--ty': p.ty,
+                        '--rot': p.rot,
+                      } as React.CSSProperties
+                    }
+                  />
+                ))}
+              </div>
+            </div>
             <div className="animate-stamp mx-auto mt-5 inline-block rounded-lg border-[3px] border-tick px-4 py-1">
               <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-tick">
                 Received
@@ -358,7 +387,49 @@ export default function FillFormPage() {
               ) : null}
             </div>
 
-            <div className="pt-7">
+            {(() => {
+              const required = form.questions.filter((q) => q.required);
+              const answeredRequired = required.filter((q) => {
+                const v = values[q.id];
+                return !(
+                  v === undefined ||
+                  v === null ||
+                  v === '' ||
+                  (Array.isArray(v) && v.length === 0)
+                );
+              }).length;
+              const totalRequired = required.length + (form.anonymous ? 0 : 1);
+              const doneRequired =
+                answeredRequired + (form.anonymous || respondent.name.trim() ? 1 : 0);
+              const pct = totalRequired
+                ? Math.round((doneRequired / totalRequired) * 100)
+                : 100;
+              const ready = doneRequired >= totalRequired;
+
+              return (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between font-mono text-[11px] text-ink/45">
+                    <span>
+                      {ready
+                        ? 'Ready to submit — everything required is answered'
+                        : `${doneRequired} of ${totalRequired} required answered`}
+                    </span>
+                    <span className={cn(ready && 'font-semibold text-tick')}>{pct}%</span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink/[0.06]">
+                    <div
+                      className={cn(
+                        'h-full rounded-full transition-all duration-300',
+                        ready ? 'bg-tick' : 'bg-ballpoint-500'
+                      )}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })()}
+
+          <div className="pt-7">
               <FormRenderer
                 form={form}
                 values={values}

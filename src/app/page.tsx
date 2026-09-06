@@ -113,8 +113,18 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="animate-fade-up [animation-delay:150ms] lg:pl-6">
-              <HeroDemo />
+            <div className="animate-fade-up relative [animation-delay:150ms] lg:pl-6">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -right-8 -top-12 size-72 rounded-full bg-ballpoint-400/25 blur-3xl"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -bottom-12 -left-10 size-64 rounded-full bg-marker-strong/40 blur-3xl"
+              />
+              <div className="relative">
+                <HeroDemo />
+              </div>
             </div>
           </div>
 

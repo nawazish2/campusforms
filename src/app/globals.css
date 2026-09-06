@@ -190,6 +190,22 @@ body {
   transform-origin: bottom;
 }
 
+/* Confetti burst around the success tick. Each particle carries
+   --tx/--ty/--rot custom properties for its scatter vector. */
+@keyframes confetti-pop {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.6);
+    opacity: 0;
+  }
+}
+.confetti-particle {
+  animation: confetti-pop 0.9s cubic-bezier(0.16, 0.84, 0.44, 1) 0.3s both;
+}
+
 /* Gentle bobbing for the landing hero's floating chips. */
 @keyframes float-a {
   from {
@@ -223,6 +239,7 @@ body {
   .animate-grow-y,
   .animate-float-a,
   .animate-float-b,
+  .confetti-particle,
   .draw-check,
   .draw-ring {
     animation: none;
@@ -234,6 +251,9 @@ body {
   .animate-grow-x,
   .animate-grow-y {
     transform: none;
+  }
+  .confetti-particle {
+    opacity: 0;
   }
 }
 
