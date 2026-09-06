@@ -127,9 +127,6 @@ know where they stop.
 - **Sign-in is allowlisted.** Organizer accounts are added by hand to
   `allowed_organizers`; there is no invitation flow yet.
 
-Setup and deployment notes live in [`supabase/README.md`](supabase/README.md),
-alongside what each migration decides and why.
-
 ---
 
 Built by [Nawazish Khan](https://github.com/nawazish2).
