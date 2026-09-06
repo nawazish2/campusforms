@@ -130,6 +130,11 @@ export function FormBuilder({
       return { ...d, questions };
     });
 
+  // save() bails when the draft or the session isn't ready. Without this the
+  // buttons stayed enabled through that window and a click did nothing at
+  // all — no toast, no error — which reads as a broken button.
+  const busy = saving || !draft || !user;
+
   const save = async (status: 'draft' | 'open' | 'closed') => {
     if (!draft || !user || saving) return;
     // A draft is allowed to be half-finished; anything students can reach
@@ -220,10 +225,10 @@ export function FormBuilder({
           <div className="flex items-center gap-2">
             {mode === 'create' || form.status === 'draft' ? (
               <>
-                <Button variant="secondary" disabled={saving} onClick={() => save('draft')}>
+                <Button variant="secondary" disabled={busy} onClick={() => save('draft')}>
                   Save as draft
                 </Button>
-                <Button disabled={saving} onClick={() => save('open')}>
+                <Button disabled={busy} onClick={() => save('open')}>
                   {saving ? 'Publishing…' : 'Publish form'}
                 </Button>
               </>
@@ -245,7 +250,7 @@ export function FormBuilder({
                   </Link>
                 )}
                 <Button
-                  disabled={saving}
+                  disabled={busy}
                   onClick={() => save(form.status === 'open' ? 'open' : 'closed')}
                 >
                   {saving ? 'Saving…' : 'Save changes'}

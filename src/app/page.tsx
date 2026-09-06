@@ -12,7 +12,7 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { HeroDemo } from '@/components/hero-demo';
 import { buttonVariants } from '@/components/ui/button';
-import { CATEGORY_LIST } from '@/lib/constants';
+import { CATEGORY_LIST, QUESTION_TYPES } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 const FEATURES = [
@@ -121,10 +121,14 @@ export default function Home() {
           {/* Stat strip */}
           <div className="border-y border-ink/[0.07] bg-card/60">
             <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-ink/[0.07] px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
+              {/* Facts about what the product does. The numbers that used to
+                  sit here — responses collected, forms run this semester —
+                  were invented, which was fine as placeholder copy and isn't
+                  once the site is public. */}
               {[
-                { value: '12,480', label: 'responses collected' },
-                { value: '214', label: 'forms run this semester' },
-                { value: '9 AM', label: 'daily complaint triage' },
+                { value: String(QUESTION_TYPES.length), label: 'question types' },
+                { value: '0', label: 'accounts students need' },
+                { value: 'CSV', label: 'export, any time' },
               ].map((s) => (
                 <div key={s.label} className="flex items-baseline justify-center gap-3 py-5">
                   <span className="font-display text-2xl font-bold tracking-tight">{s.value}</span>
