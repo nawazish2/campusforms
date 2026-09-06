@@ -19,13 +19,12 @@ the interface, and a results view the hostel office can read in a morning.
 
 ## What it does
 
-**For organizers.** Sign in with Google, build a form from nine question types
+**For organizers.** Sign in with Google, build a form from nine question types,
 or start from one of fourteen templates written for the job — Hostel
 Maintenance Complaint, Weekly Mess Feedback, Event Registration, Weekend Leave
-/ Night Pass. Publish, and you
-get a link and a printable QR code for the notice board. Results come back as
-averages, distributions and individual responses, with CSV export when you need
-a spreadsheet after all.
+/ Night Pass. Publish, and you get a link plus a printable QR code for the
+notice board. Results come back as averages, distributions and individual
+responses, with CSV export for when you want a spreadsheet after all.
 
 **For students.** Open the link and answer. No sign-in, no app, no account
 recovery, nothing stored about who you are beyond what the form itself asks.
