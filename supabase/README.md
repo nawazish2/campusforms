@@ -1,6 +1,6 @@
 # Database
 
-Two migrations, applied in order. At this scale the simplest route is the
+Four migrations, applied in order. At this scale the simplest route is the
 Supabase dashboard's SQL editor — paste each file and run it. The CLI
 (`supabase db push`) works too but wants Docker for its local stack.
 
@@ -9,6 +9,8 @@ Supabase dashboard's SQL editor — paste each file and run it. The CLI
 | `0001_init.sql` | `forms` and `responses`, the anonymity and counter triggers, and every RLS policy |
 | `0002_restrict_organizers.sql` | Rejects sign-ups from anyone not in `allowed_organizers` — **add the organizers' emails before running it** |
 | `0003_guard_responses.sql` | Enforces the deadline, a per-form flood limit and the shape of `answers` on write |
+| `0004_ref_lookup.sql` | Public RPC behind the "track my response" page: status (and, for non-anonymous forms, answers) by REF code, nothing else |
+| `0005_pin_forms.sql` | `forms.pinned` — lets organizers float a form to the top of the notice board |
 
 ## Then, in the dashboard
 

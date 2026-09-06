@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Clock, Inbox, Timer, Users } from 'lucide-react';
+import { Clock, Inbox, Pin, Timer, Users } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { CategoryBadge } from '@/components/category-badge';
@@ -35,7 +35,7 @@ export default function BrowsePage() {
     return openForms
       .filter((f) => category === 'all' || f.category === category)
       .filter((f) => `${f.title} ${f.description}`.toLowerCase().includes(q))
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.createdAt.localeCompare(a.createdAt));
   }, [openForms, category, query]);
 
   const responsesOnOpen = useMemo(
@@ -119,6 +119,15 @@ export default function BrowsePage() {
                     style={{ animationDelay: `${Math.min(i * 60, 360)}ms` }}
                   >
                     <div className="flex items-center gap-2">
+                      {f.pinned ? (
+                        <span
+                          className="inline-flex items-center gap-1 rounded-full bg-marker px-2.5 py-0.5 text-xs font-medium text-ink"
+                          title="Pinned by the organizer"
+                        >
+                          <Pin className="size-3" aria-hidden />
+                          Pinned
+                        </span>
+                      ) : null}
                       <CategoryBadge category={f.category} />
                       {f.anonymous ? <AnonymousBadge /> : null}
                       <span className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] text-ink/40">

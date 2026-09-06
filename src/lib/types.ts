@@ -34,6 +34,8 @@ export interface FormDefinition {
   /** "2026-09-15" (end of that day) or "2026-09-15T18:00". */
   deadline: string | null;
   questions: Question[];
+  /** Pinned forms float to the top of the notice board. */
+  pinned: boolean;
   createdAt: string;
 }
 

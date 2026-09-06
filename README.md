@@ -110,6 +110,24 @@ meanings: `2026-09-25` is the end of that local day, `2026-09-25T18:00` is a
 local wall clock. A timestamp column collapses that distinction, and neither
 shape carries a timezone to convert from in the first place.
 
+## Roadmap
+
+What's next, roughly in the order the campus would feel it.
+
+- **Email digests** — a nightly "3 new complaints, 2 urgent" to organizers.
+  Needs a service-role Supabase key, an email provider (e.g. Resend) and a
+  Vercel Cron route; none of that exists yet.
+- **File uploads** — a photo of the broken fan beats a paragraph about it.
+  Supabase Storage bucket, a `file` question type and an `AnswerValue` shape
+  for uploaded paths.
+- **AI assist** — draft a form from one sentence ("room change requests"),
+  weekly "top themes from 214 responses" summaries, auto-triage of complaint
+  urgency. Needs an LLM API key.
+- **Live Sheets sync** — the CSV is a snapshot; some offices want the spreadsheet.
+- **Cross-form insights** — "all hostel complaints this month" across forms,
+  with the per-question summaries reused.
+- **Playwright e2e** — create → share → submit → triage, run in CI.
+
 ## Known limits
 
 Named plainly, because the guarantees above are only worth something if you

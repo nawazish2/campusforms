@@ -11,6 +11,7 @@ import {
   Inbox,
   Lock,
   Pencil,
+  Pin,
   Search,
   Trash2,
   TriangleAlert,
@@ -33,10 +34,12 @@ import { Select } from '@/components/ui/select';
 import { SearchInput } from '@/components/ui/search-input';
 import { FilterChip } from '@/components/ui/filter-chip';
 import { useToast } from '@/components/ui/toast';
+import { RESPONSE_STATUS_META } from '@/lib/constants';
 import { useFormResults, useRequireAuth } from '@/lib/db/hooks';
 import {
   deleteForm,
   deleteResponse,
+  setFormPinned,
   setFormStatus,
   setResponseStatus,
 } from '@/lib/db/forms';
@@ -74,18 +77,22 @@ export default function FormResultsPage() {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<ResponseStatus | 'all'>('all');
   const [confirmDeleteResponse, setConfirmDeleteResponse] = useState<FormResponse | null>(null);
+  const [busy, setBusy] = useState(false);
 
   // Already ordered newest-first by the query.
   const formResponses = useMemo(() => data?.responses ?? [], [data]);
 
   /** Runs a write, then refetches so the page can't show a stale row. */
   const mutate = async (run: () => Promise<unknown>, done: string) => {
+    setBusy(true);
     try {
       await run();
       refresh();
       toast(done);
     } catch (e) {
       toast(e instanceof Error ? e.message : 'That didn’t save', 'error');
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -206,6 +213,12 @@ export default function FormResultsPage() {
         <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
+              {form.pinned ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-marker px-2.5 py-0.5 text-xs font-medium text-ink ring-1 ring-inset ring-marker-strong">
+                  <Pin className="size-3" aria-hidden />
+                  Pinned
+                </span>
+              ) : null}
               <CategoryBadge category={form.category} />
               <StatusBadge status={form.status} />
               {form.anonymous ? <AnonymousBadge /> : null}
@@ -220,6 +233,19 @@ export default function FormResultsPage() {
             ) : null}
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="secondary"
+              disabled={busy}
+              onClick={() =>
+                mutate(
+                  () => setFormPinned(db, form.id, !form.pinned),
+                  form.pinned ? 'Unpinned' : 'Pinned to the top of the notice board'
+                )
+              }
+            >
+              <Pin className={cn(form.pinned && 'text-ballpoint-700')} />
+              {form.pinned ? 'Unpin' : 'Pin to top'}
+            </Button>
             {form.status === 'open' ? (
               <Button variant="secondary" onClick={toggleStatus}>
                 <Lock />
@@ -305,7 +331,15 @@ export default function FormResultsPage() {
                 print the QR — students don’t need an account.
               </p>
             </div>
-            <QrShare link={shareLink} />
+            <div className="flex shrink-0 flex-col items-center gap-2">
+              <QrShare link={shareLink} />
+              <Link
+                href={`/dashboard/form/${form.id}/poster`}
+                className="font-mono text-[11px] uppercase tracking-wider text-ink/45 transition hover:text-ballpoint-700"
+              >
+                Print poster
+              </Link>
+            </div>
           </div>
           <dl className="flex h-full flex-col justify-between rounded-2xl border border-ink/[0.08] bg-card px-5 py-1 shadow-sm">
             <StatRow label="Responses" value={stats.total} />
@@ -491,11 +525,9 @@ function StatRow({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-const RESPONSE_STATUSES: { value: ResponseStatus; label: string }[] = [
-  { value: 'new', label: 'New' },
-  { value: 'in-progress', label: 'In progress' },
-  { value: 'done', label: 'Done' },
-];
+const RESPONSE_STATUSES: { value: ResponseStatus; label: string }[] = (
+  Object.entries(RESPONSE_STATUS_META) as [ResponseStatus, { label: string; chip: string }][]
+).map(([value, m]) => ({ value, label: m.label }));
 
 function Notice({ tone, children }: { tone: 'ballpoint' | 'amber'; children: React.ReactNode }) {
   return (
@@ -586,9 +618,9 @@ function ResponseCard({
 }
 
 const STATUS_TINT: Record<ResponseStatus, string> = {
-  new: 'border-ballpoint-300 bg-ballpoint-50 text-ballpoint-800',
-  'in-progress': 'border-amber-300 bg-amber-50 text-amber-800',
-  done: 'border-emerald-300 bg-emerald-50 text-emerald-800',
+  new: RESPONSE_STATUS_META.new.chip,
+  'in-progress': RESPONSE_STATUS_META['in-progress'].chip,
+  done: RESPONSE_STATUS_META.done.chip,
 };
 
 function Answer({ answer, question }: { answer: AnswerValue | undefined; question: Question }) {

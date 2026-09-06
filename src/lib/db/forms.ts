@@ -34,10 +34,15 @@ function unwrap<T>({ data, error }: { data: T; error: { message: string } | null
   return data as NonNullable<T>;
 }
 
-/** Public: every form on the notice board, newest first. */
+/** Public: every form on the notice board, pinned first, then newest. */
 export async function listOpenForms(db: Client): Promise<FormSummary[]> {
   const rows = unwrap(
-    await db.from('forms').select('*').eq('status', 'open').order('created_at', { ascending: false })
+    await db
+      .from('forms')
+      .select('*')
+      .eq('status', 'open')
+      .order('pinned', { ascending: false })
+      .order('created_at', { ascending: false })
   );
   return rows.map(toSummary);
 }
@@ -151,6 +156,24 @@ export async function updateForm(
 
 export async function setFormStatus(db: Client, id: string, status: FormStatus): Promise<void> {
   unwrap(await db.from('forms').update({ status }).eq('id', id).select('id'));
+}
+
+/** Pins or unpins a form at the top of the notice board. */
+export async function setFormPinned(db: Client, id: string, pinned: boolean): Promise<void> {
+  unwrap(await db.from('forms').update({ pinned }).eq('id', id).select('id'));
+}
+
+/**
+ * The public half of the REF code on the success screen: the student enters
+ * the six characters and gets their response's triage status back. A
+ * security-definer RPC does the reading (RLS gives response reads to the
+ * organizer alone); the function itself is the guardrail — it returns no
+ * respondent identity, and answers only for non-anonymous forms.
+ */
+export async function lookupResponseByRef(db: Client, ref: string) {
+  const { data, error } = await db.rpc('lookup_response_by_ref', { p_ref: ref });
+  if (error) throw new Error(error.message);
+  return data?.[0] ?? null;
 }
 
 export async function deleteForm(db: Client, id: string): Promise<void> {

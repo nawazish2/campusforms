@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useSyncExternalStore } from 'react';
+import { useState, useEffect, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import {
@@ -24,8 +24,9 @@ import { addResponse } from '@/lib/db/forms';
 import { useToast } from '@/components/ui/toast';
 import { validateFill, type RespondentInput } from '@/lib/validation';
 import { hasSubmitted, markSubmitted } from '@/lib/submissions';
+import { clearDraft, loadDraft, saveDraft } from '@/lib/drafts';
 import { CATEGORIES, CATEGORY_ACCENT } from '@/lib/constants';
-import { cn, deadlineInfo, estimateFillMinutes, pluralize } from '@/lib/utils';
+import { cn, deadlineInfo, estimateFillMinutes, pluralize, timeAgo } from '@/lib/utils';
 import type { AnswerValue } from '@/lib/types';
 
 function PageSkeleton() {
@@ -94,12 +95,35 @@ export default function FillFormPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submittedId, setSubmittedId] = useState<string | null>(null);
   const [fillAgain, setFillAgain] = useState(false);
+  const [draftRestored, setDraftRestored] = useState<string | null>(null);
   // localStorage isn't readable during SSR, so this is a client-only lookup.
   const alreadySubmitted = useSyncExternalStore(
     () => () => {},
     () => (params.id ? hasSubmitted(params.id) : false),
     () => false
   );
+
+  const formId = form?.id ?? null;
+
+  // Restore the autosaved draft once per form — a refresh mid-complaint
+  // shouldn't cost the student their typing.
+  useEffect(() => {
+    if (!formId) return;
+    const draft = loadDraft(formId);
+    if (draft && Object.keys(draft.values).length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot rehydration from localStorage, the same seed the builder does.
+      setValues(draft.values);
+      setRespondent(draft.respondent);
+      setDraftRestored(draft.savedAt);
+    }
+  }, [formId]);
+
+  // Autosave (debounced) as they type; wiped the moment a submit lands.
+  useEffect(() => {
+    if (!formId || submittedId) return;
+    const t = setTimeout(() => saveDraft(formId, { values, respondent }), 500);
+    return () => clearTimeout(t);
+  }, [formId, values, respondent, submittedId]);
 
   if (!configured) return <SetupRequired variant="public" />;
 
@@ -198,6 +222,8 @@ export default function FillFormPage() {
       // Only mark it locally once the write actually landed — otherwise a
       // failed submit would lock this browser out of retrying.
       markSubmitted(form.id);
+      clearDraft(form.id);
+      setDraftRestored(null);
       setSubmittedId(id);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
@@ -285,7 +311,16 @@ export default function FillFormPage() {
               <Link href="/browse" className={buttonVariants()}>
                 Browse more forms
               </Link>
+              <Link
+                href={`/status?ref=${submittedId.slice(-6).toUpperCase()}`}
+                className={buttonVariants({ variant: 'ghost' })}
+              >
+                Track this response
+              </Link>
             </div>
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/35">
+              Save your REF code — it’s how you check back on this response.
+            </p>
           </div>
         </main>
         <SiteFooter />
@@ -387,6 +422,26 @@ export default function FillFormPage() {
               ) : null}
             </div>
 
+            {draftRestored ? (
+              <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-3.5 py-2.5 text-[13px] text-ballpoint-900">
+                <span>
+                  Draft restored <span className="text-ballpoint-700">· saved {timeAgo(draftRestored)}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearDraft(form.id);
+                    setValues({});
+                    setRespondent({ name: '', email: '' });
+                    setDraftRestored(null);
+                  }}
+                  className="ml-auto font-medium text-ballpoint-800 underline decoration-ballpoint-300 underline-offset-2 transition hover:text-ballpoint-600 outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 rounded"
+                >
+                  Discard
+                </button>
+              </div>
+            ) : null}
+
             {(() => {
               const required = form.questions.filter((q) => q.required);
               const answeredRequired = required.filter((q) => {
@@ -408,7 +463,10 @@ export default function FillFormPage() {
 
               return (
                 <div className="mb-6">
-                  <div className="flex items-center justify-between font-mono text-[11px] text-ink/45">
+                  <div
+                    className="flex items-center justify-between font-mono text-[11px] text-ink/45"
+                    role="status"
+                  >
                     <span>
                       {ready
                         ? 'Ready to submit — everything required is answered'

@@ -20,12 +20,19 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://campusforms.vercel.app'
+  ),
   title: {
     default: 'CampusForms — forms for university life',
     template: '%s · CampusForms',
   },
   description:
     'Collect hostel complaints, run event registrations and gather anonymous mess feedback. The form platform built for universities — one link, no sign-in for students.',
+  openGraph: {
+    type: 'website',
+    siteName: 'CampusForms',
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

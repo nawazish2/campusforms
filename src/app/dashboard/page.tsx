@@ -11,6 +11,7 @@ import {
   LayoutGrid,
   Link2,
   Pencil,
+  Pin,
   Plus,
   Trash2,
   TrendingUp,
@@ -27,7 +28,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { SearchInput } from '@/components/ui/search-input';
 import { useToast } from '@/components/ui/toast';
 import { useDashboard, useRequireAuth } from '@/lib/db/hooks';
-import { deleteForm, duplicateForm, setFormStatus } from '@/lib/db/forms';
+import { deleteForm, duplicateForm, setFormPinned, setFormStatus } from '@/lib/db/forms';
 import type { FormSummary } from '@/lib/db/schema';
 import {
   avatarColor,
@@ -246,6 +247,12 @@ export default function DashboardPage() {
                         {f.title || 'Untitled form'}
                       </Link>
                       <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                        {f.pinned ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-marker px-2.5 py-0.5 text-xs font-medium text-ink ring-1 ring-inset ring-marker-strong">
+                            <Pin className="size-3" aria-hidden />
+                            Pinned
+                          </span>
+                        ) : null}
                         <CategoryBadge category={f.category} />
                         <StatusBadge status={f.status} />
                         {f.anonymous ? <AnonymousBadge /> : null}
@@ -266,6 +273,22 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-1.5">
                       {statusAction(f)}
                       <div className="ml-1 flex items-center gap-0.5">
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          disabled={busy}
+                          onClick={() =>
+                            mutate(
+                              () => setFormPinned(db, f.id, !f.pinned),
+                              f.pinned ? 'Unpinned' : 'Pinned to the top of the notice board'
+                            )
+                          }
+                          aria-label={f.pinned ? 'Unpin from notice board' : 'Pin to notice board'}
+                          title={f.pinned ? 'Unpin' : 'Pin to notice board'}
+                          className={cn(f.pinned && 'text-ballpoint-700')}
+                        >
+                          <Pin />
+                        </Button>
                         <Link
                           href={`/dashboard/form/${f.id}`}
                           aria-label="View results"

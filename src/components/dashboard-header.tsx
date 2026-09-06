@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { buttonVariants } from '@/components/ui/button';
 import { AccountMenu } from '@/components/account-menu';
+import { NotificationsBell } from '@/components/notifications-bell';
 
 export function DashboardHeader() {
   return (
@@ -31,6 +32,7 @@ export function DashboardHeader() {
             <Plus />
             <span className="hidden sm:inline">New form</span>
           </Link>
+          <NotificationsBell />
           <AccountMenu />
         </div>
       </div>

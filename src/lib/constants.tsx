@@ -130,12 +130,20 @@ export const STATUS_META: Record<
   draft: { label: 'Draft', badge: 'bg-ink/[0.06] text-ink/60 ring-ink/10' },
   open: {
     label: 'Open',
-    badge:
-      'bg-tick-soft text-tick ring-tick/20',
+    badge: 'bg-tick-soft text-tick ring-tick/20',
   },
   closed: {
     label: 'Closed',
-    badge:
-      'bg-red-50 text-red-700 ring-red-600/10',
+    badge: 'bg-red-50 text-red-700 ring-red-600/10',
   },
+};
+
+/** How a response's triage status is rendered everywhere it appears. */
+export const RESPONSE_STATUS_META: Record<
+  'new' | 'in-progress' | 'done',
+  { label: string; chip: string }
+> = {
+  new: { label: 'New', chip: 'border-ballpoint-300 bg-ballpoint-50 text-ballpoint-800' },
+  'in-progress': { label: 'In progress', chip: 'border-amber-300 bg-amber-50 text-amber-800' },
+  done: { label: 'Done', chip: 'border-emerald-300 bg-emerald-50 text-emerald-800' },
 };

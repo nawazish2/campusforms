@@ -3,6 +3,7 @@ import { Logo } from '@/components/logo';
 
 const productLinks = [
   { href: '/browse', label: 'Browse open forms' },
+  { href: '/status', label: 'Track a response' },
   { href: '/dashboard', label: 'Organizer dashboard' },
   { href: '/dashboard/new', label: 'Create a form' },
 ];

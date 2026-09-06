@@ -21,6 +21,7 @@ export type FormRow = {
   anonymous: boolean;
   deadline: string | null;
   questions: Question[];
+  pinned: boolean;
   response_count: number;
   created_at: string;
 };
@@ -46,9 +47,13 @@ export type Database = {
     Tables: {
       forms: {
         Row: FormRow;
-        Insert: Omit<FormRow, 'id' | 'created_at' | 'response_count'> & {
+        Insert: Omit<
+          FormRow,
+          'id' | 'created_at' | 'response_count' | 'pinned'
+        > & {
           id?: string;
           response_count?: number;
+          pinned?: boolean;
         };
         Update: Partial<Omit<FormRow, 'id' | 'owner_id' | 'created_at'>>;
         Relationships: [];
@@ -64,7 +69,20 @@ export type Database = {
       };
     };
     Views: Record<never, never>;
-    Functions: Record<never, never>;
+    Functions: {
+      lookup_response_by_ref: {
+        Args: { p_ref: string };
+        Returns: {
+          form_title: string;
+          form_category: FormCategory;
+          response_status: ResponseStatus;
+          submitted_at: string;
+          answers: Record<string, AnswerValue> | null;
+          form_questions: Question[] | null;
+          is_anonymous: boolean;
+        }[];
+      };
+    };
     Enums: {
       form_category: FormCategory;
       form_status: FormStatus;
@@ -88,6 +106,7 @@ export function toForm(row: FormRow): FormDefinition {
     anonymous: row.anonymous,
     deadline: row.deadline,
     questions: row.questions,
+    pinned: row.pinned,
     createdAt: row.created_at,
   };
 }

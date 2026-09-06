@@ -26,10 +26,16 @@ import { StatusBadge } from '@/components/status-badge';
 import { useToast } from '@/components/ui/toast';
 import { useEditableForm, useRequireAuth } from '@/lib/db/hooks';
 import { createForm, updateForm } from '@/lib/db/forms';
+import {
+  clearBuilderDraft,
+  loadBuilderDraft,
+  saveBuilderDraft,
+  type BuilderDraft,
+} from '@/lib/drafts';
 import { validateDraft } from '@/lib/validation';
 import { blankForm, newQuestion } from '@/lib/factories';
 import { CATEGORIES, CATEGORY_LIST, QUESTION_TYPES, QUESTION_TYPE_MAP } from '@/lib/constants';
-import { cn } from '@/lib/utils';
+import { cn, timeAgo } from '@/lib/utils';
 import type {
   AnswerValue,
   FormCategory,
@@ -69,6 +75,26 @@ export function FormBuilder({
   const [baseline, setBaseline] = useState<FormDefinition | null>(null);
 
   const [leaveTo, setLeaveTo] = useState<string | null>(null);
+
+  // Create-mode autosave: an unpublished form survives a closed tab. A stored
+  // draft is offered as a banner rather than auto-applied, so a template the
+  // organizer just picked always wins.
+  const [savedBuilderDraft, setSavedBuilderDraft] = useState<BuilderDraft | null>(null);
+
+  useEffect(() => {
+    if (mode !== 'create') return;
+    const stored = loadBuilderDraft();
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- readable only after rehydration.
+    if (stored && !initial) setSavedBuilderDraft(stored);
+  }, [mode, initial]);
+
+  useEffect(() => {
+    if (mode !== 'create' || !draft) return;
+    const empty = !draft.title.trim() && draft.questions.length === 0;
+    if (empty) return;
+    const t = setTimeout(() => saveBuilderDraft(draft), 600);
+    return () => clearTimeout(t);
+  }, [draft, mode]);
 
   useEffect(() => {
     if (mode === 'edit' && !loading && existing && !draft) {
@@ -170,6 +196,7 @@ export function FormBuilder({
           : await updateForm(db, clean.id, clean);
       setDraft(saved);
       setBaseline(saved);
+      if (mode === 'create') clearBuilderDraft();
       toast(
         status === 'open'
           ? mode === 'create'
@@ -259,6 +286,37 @@ export function FormBuilder({
             )}
           </div>
         </div>
+
+        {savedBuilderDraft ? (
+          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm text-ballpoint-900">
+            <span>
+              You have an unsaved draft from{' '}
+              <span className="font-medium">{timeAgo(savedBuilderDraft.savedAt)}</span>.
+              Resume it, or start over from the template you picked.
+            </span>
+            <div className="ml-auto flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setSavedBuilderDraft(null);
+                  clearBuilderDraft();
+                }}
+              >
+                Discard
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setDraft(structuredClone(savedBuilderDraft.form));
+                  setSavedBuilderDraft(null);
+                }}
+              >
+                Resume draft
+              </Button>
+            </div>
+          </div>
+        ) : null}
 
         <div className="mt-6 grid items-start gap-8 lg:grid-cols-[1fr_400px]">
           {/* Editor column */}

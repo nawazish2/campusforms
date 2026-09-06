@@ -25,6 +25,7 @@ export function blankForm(): FormDefinition {
     anonymous: false,
     deadline: null,
     questions: [],
+    pinned: false,
     createdAt: new Date().toISOString(),
   };
 }
