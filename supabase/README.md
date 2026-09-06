@@ -8,6 +8,7 @@ Supabase dashboard's SQL editor — paste each file and run it. The CLI
 |---|---|
 | `0001_init.sql` | `forms` and `responses`, the anonymity and counter triggers, and every RLS policy |
 | `0002_restrict_organizers.sql` | Rejects sign-ups from anyone not in `allowed_organizers` — **add the organizers' emails before running it** |
+| `0003_guard_responses.sql` | Enforces the deadline, a per-form flood limit and the shape of `answers` on write |
 
 ## Then, in the dashboard
 
@@ -53,10 +54,12 @@ That single check proves RLS, the trigger and anonymity are all live.
 
 ## Still to do before this is live
 
-- **Deadline enforcement on write.** The insert policy checks
-  `status = 'open'`; the deadline is checked in the app. Move it into a
-  trigger before you rely on a closing time.
-- **Server-side answer validation.** `validateFill` runs in the browser only.
+- **Answer *types* are still unchecked.** `0003` rejects unknown question ids,
+  missing required answers and oversized payloads, but it doesn't verify that
+  a rating is a number in range or that a choice is one of the options.
+- **The flood limit counts per form, not per submitter.** Responses carry no
+  IP and no submitter id, on purpose, so there is nothing else to count. It
+  stops a script; it would not stop thirty phones.
 - **Seed data.** There is none: a fresh database starts empty, so `/browse`
   is blank until an organizer publishes a form. Seeding would mean writing
   `supabase/seed.sql` against a real `owner_id`, which only exists after the
