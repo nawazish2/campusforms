@@ -3,100 +3,63 @@
 Forms for university life. An organizer signs in and publishes a form; students
 open the link and fill it in. No student account, ever.
 
-Live at **[campusforms.vercel.app](https://campusforms.vercel.app)**.
+**[campusforms.vercel.app](https://campusforms.vercel.app)**
 
-It exists because the alternative on most campuses is a Google Form whose
-responses land in a spreadsheet nobody owns, shared through a WhatsApp link
-that half the hostel never sees. CampusForms keeps the same one-link workflow
-and adds the parts a campus actually needs: a public notice board of open
-forms, anonymous feedback that is anonymous in the database rather than in the
-interface, and a results view the hostel office can read in a morning.
+## Why it exists
+
+The alternative on most campuses is a Google Form whose responses land in a
+spreadsheet nobody owns, shared through a WhatsApp link that half the hostel
+never sees. It works, barely, and it fails in the same three ways every time:
+nobody can find the form, the mess feedback isn't really anonymous, and the
+person who has to act on the results is reading raw rows.
+
+CampusForms keeps the one-link workflow and fixes those three things — a public
+notice board of open forms, anonymity enforced in the database rather than in
+the interface, and a results view the hostel office can read in a morning.
 
 ## What it does
 
-- **Organizers** sign in with Google, build a form from nine question types or
-  a ready template, publish it, and get a link plus a printable QR code.
-  Results arrive as averages, distributions and individual responses, with CSV
-  export.
-- **Students** open the link and answer. No sign-in, no app, nothing stored
-  about who they are beyond what the form asks for.
-- **Anonymous forms** have the name and email stripped by a database trigger as
-  the row is written — not hidden at display time. The organizer never
-  receives them. There is no IP column and no `submitted_by`.
+**For organizers.** Sign in with Google, build a form from nine question types
+or start from one of fourteen templates written for the job — Hostel
+Maintenance Complaint, Weekly Mess Feedback, Event Registration, Weekend Leave
+/ Night Pass. Publish, and you
+get a link and a printable QR code for the notice board. Results come back as
+averages, distributions and individual responses, with CSV export when you need
+a spreadsheet after all.
 
-## Running it locally
+**For students.** Open the link and answer. No sign-in, no app, no account
+recovery, nothing stored about who you are beyond what the form itself asks.
+Every open form is also listed on `/browse`, so a form nobody forwarded to you
+is still findable.
 
-You need Node 20+ and a Supabase project. The whole backend is Supabase, so
-there is no server of your own to run.
+**Categories** — hostel, mess, events, academics, general — exist so the notice
+board can be filtered by the thing a student is actually looking for.
 
-```bash
-git clone https://github.com/nawazish2/campusforms.git
-cd campusforms
-npm install
-```
+## Anonymity that means something
 
-### 1. Create a Supabase project
+Any form can be marked anonymous. When it is, a database trigger clears the
+name and email as the row is written — not at display time, not in the query
+that renders the organizer's screen. By the time the response exists, the
+identifying fields are already null. The organizer never receives them, and
+neither does anything downstream, including CSV export.
 
-At [supabase.com/dashboard](https://supabase.com/dashboard). Pick a region near
-your users — the hosted instance runs in Mumbai (`ap-south-1`).
+The schema supports that claim rather than working around it:
 
-### 2. Apply the schema
+- **No `submitted_by` column and no IP column.** They were never added, so
+  there is nothing to leak, subpoena or accidentally join against.
+- **A student can't read their own response back.** The confirmation screen
+  shows a reference number instead, generated client-side before the write.
+- **Forms carry a trigger-maintained `response_count`,** which is how a public
+  page can say "37 responses" while nobody but the organizer can read a single
+  one.
 
-Open the project's SQL editor and run the three migrations in order, pasting
-each file's contents and hitting Run:
-
-| File | What it does |
-|---|---|
-| `supabase/migrations/0001_init.sql` | Tables, the anonymity and counter triggers, every RLS policy |
-| `supabase/migrations/0002_restrict_organizers.sql` | Limits sign-in to an allowlist — **put your own email in it before running** |
-| `supabase/migrations/0003_guard_responses.sql` | Enforces the deadline, a flood limit and the shape of `answers` on write |
-
-`supabase/README.md` explains what each one decides and why.
-
-### 3. Set up Google sign-in
-
-Organizers authenticate with Google, so this is required even locally.
-
-1. In the Google Cloud console, create an **OAuth client** of type *Web
-   application*. Its authorized redirect URI is Supabase's callback —
-   `https://<project-ref>.supabase.co/auth/v1/callback` — not your own app's.
-2. In Supabase, **Authentication → Sign In / Providers → Google**: enable it
-   and paste the client ID and secret.
-3. In Supabase, **Authentication → URL Configuration**, add
-   `http://localhost:3000/**` to the redirect allow-list. Leaving this empty is
-   the usual reason a sign-in completes and drops you back at `/` with no
-   session.
-
-### 4. Point the app at your project
-
-```bash
-cp .env.local.example .env.local
-```
-
-Fill in the URL and publishable key from **Project Settings → API Keys**. The
-publishable key is meant to be public — row level security is what protects the
-data. Never put the secret (`service_role`) key in a `NEXT_PUBLIC_` variable;
-it bypasses RLS entirely.
-
-### 5. Run it
-
-```bash
-npm run dev
-```
-
-Then open [localhost:3000](http://localhost:3000) and sign in. A fresh database
-has no forms, so `/browse` is empty until you publish one.
-
-```bash
-npm run build   # production build
-npm run lint    # eslint
-npm test        # vitest — 28 tests over validation, analytics and date handling
-```
+Anonymity that only exists in the UI isn't anonymity. The limits of this claim
+are stated below, and on `/privacy` for students.
 
 ## How it's built
 
-Next.js 16 App Router with Turbopack, React 19, Tailwind v4, and Supabase for
-auth, Postgres and row level security. TypeScript throughout.
+Next.js 16 App Router with Turbopack, React 19, Tailwind v4, TypeScript, and
+Supabase for auth, Postgres and row level security.
 
 ```
 src/
@@ -107,46 +70,67 @@ src/
     validation  answer + draft rules, shared by the builder and the fill page
     analytics   response summaries
   proxy.ts      session refresh and the /dashboard guard
+supabase/
+  migrations/   schema, policies and triggers, in three ordered files
 ```
 
-Two decisions worth knowing before you change anything:
+### Row level security is the whole authorization model
 
-**There is no ORM and no API layer.** The browser talks to Postgres through
-supabase-js, and **row level security is the entire authorization model**. A
-policy is not a second line of defence here; it is the only one. `src/lib/db/`
-is the only place that queries, so that surface stays small enough to audit.
+There is no ORM and no API layer. The browser talks to Postgres through
+supabase-js, which means a policy here is not a second line of defence behind
+some server that already checked — it is the only line. `src/lib/db/` is the
+only place that issues a query, so the surface that has to be right stays small
+enough to read in one sitting.
 
-**Rules that protect data live in the database, not the app.** The publishable
-key sits in the page source of every form, so anything enforced only in the
-browser is enforced nowhere — anyone can POST to the REST endpoint directly.
-That's why the deadline, the per-form flood limit and the shape of `answers`
-are triggers rather than form validation. `validateFill` in the browser exists
-to give a student a good error message, not to keep bad rows out.
+The policies are short enough to state in prose. Anyone may read any form, in
+any status: `/f/[id]` needs closed and draft forms to exist in order to explain
+why they aren't accepting responses, and nothing in a form definition is
+confidential. Anyone may insert a response to an open form. Only the owner may
+read, triage or delete responses, or touch the form itself.
 
-In Supabase's **Data API** settings, leave *"Automatically expose new tables"*
-on. The migrations contain no `grant` statements, so turning it off revokes
-table privileges from `anon` and `authenticated` before RLS is ever consulted,
-and every page breaks at once.
+### Rules that protect data live in the database
 
-## Deploying
+The publishable key is in the page source of every form. Anything enforced only
+in the browser is therefore enforced nowhere — anyone willing to POST to the
+REST endpoint directly skips it entirely, and that takes about a minute to
+work out.
 
-Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in
-your host **before** the first deploy. They are inlined at build time, and
-`src/proxy.ts` throws when they're missing in production, so a deploy without
-them returns 500 on every route rather than degrading. Then add your
-production origin to Supabase's redirect allow-list.
+So the deadline, a per-form flood limit, and the shape of `answers` are all
+triggers. `validateFill` still runs in the browser, but its job is to give a
+student a good error message, not to keep bad rows out.
+
+### Two schema choices that look odd and aren't
+
+**`questions` and `answers` are `jsonb`.** Nothing ever queries a question on
+its own — the builder rewrites the whole array per edit, and every summary
+iterates it in JS. So a form saves as one upsert, and question ids, which
+answers are keyed by, stay stable for free.
+
+**`deadline` is `text`, not `timestamptz`.** It holds two shapes with different
+meanings: `2026-09-25` is the end of that local day, `2026-09-25T18:00` is a
+local wall clock. A timestamp column collapses that distinction, and neither
+shape carries a timezone to convert from in the first place.
 
 ## Known limits
 
-Named honestly, because the security model above only works if you know where
-it stops:
+Named plainly, because the guarantees above are only worth something if you
+know where they stop.
 
-- **Answer types aren't validated server-side.** `0003` rejects unknown
-  question ids, missing required answers and oversized payloads, but a rating
-  could still arrive as a string.
+- **Anonymous means unnamed, not untraceable.** Submission time and row order
+  still exist. On a form with very few responses, timing could narrow down who
+  wrote something.
+- **Answer *types* aren't validated server-side.** The write guard rejects
+  unknown question ids, missing required answers and oversized payloads, but a
+  rating could still arrive as a string.
 - **The flood limit counts per form, not per submitter.** Responses carry no IP
   and no submitter id, on purpose, so there is nothing else to count. It stops
   a script; it wouldn't stop thirty phones.
-- **Anonymous means unnamed, not untraceable.** Submission time and row order
-  still exist. On a form with very few responses, timing could narrow down who
-  wrote something. `/privacy` says so to students too.
+- **Sign-in is allowlisted.** Organizer accounts are added by hand to
+  `allowed_organizers`; there is no invitation flow yet.
+
+Setup and deployment notes live in [`supabase/README.md`](supabase/README.md),
+alongside what each migration decides and why.
+
+---
+
+Built by [Nawazish Khan](https://github.com/nawazish2).
