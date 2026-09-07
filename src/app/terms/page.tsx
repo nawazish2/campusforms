@@ -57,10 +57,10 @@ export default function TermsPage() {
         <p>
           Questions, takedown requests and complaints:{' '}
           <a
-            href="mailto:knawazish153@gmail.com"
+            href="mailto:contact@example.com"
             className="font-medium text-ballpoint-700 underline underline-offset-2"
           >
-            knawazish153@gmail.com
+            contact@example.com
           </a>
           . These terms are governed by the laws of India. Data handling is
           described in the{' '}

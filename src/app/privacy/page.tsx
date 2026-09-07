@@ -87,10 +87,10 @@ export default function PrivacyPage() {
           what we hold about you, ask for it to be corrected, ask for it to be
           erased, and complain about how it was handled. Write to{' '}
           <a
-            href="mailto:knawazish153@gmail.com"
+            href="mailto:contact@example.com"
             className="font-medium text-ballpoint-700 underline underline-offset-2"
           >
-            knawazish153@gmail.com
+            contact@example.com
           </a>
           , which is also the grievance contact for this site. For an anonymous
           submission there is nothing tied to you to look up, so those requests
