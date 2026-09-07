@@ -34,7 +34,7 @@ import { Select } from '@/components/ui/select';
 import { SearchInput } from '@/components/ui/search-input';
 import { FilterChip } from '@/components/ui/filter-chip';
 import { useToast } from '@/components/ui/toast';
-import { RESPONSE_STATUS_META } from '@/lib/constants';
+import { CATEGORY_ACCENT, RESPONSE_STATUS_META } from '@/lib/constants';
 import { useFormResults, useRequireAuth } from '@/lib/db/hooks';
 import {
   deleteForm,
@@ -146,7 +146,7 @@ export default function FormResultsPage() {
           <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
             Couldn’t load this form
           </h1>
-          <p className="mt-2 text-sm text-ink/55">{error}</p>
+          <p className="mt-2 text-sm text-ink/60">{error}</p>
           <Button variant="secondary" className="mt-6" onClick={refresh}>
             Try again
           </Button>
@@ -164,7 +164,7 @@ export default function FormResultsPage() {
             <FileQuestion className="size-7 text-ink/40" aria-hidden />
           </span>
           <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">Form not found</h1>
-          <p className="mt-2 text-sm text-ink/55">It may have been deleted.</p>
+          <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
           <Link
             href="/dashboard"
             className={buttonVariants({ variant: 'secondary', className: 'mt-6' })}
@@ -210,7 +210,12 @@ export default function FormResultsPage() {
         </Link>
 
         {/* Header */}
-        <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
+        <div
+          className={cn(
+            'mt-4 flex flex-wrap items-start justify-between gap-4 border-l-4 pl-4',
+            CATEGORY_ACCENT[form.category].stripe
+          )}
+        >
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               {form.pinned ? (
@@ -227,7 +232,7 @@ export default function FormResultsPage() {
               {form.title || 'Untitled form'}
             </h1>
             {form.description ? (
-              <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink/55">
+              <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink/60">
                 {form.description}
               </p>
             ) : null}
@@ -283,7 +288,7 @@ export default function FormResultsPage() {
               <FileSpreadsheet />
               Export CSV
               {filtered ? (
-                <span className="font-mono text-[11px] text-ink/45">
+                <span className="font-mono text-[11px] text-ink/50">
                   {visibleResponses.length}
                 </span>
               ) : null}
@@ -317,9 +322,9 @@ export default function FormResultsPage() {
 
         {/* Share + stats */}
         <div className="mt-6 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
-          <div className="flex flex-col gap-5 rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm sm:flex-row">
+          <div className="flex flex-col gap-5 rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:flex-row">
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
                 Share link
               </p>
               <div className="mt-3 flex items-center gap-2">
@@ -335,19 +340,20 @@ export default function FormResultsPage() {
               <QrShare link={shareLink} />
               <Link
                 href={`/dashboard/form/${form.id}/poster`}
-                className="font-mono text-[11px] uppercase tracking-wider text-ink/45 transition hover:text-ballpoint-700"
+                className="font-mono text-[11px] uppercase tracking-wider text-ink/50 transition hover:text-ballpoint-700"
               >
                 Print poster
               </Link>
             </div>
           </div>
-          <dl className="flex h-full flex-col justify-between rounded-2xl border border-ink/[0.08] bg-card px-5 py-1 shadow-sm">
-            <StatRow label="Responses" value={stats.total} />
-            <StatRow label="Today" value={stats.today} />
-            <StatRow label="Last response" value={stats.last ? timeAgo(stats.last) : '—'} />
+          <dl className="flex h-full flex-col justify-between rounded-2xl bg-ballpoint-600 px-5 py-1 text-white shadow-md">
+            <StatRow label="Responses" value={stats.total} accent />
+            <StatRow label="Today" value={stats.today} accent />
+            <StatRow label="Last response" value={stats.last ? timeAgo(stats.last) : '—'} accent />
             <StatRow
               label="Deadline"
               value={form.deadline ? fmtDeadline(form.deadline) : 'None'}
+              accent
             />
           </dl>
         </div>
@@ -376,7 +382,7 @@ export default function FormResultsPage() {
                 onClick={() => setTab(t.key)}
                 className={cn(
                   'rounded-full px-4 py-1.5 text-sm font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
-                  tab === t.key ? 'bg-ink text-paper shadow-sm' : 'text-ink/55 hover:text-ink'
+                  tab === t.key ? 'bg-ink text-paper shadow-sm' : 'text-ink/60 hover:text-ink'
                 )}
               >
                 <span className="hidden sm:inline">{t.label}</span>
@@ -388,8 +394,8 @@ export default function FormResultsPage() {
 
         {/* Tab content */}
         {stats.total === 0 ? (
-          <div className="mt-5 grid place-items-center rounded-3xl border border-dashed border-ink/15 bg-card/60 px-6 py-20 text-center">
-            <Inbox className="size-10 text-ink/20" aria-hidden />
+          <div className="mt-5 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-20 text-center">
+            <Inbox className="size-10 text-ink/30" aria-hidden />
             <h2 className="mt-4 font-display text-lg font-bold tracking-tight">
               No responses yet
             </h2>
@@ -427,8 +433,8 @@ export default function FormResultsPage() {
             </div>
 
             {visibleResponses.length === 0 ? (
-              <div className="mt-5 rounded-2xl border border-dashed border-ink/15 px-6 py-14 text-center">
-                <Search className="mx-auto size-6 text-ink/25" aria-hidden />
+              <div className="mt-5 rounded-2xl border border-dashed border-ink/20 px-6 py-14 text-center">
+                <Search className="mx-auto size-6 text-ink/30" aria-hidden />
                 <p className="mt-3 text-sm font-medium">No responses match</p>
                 <p className="mt-1 text-sm text-ink/50">
                   Try a different search, or clear the status filter.
@@ -512,10 +518,28 @@ export default function FormResultsPage() {
  * three separate cards left no room for their own labels. One row each, label
  * and value on the same line, so the column width goes to the text.
  */
-function StatRow({ label, value }: { label: string; value: React.ReactNode }) {
+function StatRow({
+  label,
+  value,
+  accent = false,
+}: {
+  label: string;
+  value: React.ReactNode;
+  accent?: boolean;
+}) {
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-ink/[0.06] py-3 last:border-0">
-      <dt className="font-mono text-[11px] uppercase tracking-wider text-ink/45">
+    <div
+      className={cn(
+        'flex items-baseline justify-between gap-3 border-b py-3 last:border-0',
+        accent ? 'border-white/15' : 'border-ink/[0.06]'
+      )}
+    >
+      <dt
+        className={cn(
+          'font-mono text-[11px] uppercase tracking-wider',
+          accent ? 'text-white/70' : 'text-ink/50'
+        )}
+      >
         {label}
       </dt>
       <dd className="text-right font-display text-[15px] font-bold tracking-tight tabular-nums">
@@ -557,7 +581,7 @@ function ResponseCard({
 }) {
   const status = response.status ?? 'new';
   return (
-    <article className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm sm:p-6">
+    <article className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:p-6">
       <header className="flex items-center gap-3">
         <span
           className={cn(
@@ -595,7 +619,7 @@ function ResponseCard({
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto text-ink/45 hover:bg-red-50 hover:text-red-600"
+          className="ml-auto text-ink/50 hover:bg-red-50 hover:text-red-600"
           onClick={onDelete}
         >
           <Trash2 />
@@ -606,7 +630,7 @@ function ResponseCard({
       <dl className="mt-4 divide-y divide-ink/[0.06] border-t border-ink/[0.06]">
         {form.questions.map((q) => (
           <div key={q.id} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
-            <dt className="text-[13px] leading-snug text-ink/45">{q.title}</dt>
+            <dt className="text-[13px] leading-snug text-ink/50">{q.title}</dt>
             <dd className="min-w-0 text-sm">
               <Answer answer={response.answers[q.id]} question={q} />
             </dd>
@@ -638,7 +662,7 @@ function Answer({ answer, question }: { answer: AnswerValue | undefined; questio
     );
   }
   if (Array.isArray(answer)) {
-    return <span className="font-medium text-ink/85">{answer.join(' · ')}</span>;
+    return <span className="font-medium text-ink/80">{answer.join(' · ')}</span>;
   }
-  return <span className="whitespace-pre-wrap font-medium text-ink/85">{String(answer)}</span>;
+  return <span className="whitespace-pre-wrap font-medium text-ink/80">{String(answer)}</span>;
 }

@@ -51,27 +51,44 @@ export function StatCard({
   value,
   sub,
   icon: Icon,
+  accent = false,
 }: {
   label: string;
   value: React.ReactNode;
   sub?: string;
   icon: LucideIcon;
+  /** Marks the one stat that matters most right now — a solid ballpoint card among neutral ones. */
+  accent?: boolean;
 }) {
   const numeric = typeof value === 'number' ? value : null;
   const shown = useCountUp(numeric ?? 0);
 
   return (
-    <div className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+    <div
+      className={
+        accent
+          ? 'rounded-2xl bg-ballpoint-600 p-5 text-white shadow-md transition-shadow hover:shadow-lg'
+          : 'rounded-2xl border border-ink/10 bg-card p-5 shadow-sm transition-shadow hover:shadow-md'
+      }
+    >
       <div className="flex items-center justify-between gap-3">
-        <p className="truncate font-mono text-[11px] uppercase tracking-wider text-ink/45">
+        <p
+          className={
+            accent
+              ? 'truncate font-mono text-[11px] uppercase tracking-wider text-white/70'
+              : 'truncate font-mono text-[11px] uppercase tracking-wider text-ink/50'
+          }
+        >
           {label}
         </p>
-        <Icon className="size-4 shrink-0 text-ink/30" aria-hidden />
+        <Icon className={accent ? 'size-4 shrink-0 text-white/70' : 'size-4 shrink-0 text-ink/30'} aria-hidden />
       </div>
       <p className="mt-2 font-display text-[26px] font-bold leading-none tracking-tight tabular-nums">
         {numeric === null ? value : shown.toLocaleString('en-US')}
       </p>
-      {sub ? <p className="mt-1.5 text-[13px] text-ink/50">{sub}</p> : null}
+      {sub ? (
+        <p className={accent ? 'mt-1.5 text-[13px] text-white/70' : 'mt-1.5 text-[13px] text-ink/50'}>{sub}</p>
+      ) : null}
     </div>
   );
 }

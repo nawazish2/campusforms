@@ -100,7 +100,7 @@ export function NotificationsBell() {
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
-          'relative grid size-9 place-items-center rounded-lg text-ink/55 transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+          'relative grid size-9 place-items-center rounded-lg text-ink/60 transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
           open ? 'bg-ink/[0.05] text-ink' : 'hover:bg-ink/[0.05] hover:text-ink'
         )}
       >
@@ -134,7 +134,7 @@ export function NotificationsBell() {
             ) : null}
           </div>
           {responses.length === 0 ? (
-            <p className="px-3 pb-3 pt-1 text-[13px] leading-relaxed text-ink/45">
+            <p className="px-3 pb-3 pt-1 text-[13px] leading-relaxed text-ink/50">
               Responses land here the moment students submit.
             </p>
           ) : (
@@ -147,7 +147,7 @@ export function NotificationsBell() {
                       href={`/dashboard/form/${r.formId}`}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        'flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-ink/[0.04]',
+                        'flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-ink/[0.05]',
                         unseen && 'bg-ballpoint-50/60'
                       )}
                     >
@@ -164,7 +164,7 @@ export function NotificationsBell() {
                         <span className="block truncate text-[13px] font-medium">
                           {r.respondentName ?? 'Anonymous student'}
                         </span>
-                        <span className="block truncate text-xs text-ink/45">
+                        <span className="block truncate text-xs text-ink/50">
                           {titles.get(r.formId) ?? 'A form'}
                         </span>
                       </span>

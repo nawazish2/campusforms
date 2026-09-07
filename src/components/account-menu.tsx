@@ -70,7 +70,7 @@ export function AccountMenu() {
           <div className="px-3 py-2.5">
             <p className="truncate text-[13px] font-semibold">{name}</p>
             {user.email ? (
-              <p className="truncate font-mono text-[11px] text-ink/45">{user.email}</p>
+              <p className="truncate font-mono text-[11px] text-ink/50">{user.email}</p>
             ) : null}
           </div>
           <button
@@ -81,7 +81,7 @@ export function AccountMenu() {
               await signOut();
               router.push('/');
             }}
-            className="flex w-full items-center gap-2 rounded-xl border-t border-ink/[0.07] px-3 py-2.5 text-left text-[13px] font-medium text-ink/70 transition hover:bg-ink/[0.04] hover:text-ink"
+            className="flex w-full items-center gap-2 rounded-xl border-t border-ink/[0.06] px-3 py-2.5 text-left text-[13px] font-medium text-ink/70 transition hover:bg-ink/[0.05] hover:text-ink"
           >
             <LogOut className="size-4" aria-hidden />
             Sign out

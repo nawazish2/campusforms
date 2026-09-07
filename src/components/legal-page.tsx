@@ -45,7 +45,7 @@ export function Section({ heading, children }: { heading: string; children: Reac
   return (
     <section>
       <h2 className="font-display text-lg font-bold tracking-tight">{heading}</h2>
-      <div className="mt-2 space-y-3 text-[15px] leading-relaxed text-ink/65">{children}</div>
+      <div className="mt-2 space-y-3 text-[15px] leading-relaxed text-ink/70">{children}</div>
     </section>
   );
 }

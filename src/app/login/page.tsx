@@ -47,7 +47,7 @@ function LoginCard() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="rounded-3xl border border-ink/[0.08] bg-card p-8 shadow-md sm:p-10">
+      <div className="rounded-3xl border border-ink/10 bg-card p-8 shadow-md sm:p-10">
         <Logo />
         <h1 className="mt-7 font-display text-[28px] font-extrabold leading-tight tracking-tight">
           Sign in to run forms
@@ -92,9 +92,9 @@ function LoginCard() {
             {busy ? 'Opening Google…' : 'Continue with Google'}
           </Button>
         ) : (
-          <div className="mt-7 rounded-xl border border-dashed border-ink/15 bg-paper px-4 py-4">
+          <div className="mt-7 rounded-xl border border-dashed border-ink/20 bg-paper px-4 py-4">
             <p className="text-[13px] font-semibold">Sign-in isn’t configured yet</p>
-            <p className="mt-1 text-[13px] leading-relaxed text-ink/55">
+            <p className="mt-1 text-[13px] leading-relaxed text-ink/60">
               Add <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
               <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{' '}
               <code className="font-mono text-xs">.env.local</code>, then restart the dev
@@ -103,7 +103,7 @@ function LoginCard() {
           </div>
         )}
 
-        <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink/45">
+        <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink/50">
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           Sign-in is limited to approved organizers. We store your name and
           email to label the forms you create.

@@ -34,11 +34,16 @@ import {
 } from '@/lib/drafts';
 import { validateDraft } from '@/lib/validation';
 import { blankForm, newQuestion } from '@/lib/factories';
-import { CATEGORIES, CATEGORY_LIST, QUESTION_TYPES, QUESTION_TYPE_MAP } from '@/lib/constants';
+import {
+  CATEGORIES,
+  CATEGORY_ACCENT,
+  CATEGORY_LIST,
+  QUESTION_TYPES,
+  QUESTION_TYPE_MAP,
+} from '@/lib/constants';
 import { cn, timeAgo } from '@/lib/utils';
 import type {
   AnswerValue,
-  FormCategory,
   FormDefinition,
   Question,
   QuestionType,
@@ -238,7 +243,7 @@ export function FormBuilder({
                 <ArrowLeft />
               </Link>
             )}
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
               {mode === 'create' ? 'New form' : 'Edit form'}
             </span>
             {mode === 'edit' ? <StatusBadge status={form.status} /> : null}
@@ -322,7 +327,13 @@ export function FormBuilder({
           {/* Editor column */}
           <div className="min-w-0 space-y-5">
             {/* Form meta */}
-            <section className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm sm:p-6">
+            <section
+              className={cn(
+                'rounded-2xl border border-l-4 bg-card p-5 shadow-sm sm:p-6',
+                'border-ink/10',
+                CATEGORY_ACCENT[form.category].stripe
+              )}
+            >
               <Input
                 value={form.title}
                 onChange={(e) => patch({ title: e.target.value })}
@@ -338,38 +349,48 @@ export function FormBuilder({
                 className="mt-2 border-0 px-0 shadow-none"
                 aria-label="Form description"
               />
-              <div className="mt-4 grid gap-3 border-t border-ink/[0.07] pt-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-3 border-t border-ink/[0.06] pt-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="fb-category" className="mb-1.5 block text-[13px] font-medium text-ink/70">
+                  <label className="mb-1.5 block text-[13px] font-medium text-ink/70">
                     Category
                   </label>
-                  <Select
-                    id="fb-category"
-                    value={form.category}
-                    onChange={(e) => {
-                      const category = e.target.value as FormCategory;
-                      setDraft((d) =>
-                        d
-                          ? {
-                              ...d,
-                              category,
-                              // Sensible default while the form is still empty.
-                              anonymous:
-                                d.questions.length === 0 && mode === 'create'
-                                  ? CATEGORIES[category].anonymousDefault
-                                  : d.anonymous,
-                            }
-                          : d
+                  <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Category">
+                    {CATEGORY_LIST.map((c) => {
+                      const active = form.category === c.key;
+                      return (
+                        <button
+                          key={c.key}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          onClick={() => {
+                            const category = c.key;
+                            setDraft((d) =>
+                              d
+                                ? {
+                                    ...d,
+                                    category,
+                                    // Sensible default while the form is still empty.
+                                    anonymous:
+                                      d.questions.length === 0 && mode === 'create'
+                                        ? CATEGORIES[category].anonymousDefault
+                                        : d.anonymous,
+                                  }
+                                : d
+                            );
+                          }}
+                          className={cn(
+                            'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+                            active ? c.tile : 'bg-ink/[0.05] text-ink/60 hover:bg-ink/[0.08]'
+                          )}
+                        >
+                          <c.icon className="size-3.5" aria-hidden />
+                          {c.label}
+                        </button>
                       );
-                    }}
-                  >
-                    {CATEGORY_LIST.map((c) => (
-                      <option key={c.key} value={c.key}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </Select>
-                  <p className="mt-1.5 text-xs leading-relaxed text-ink/45">
+                    })}
+                  </div>
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink/50">
                     {CATEGORIES[form.category].examples}
                   </p>
                 </div>
@@ -410,10 +431,10 @@ export function FormBuilder({
 
             {/* Questions */}
             {form.questions.length === 0 ? (
-              <div className="grid place-items-center rounded-2xl border border-dashed border-ink/15 bg-card/60 px-6 py-12 text-center">
-                <FileQuestion className="size-8 text-ink/20" aria-hidden />
+              <div className="grid place-items-center rounded-2xl border border-dashed border-ink/20 bg-card/60 px-6 py-12 text-center">
+                <FileQuestion className="size-8 text-ink/30" aria-hidden />
                 <p className="mt-3 text-sm font-medium text-ink/60">No questions yet</p>
-                <p className="mt-1 max-w-xs text-[13px] text-ink/45">
+                <p className="mt-1 max-w-xs text-[13px] text-ink/50">
                   Pick a question type below — short text for room numbers, a
                   rating for urgency, single choice for tracks.
                 </p>
@@ -433,8 +454,8 @@ export function FormBuilder({
             )}
 
             {/* Add-question palette */}
-            <section className="rounded-2xl border border-dashed border-ink/15 bg-card/60 p-4 sm:p-5">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+            <section className="rounded-2xl border border-dashed border-ink/20 bg-card/60 p-4 sm:p-5">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
                 Add a question
               </p>
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -456,9 +477,9 @@ export function FormBuilder({
 
           {/* Live preview */}
           <aside className="lg:sticky lg:top-24">
-            <div className="overflow-hidden rounded-2xl border border-ink/[0.08] bg-card shadow-sm">
-              <div className="flex items-center justify-between border-b border-ink/[0.07] px-5 py-3">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+            <div className="overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-sm">
+              <div className="flex items-center justify-between border-b border-ink/[0.06] px-5 py-3">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
                   Live preview
                 </p>
                 <Eye className="size-4 text-ink/30" aria-hidden />
@@ -468,9 +489,9 @@ export function FormBuilder({
                   {form.title || <span className="text-ink/30">Untitled form</span>}
                 </p>
                 {form.description ? (
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-ink/55">{form.description}</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-ink/60">{form.description}</p>
                 ) : null}
-                <div className="mt-5 border-t border-ink/[0.07] pt-5">
+                <div className="mt-5 border-t border-ink/[0.06] pt-5">
                   {form.questions.length === 0 ? (
                     <p className="text-sm text-ink/40">
                       Questions you add will appear here, exactly as students
@@ -481,7 +502,7 @@ export function FormBuilder({
                   )}
                 </div>
               </div>
-              <p className="border-t border-ink/[0.07] bg-paper px-5 py-3 text-xs text-ink/45">
+              <p className="border-t border-ink/[0.06] bg-paper px-5 py-3 text-xs text-ink/50">
                 Students see exactly this. Submissions are disabled in preview.
               </p>
             </div>
@@ -554,9 +575,9 @@ function QuestionEditor({
   };
 
   return (
-    <section className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm">
+    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm">
       <div className="flex items-center gap-2">
-        <span className="font-mono text-xs font-semibold text-ink/35">Q{index + 1}</span>
+        <span className="font-mono text-xs font-semibold text-ink/40">Q{index + 1}</span>
         <Select
           value={q.type}
           onChange={(e) => changeType(e.target.value as QuestionType)}
@@ -710,7 +731,7 @@ function NotFoundPanel() {
   return (
     <div className="mx-auto max-w-xl px-4 py-20 text-center">
       <h1 className="font-display text-2xl font-bold tracking-tight">Form not found</h1>
-      <p className="mt-2 text-sm text-ink/55">
+      <p className="mt-2 text-sm text-ink/60">
         This form was deleted or never existed.
       </p>
       <Link

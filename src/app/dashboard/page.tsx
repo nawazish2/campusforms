@@ -28,6 +28,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { SearchInput } from '@/components/ui/search-input';
 import { useToast } from '@/components/ui/toast';
 import { useDashboard, useRequireAuth } from '@/lib/db/hooks';
+import { CATEGORY_ACCENT } from '@/lib/constants';
 import { deleteForm, duplicateForm, setFormPinned, setFormStatus } from '@/lib/db/forms';
 import type { FormSummary } from '@/lib/db/schema';
 import {
@@ -158,7 +159,7 @@ export default function DashboardPage() {
             <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
               Your forms
             </h1>
-            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
               {pluralize(forms.length, 'form')} · {pluralize(totalResponses, 'response')} collected
             </p>
           </div>
@@ -188,6 +189,7 @@ export default function DashboardPage() {
             value={stats.open.toLocaleString('en-US')}
             sub="accepting responses"
             icon={TrendingUp}
+            accent
           />
           <StatCard
             label="Responses"
@@ -218,7 +220,7 @@ export default function DashboardPage() {
                   'rounded-full border px-3.5 py-1.5 text-[13px] font-medium capitalize transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
                   statusFilter === s
                     ? 'border-ink bg-ink text-paper shadow-sm'
-                    : 'border-ink/10 bg-card text-ink/60 hover:border-ink/25 hover:text-ink'
+                    : 'border-ink/10 bg-card text-ink/60 hover:border-ink/20 hover:text-ink'
                 )}
               >
                 {s}
@@ -230,13 +232,16 @@ export default function DashboardPage() {
         {/* Form list */}
         {!loading ? (
           filtered.length > 0 ? (
-            <div className="mt-5 divide-y divide-ink/[0.06] rounded-2xl border border-ink/[0.08] bg-card shadow-sm">
+            <div className="mt-5 divide-y divide-ink/[0.06] overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-sm">
               {filtered.map((f, i) => {
                 const dl = deadlineInfo(f.deadline);
                 return (
                   <div
                     key={f.id}
-                    className="animate-fade-up flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-4 transition hover:bg-ink/[0.015] sm:px-5"
+                    className={cn(
+                      'animate-fade-up flex flex-wrap items-center gap-x-4 gap-y-3 border-l-4 px-4 py-4 transition hover:bg-ink/[0.015] sm:px-5',
+                      CATEGORY_ACCENT[f.category].stripe
+                    )}
                     style={{ animationDelay: `${Math.min(i * 45, 270)}ms` }}
                   >
                     <div className="min-w-0 flex-1 basis-56">
@@ -257,7 +262,7 @@ export default function DashboardPage() {
                         <StatusBadge status={f.status} />
                         {f.anonymous ? <AnonymousBadge /> : null}
                         {f.status === 'open' && dl.label ? (
-                          <span className="font-mono text-[11px] text-ink/45">{dl.label}</span>
+                          <span className="font-mono text-[11px] text-ink/50">{dl.label}</span>
                         ) : null}
                       </div>
                     </div>
@@ -352,8 +357,8 @@ export default function DashboardPage() {
               })}
             </div>
           ) : (
-            <div className="mt-5 grid place-items-center rounded-3xl border border-dashed border-ink/15 bg-card/60 px-6 py-16 text-center">
-              <Inbox className="size-10 text-ink/20" aria-hidden />
+            <div className="mt-5 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-16 text-center">
+              <Inbox className="size-10 text-ink/30" aria-hidden />
               <h2 className="mt-4 font-display text-lg font-bold tracking-tight">
                 {forms.length === 0 ? 'No forms yet' : 'Nothing matches this filter'}
               </h2>
@@ -424,12 +429,12 @@ function RecentActivity({
   const formById = useMemo(() => new Map(forms.map((f) => [f.id, f])), [forms]);
 
   return (
-    <section className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm">
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/45">
+    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm">
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
         Recent activity
       </p>
       {recent.length === 0 ? (
-        <p className="mt-4 text-[13px] leading-relaxed text-ink/45">
+        <p className="mt-4 text-[13px] leading-relaxed text-ink/50">
           Responses land here the moment students submit.
         </p>
       ) : (
@@ -451,7 +456,7 @@ function RecentActivity({
                 </p>
                 <Link
                   href={`/dashboard/form/${r.formId}`}
-                  className="block truncate text-xs text-ink/45 transition hover:text-ballpoint-700"
+                  className="block truncate text-xs text-ink/50 transition hover:text-ballpoint-700"
                 >
                   {formById.get(r.formId)?.title ?? 'Deleted form'}
                 </Link>

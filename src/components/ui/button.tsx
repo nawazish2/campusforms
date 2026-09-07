@@ -9,7 +9,7 @@ const buttonVariants = cva(
         primary:
           'bg-ballpoint-600 text-white shadow-sm hover:brightness-110 active:brightness-95',
         secondary:
-          'border border-ink/10 bg-card text-ink shadow-sm hover:bg-ink/[0.03] active:bg-ink/[0.06]',
+          'border border-ink/10 bg-card text-ink shadow-sm hover:bg-ink/[0.05] active:bg-ink/[0.06]',
         ghost: 'text-ink/70 hover:bg-ink/[0.05] hover:text-ink',
         'danger-ghost':
           'text-red-600 hover:bg-red-50',

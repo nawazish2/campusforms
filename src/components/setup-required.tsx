@@ -20,7 +20,7 @@ export function SetupRequired({ variant = 'organizer' }: { variant?: 'organizer'
         <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
           The database isn’t connected yet
         </h1>
-        <p className="mt-2 text-sm leading-relaxed text-ink/55">
+        <p className="mt-2 text-sm leading-relaxed text-ink/60">
           Add <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
           <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{' '}
           <code className="font-mono text-xs">.env.local</code>, run the migrations in{' '}

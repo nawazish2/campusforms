@@ -11,7 +11,7 @@ import { SearchInput } from '@/components/ui/search-input';
 import { FilterChip } from '@/components/ui/filter-chip';
 import { SetupRequired } from '@/components/setup-required';
 import { useOpenForms } from '@/lib/db/hooks';
-import { CATEGORY_LIST } from '@/lib/constants';
+import { CATEGORY_ACCENT, CATEGORY_LIST } from '@/lib/constants';
 import {
   cn,
   deadlineInfo,
@@ -97,11 +97,11 @@ export default function BrowsePage() {
             <h2 className="font-display text-lg font-bold tracking-tight">
               Couldn’t load the notice board
             </h2>
-            <p className="mt-1 max-w-sm text-sm text-ink/55">{error}</p>
+            <p className="mt-1 max-w-sm text-sm text-ink/60">{error}</p>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-5 rounded-lg border border-ink/10 bg-card px-4 py-2 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ink/25 hover:text-ink outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+              className="mt-5 rounded-lg border border-ink/10 bg-card px-4 py-2 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ink/20 hover:text-ink outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
             >
               Try again
             </button>
@@ -115,7 +115,11 @@ export default function BrowsePage() {
                   <Link
                     key={f.id}
                     href={`/f/${f.id}`}
-                    className="group animate-fade-up relative flex flex-col overflow-hidden rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+                    className={cn(
+                      'group animate-fade-up relative flex flex-col overflow-hidden rounded-2xl border border-l-4 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+                      f.pinned ? 'border-ink/10 bg-marker/10' : 'border-ink/10 hover:border-ballpoint-300',
+                      CATEGORY_ACCENT[f.category].stripe
+                    )}
                     style={{ animationDelay: `${Math.min(i * 60, 360)}ms` }}
                   >
                     <div className="flex items-center gap-2">
@@ -142,7 +146,7 @@ export default function BrowsePage() {
                       {f.description}
                     </p>
                     <div className="mt-4 flex-1" />
-                    <div className="flex items-center gap-3 border-t border-ink/[0.07] pt-3.5 font-mono text-[11px] text-ink/45">
+                    <div className="flex items-center gap-3 border-t border-ink/[0.06] pt-3.5 font-mono text-[11px] text-ink/50">
                       <span className="inline-flex items-center gap-1">
                         <Users className="size-3" aria-hidden />
                         {pluralize(f.responseCount, 'response')}
@@ -166,8 +170,8 @@ export default function BrowsePage() {
               })}
             </div>
           ) : (
-            <div className="animate-fade-up mt-8 grid place-items-center rounded-3xl border border-dashed border-ink/15 bg-card/60 px-6 py-20 text-center">
-              <Inbox className="size-10 text-ink/20" aria-hidden />
+            <div className="animate-fade-up mt-8 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-20 text-center">
+              <Inbox className="size-10 text-ink/30" aria-hidden />
               <h2 className="mt-4 font-display text-lg font-bold tracking-tight">
                 Nothing on the board right now
               </h2>
@@ -183,7 +187,7 @@ export default function BrowsePage() {
                     setQuery('');
                     setCategory('all');
                   }}
-                  className="mt-5 rounded-lg border border-ink/10 bg-card px-4 py-2 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ink/25 hover:text-ink outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+                  className="mt-5 rounded-lg border border-ink/10 bg-card px-4 py-2 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ink/20 hover:text-ink outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
                 >
                   Clear filters
                 </button>

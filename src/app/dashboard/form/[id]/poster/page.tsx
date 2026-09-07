@@ -31,7 +31,7 @@ export default function PosterPage() {
     return (
       <main className="mx-auto max-w-xl px-4 py-24 text-center">
         <h1 className="font-display text-2xl font-bold tracking-tight">Form not found</h1>
-        <p className="mt-2 text-sm text-ink/55">It may have been deleted.</p>
+        <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
         <Link
           href="/dashboard"
           className={cn('mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-ballpoint-700')}
@@ -66,7 +66,7 @@ export default function PosterPage() {
       </div>
 
       {/* The sheet */}
-      <div className="mx-auto flex max-w-[640px] flex-col items-center rounded-3xl border border-ink/[0.08] bg-card px-10 py-12 text-center shadow-sm print:max-w-none print:rounded-none print:border-0 print:shadow-none">
+      <div className="mx-auto flex max-w-[640px] flex-col items-center rounded-3xl border border-ink/10 bg-card px-10 py-12 text-center shadow-sm print:max-w-none print:rounded-none print:border-0 print:shadow-none">
         <Logo />
         <span
           className={cn(
@@ -99,7 +99,7 @@ export default function PosterPage() {
         <p className="mt-8 font-display text-2xl font-bold tracking-tight">
           Scan to fill — takes ~{Math.max(1, Math.ceil(form.questions.length / 3))} min
         </p>
-        <p className="mt-2 break-all font-mono text-[13px] text-ink/45">{shareLink}</p>
+        <p className="mt-2 break-all font-mono text-[13px] text-ink/50">{shareLink}</p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 font-mono text-[12px] text-ink/50">
           <span>No sign-in needed</span>
@@ -115,7 +115,7 @@ export default function PosterPage() {
           ) : null}
         </div>
 
-        <div className="mt-12 border-t border-ink/[0.07] pt-6 text-xs text-ink/40">
+        <div className="mt-12 border-t border-ink/[0.06] pt-6 text-xs text-ink/40">
           Run on CampusForms — every campus form, one link.
         </div>
       </div>

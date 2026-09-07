@@ -64,7 +64,7 @@ export function StarInput({ value, onChange, max = 5, disabled, describedBy }: S
           <Star
             className={cn(
               'size-7 transition-colors',
-              v <= active ? 'fill-amber-400 text-amber-400' : 'text-ink/25'
+              v <= active ? 'fill-amber-400 text-amber-400' : 'text-ink/30'
             )}
           />
         </button>
@@ -95,7 +95,7 @@ export function Stars({
           aria-hidden
           className={cn(
             'size-4',
-            v <= Math.round(value) ? 'fill-amber-400 text-amber-400' : 'text-ink/20'
+            v <= Math.round(value) ? 'fill-amber-400 text-amber-400' : 'text-ink/30'
           )}
         />
       ))}

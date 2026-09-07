@@ -33,8 +33,8 @@ export function HeroDemo() {
   return (
     <div className="relative mx-auto w-full max-w-md pt-12 pb-10">
       {/* Floating response-stats chip */}
-      <div className="animate-float-a absolute -right-3 -top-4 z-10 rotate-2 rounded-2xl border border-ink/[0.08] bg-card px-4 py-3 shadow-lg shadow-ink/[0.06] sm:-right-8">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-ink/45">
+      <div className="animate-float-a absolute -right-3 -top-4 z-10 rotate-2 rounded-2xl border border-ink/10 bg-card px-4 py-3 shadow-lg shadow-ink/[0.06] sm:-right-8">
+        <p className="font-mono text-[10px] uppercase tracking-wider text-ink/50">
           This week
         </p>
         <div className="mt-1.5 flex items-end gap-3">
@@ -57,14 +57,14 @@ export function HeroDemo() {
       </div>
 
       {/* Floating anonymous chip */}
-      <div className="animate-float-b absolute -bottom-2 -left-2 z-10 -rotate-2 rounded-full border border-ink/[0.08] bg-card px-4 py-2.5 shadow-lg shadow-ink/[0.06] sm:-left-7">
+      <div className="animate-float-b absolute -bottom-2 -left-2 z-10 -rotate-2 rounded-full border border-ink/10 bg-card px-4 py-2.5 shadow-lg shadow-ink/[0.06] sm:-left-7">
         <p className="flex items-center gap-2 text-[13px] font-medium text-ink/70">
           <EyeOff className="size-3.5 text-ballpoint-600" aria-hidden />
           Anonymous mess feedback on
         </p>
       </div>
 
-      <div className="relative rotate-[1.2deg] rounded-2xl border border-ink/[0.08] bg-card p-6 shadow-xl shadow-ink/[0.07] transition-transform duration-300 hover:rotate-0">
+      <div className="relative rotate-[1.2deg] rounded-2xl border border-ink/10 bg-card p-6 shadow-xl shadow-ink/[0.07] transition-transform duration-300 hover:rotate-0">
         <div className="flex items-center justify-between">
           <CategoryBadge category="hostel" />
           <span className="font-mono text-[10px] uppercase tracking-wider text-ink/40">
@@ -90,14 +90,14 @@ export function HeroDemo() {
                   'flex items-center gap-3 rounded-xl border px-3.5 py-2 text-sm transition',
                   checked
                     ? 'border-ballpoint-500 bg-ballpoint-50 font-medium text-ballpoint-900 ring-1 ring-ballpoint-500'
-                    : 'border-ink/10 bg-card text-ink/80 hover:border-ink/25 hover:bg-ink/[0.02]'
+                    : 'border-ink/10 bg-card text-ink/80 hover:border-ink/20 hover:bg-ink/[0.05]'
                 )}
               >
                 <span
                   aria-hidden
                   className={cn(
                     'grid size-[16px] shrink-0 place-items-center rounded-full border-2 transition',
-                    checked ? 'border-ballpoint-600' : 'border-ink/25'
+                    checked ? 'border-ballpoint-600' : 'border-ink/20'
                   )}
                 >
                   {checked ? <span className="size-2 rounded-full bg-ballpoint-600" /> : null}

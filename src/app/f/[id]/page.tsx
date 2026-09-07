@@ -59,14 +59,14 @@ function ClosedPanel({
 }) {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-      <div className="grid place-items-center rounded-3xl border border-ink/[0.08] bg-card px-6 py-16 text-center shadow-sm">
+      <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
         <span className="grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
           <Clock className="size-7 text-ink/40" aria-hidden />
         </span>
         <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
           This form isn’t accepting responses
         </h1>
-        <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/55">{reason}</p>
+        <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">{reason}</p>
         <Link
           href="/browse"
           className={buttonVariants({ variant: 'secondary', className: 'mt-6' })}
@@ -142,14 +142,14 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-          <div className="grid place-items-center rounded-3xl border border-ink/[0.08] bg-card px-6 py-16 text-center shadow-sm">
+          <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
             <span className="grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
               <FileQuestion className="size-7 text-ink/40" aria-hidden />
             </span>
             <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
               {error ? 'Couldn’t load this form' : 'Form not found'}
             </h1>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/55">
+            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
               {error ??
                 'This form doesn’t exist anymore, or the link was mistyped. Check the notice board for what’s open.'}
             </p>
@@ -238,7 +238,7 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-14">
-          <div className="rounded-3xl border border-ink/[0.08] bg-card px-6 py-14 text-center shadow-sm sm:px-12">
+          <div className="rounded-3xl border border-ink/10 bg-card px-6 py-14 text-center shadow-sm sm:px-12">
             <div className="relative mx-auto size-20">
               <svg viewBox="0 0 100 100" className="size-20" role="img" aria-label="Submitted">
                 <circle
@@ -286,12 +286,12 @@ export default function FillFormPage() {
             <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight">
               Response submitted
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink/55">
+            <p className="mt-3 text-sm leading-relaxed text-ink/60">
               {form.anonymous
                 ? 'Thanks — this response is anonymous. Your name and email weren’t collected.'
                 : `Thanks, ${respondent.name.trim().split(/\s+/)[0]} — the organizer can see your name on this one.`}
             </p>
-            <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/35">
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/40">
               REF #{submittedId.slice(-6).toUpperCase()} · {form.title}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -318,7 +318,7 @@ export default function FillFormPage() {
                 Track this response
               </Link>
             </div>
-            <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/35">
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/40">
               Save your REF code — it’s how you check back on this response.
             </p>
           </div>
@@ -333,14 +333,14 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-          <div className="grid place-items-center rounded-3xl border border-ink/[0.08] bg-card px-6 py-16 text-center shadow-sm">
+          <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
             <span className="grid size-14 place-items-center rounded-2xl bg-emerald-50">
               <CheckCircle2 className="size-7 text-emerald-600" aria-hidden />
             </span>
             <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
               You’ve already responded
             </h1>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/55">
+            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
               This browser submitted “{form.title}” once already. Fill it in
               again only if the organizer asked you to.
             </p>
@@ -373,7 +373,7 @@ export default function FillFormPage() {
           All open forms
         </Link>
 
-        <div className="mt-4 overflow-hidden rounded-3xl border border-ink/[0.08] bg-card shadow-sm">
+        <div className="mt-4 overflow-hidden rounded-3xl border border-ink/10 bg-card shadow-sm">
           {/* Category band — tints the form by what it's for */}
           <div
             className={cn('flex items-center gap-2 px-6 py-3.5 sm:px-8', CATEGORY_ACCENT[form.category].band)}
@@ -399,7 +399,7 @@ export default function FillFormPage() {
             {form.description ? (
               <p className="mt-2.5 text-[15px] leading-relaxed text-ink/60">{form.description}</p>
             ) : null}
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-ink/[0.07] pb-4 font-mono text-[11px] text-ink/45">
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-ink/[0.06] pb-4 font-mono text-[11px] text-ink/50">
               <span className="inline-flex items-center gap-1.5">
                 <Users className="size-3.5" aria-hidden />
                 {pluralize(form.responseCount, 'response')} so far
@@ -464,7 +464,7 @@ export default function FillFormPage() {
               return (
                 <div className="mb-6">
                   <div
-                    className="flex items-center justify-between font-mono text-[11px] text-ink/45"
+                    className="flex items-center justify-between font-mono text-[11px] text-ink/50"
                     role="status"
                   >
                     <span>
@@ -514,7 +514,7 @@ export default function FillFormPage() {
               />
             </div>
 
-            <div className="mt-8 border-t border-ink/[0.07] pt-6">
+            <div className="mt-8 border-t border-ink/[0.06] pt-6">
               <Button
                 size="lg"
                 className={cn('w-full sm:w-auto', CATEGORY_ACCENT[form.category].button)}
@@ -524,7 +524,7 @@ export default function FillFormPage() {
                 <Send />
                 {submitting ? 'Sending…' : 'Submit response'}
               </Button>
-              <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-ink/35">
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-ink/40">
                 {form.anonymous
                   ? 'Anonymous — no name stored'
                   : 'Your name is attached to this response'}{' '}

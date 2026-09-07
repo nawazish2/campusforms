@@ -84,7 +84,7 @@ function Histogram({
             <span
               className={cn(
                 'mb-1 text-center font-mono text-[11px] tabular-nums',
-                d.count ? 'text-ink/55' : 'text-ink/25'
+                d.count ? 'text-ink/60' : 'text-ink/30'
               )}
             >
               {d.count}
@@ -102,11 +102,11 @@ function Histogram({
           </div>
         ))}
       </div>
-      <div className="mt-1.5 flex gap-1.5 border-t border-ink/[0.09] pt-1.5">
+      <div className="mt-1.5 flex gap-1.5 border-t border-ink/10 pt-1.5">
         {columns.map((d) => (
           <span
             key={d.value}
-            className="flex-1 text-center font-mono text-[11px] text-ink/45"
+            className="flex-1 text-center font-mono text-[11px] text-ink/50"
           >
             {d.value}★
           </span>
@@ -145,11 +145,11 @@ export function QuestionSummaryCard({
     summary.bars.filter((b) => b.count === topChoice).length === 1;
 
   return (
-    <section className="rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm sm:p-6">
+    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:p-6">
       <div className="flex items-baseline gap-2.5">
-        <span className="font-mono text-xs font-medium text-ink/35">Q{index + 1}</span>
+        <span className="font-mono text-xs font-medium text-ink/40">Q{index + 1}</span>
         <h3 className="text-sm font-semibold text-ink">
-          {question.title || <span className="text-ink/35">Untitled question</span>}
+          {question.title || <span className="text-ink/40">Untitled question</span>}
         </h3>
         <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink/30">
           {meta.label}
@@ -161,10 +161,10 @@ export function QuestionSummaryCard({
           <div className="shrink-0">
             <p className="font-display text-4xl font-extrabold leading-none tracking-tight">
               {summary.average.toFixed(1)}
-              <span className="text-base font-semibold text-ink/35"> / {question.maxRating}</span>
+              <span className="text-base font-semibold text-ink/40"> / {question.maxRating}</span>
             </p>
             <Stars value={summary.average} max={question.maxRating} className="mt-2.5" />
-            <p className="mt-1.5 text-xs text-ink/45">
+            <p className="mt-1.5 text-xs text-ink/50">
               {pluralize(summary.count, 'rating')}
             </p>
           </div>
@@ -197,7 +197,7 @@ export function QuestionSummaryCard({
                 <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/80">
                   {a.value}
                 </p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink/35">
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink/40">
                   {a.respondent ?? 'Anonymous'} · {timeAgo(a.submittedAt)}
                 </p>
               </blockquote>

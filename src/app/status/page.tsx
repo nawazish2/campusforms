@@ -120,14 +120,14 @@ export default function StatusPage() {
         ) : null}
 
         {notFound ? (
-          <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-ink/[0.08] bg-card px-6 py-12 text-center shadow-sm">
+          <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-ink/10 bg-card px-6 py-12 text-center shadow-sm">
             <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
               <FileQuestion className="size-7 text-ink/40" aria-hidden />
             </span>
             <h2 className="mt-4 font-display text-xl font-bold tracking-tight">
               Nothing with that code
             </h2>
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink/55">
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
               {lookedUpRef
                 ? `No response matches REF #${lookedUpRef}. Double-check the six characters from your confirmation screen.`
                 : 'Check the code on your confirmation screen and try again.'}
@@ -136,10 +136,10 @@ export default function StatusPage() {
         ) : null}
 
         {result && statusMeta ? (
-          <div className="animate-pop mx-auto mt-8 max-w-xl rounded-3xl border border-ink/[0.08] bg-card shadow-sm">
-            <div className="flex items-center gap-2 border-b border-ink/[0.07] px-6 py-4 sm:px-8">
+          <div className="animate-pop mx-auto mt-8 max-w-xl rounded-3xl border border-ink/10 bg-card shadow-sm">
+            <div className="flex items-center gap-2 border-b border-ink/[0.06] px-6 py-4 sm:px-8">
               <CategoryBadge category={result.form_category} />
-              <span className="ml-auto font-mono text-[11px] uppercase tracking-wider text-ink/35">
+              <span className="ml-auto font-mono text-[11px] uppercase tracking-wider text-ink/40">
                 REF #{lookedUpRef}
               </span>
             </div>
@@ -157,7 +157,7 @@ export default function StatusPage() {
                   <span className="size-1.5 rounded-full bg-current" aria-hidden />
                   {statusMeta.label}
                 </span>
-                <span className="font-mono text-[11px] text-ink/45">
+                <span className="font-mono text-[11px] text-ink/50">
                   Submitted {fmtDateTime(result.submitted_at)}
                 </span>
               </div>
@@ -175,7 +175,7 @@ export default function StatusPage() {
           </div>
         ) : null}
 
-        <p className="mt-10 text-center text-sm text-ink/45">
+        <p className="mt-10 text-center text-sm text-ink/50">
           Lost the code? It’s on the confirmation screen from when you
           submitted.{' '}
           <Link href="/browse" className="font-medium text-ballpoint-700 hover:underline">
@@ -200,7 +200,7 @@ function AnswersList({
     <dl className="mt-6 divide-y divide-ink/[0.06] border-t border-ink/[0.06]">
       {questions.map((q) => (
         <div key={q.id} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
-          <dt className="text-[13px] leading-snug text-ink/45">{q.title}</dt>
+          <dt className="text-[13px] leading-snug text-ink/50">{q.title}</dt>
           <dd className="min-w-0 text-sm">
             <Answer answer={answers[q.id]} question={q} />
           </dd>
@@ -225,10 +225,10 @@ function Answer({ answer, question }: { answer: AnswerValue | undefined; questio
     );
   }
   if (Array.isArray(answer)) {
-    return <span className="font-medium text-ink/85">{answer.join(' · ')}</span>;
+    return <span className="font-medium text-ink/80">{answer.join(' · ')}</span>;
   }
   return (
-    <span className="whitespace-pre-wrap font-medium text-ink/85">
+    <span className="whitespace-pre-wrap font-medium text-ink/80">
       {answerToText(answer, question)}
     </span>
   );

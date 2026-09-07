@@ -76,7 +76,7 @@ export default function Home() {
         <section className="bg-ruled relative">
           <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-28 lg:pt-20">
             <div className="animate-fade-up">
-              <p className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-card px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/55">
+              <p className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-card px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
                 <span className="size-1.5 rounded-full bg-ballpoint-600" aria-hidden />
                 Built for universities & hostels
               </p>
@@ -129,8 +129,8 @@ export default function Home() {
           </div>
 
           {/* Stat strip */}
-          <div className="border-y border-ink/[0.07] bg-card/60">
-            <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-ink/[0.07] px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
+          <div className="border-y border-ink/[0.06] bg-card/60">
+            <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-ink/[0.06] px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
               {/* Facts about what the product does. The numbers that used to
                   sit here — responses collected, forms run this semester —
                   were invented, which was fine as placeholder copy and isn't
@@ -164,15 +164,17 @@ export default function Home() {
                 <Link
                   key={c.key}
                   href="/browse"
-                  className="group rounded-2xl border border-ink/[0.08] bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                  className={cn(
+                    'group relative overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-1',
+                    c.tile
+                  )}
                 >
-                  <span className={cn('grid size-10 place-items-center rounded-xl', c.badge)}>
-                    <Icon className="size-5" aria-hidden />
-                  </span>
-                  <h3 className="mt-4 font-display text-base font-bold tracking-tight">
+                  <Icon className="size-6" aria-hidden />
+                  <h3 className="mt-5 font-display text-base font-bold tracking-tight">
                     {c.label}
                   </h3>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-ink/50">{c.examples}</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed opacity-60">{c.examples}</p>
+                  <ArrowRight className="absolute right-4 top-5 size-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-60" />
                 </Link>
               );
             })}
@@ -180,13 +182,11 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section className="border-y border-ink/[0.07] bg-card/60">
+        <section className="border-y border-ink/[0.06] bg-card/60">
           <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
-              Why organizers switch
-            </p>
-            <h2 className="mt-3 max-w-2xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
-              Everything you do in Google Forms, minus the clutter.
+            <h2 className="max-w-2xl font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              <span className="text-ballpoint-600">Why organizers switch.</span> Everything you do
+              in Google Forms, minus the clutter.
             </h2>
             <div className="mt-12 grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {FEATURES.map((f) => {
@@ -194,10 +194,10 @@ export default function Home() {
                 return (
                   <div key={f.title} className="border-t-2 border-ink/10 pt-5">
                     <Icon className="size-5 text-ballpoint-600" aria-hidden />
-                    <h3 className="mt-3 font-display text-[17px] font-bold tracking-tight">
+                    <h3 className="mt-3 font-display text-base font-bold tracking-tight">
                       {f.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-ink/55">{f.body}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-ink/60">{f.body}</p>
                   </div>
                 );
               })}
@@ -207,24 +207,23 @@ export default function Home() {
 
         {/* How it works */}
         <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
-            How it works
-          </p>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            From blank form to full dashboard in one sitting.
+          <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            <span className="text-ballpoint-600">How it works.</span> From blank form to full
+            dashboard in one sitting.
           </h2>
-          <div className="relative mt-12 grid gap-10 lg:grid-cols-3">
-            <div
-              className="absolute left-0 right-0 top-5 hidden border-t-2 border-dotted border-ink/15 lg:block"
-              aria-hidden
-            />
+          <div className="mt-4 divide-y divide-dotted divide-ink/20">
             {STEPS.map((s) => (
-              <div key={s.n} className="relative">
-                <span className="relative z-10 inline-grid size-10 place-items-center rounded-full bg-ballpoint-600 font-mono text-[13px] font-bold text-white shadow-sm">
+              <div key={s.n} className="group flex flex-col gap-2 py-8 sm:flex-row sm:items-baseline sm:gap-8 lg:gap-14">
+                <span
+                  className="shrink-0 font-display text-6xl font-extrabold tracking-tight text-transparent sm:w-24 [-webkit-text-stroke:1.5px_var(--color-ballpoint-300)] transition-[-webkit-text-stroke] duration-300 group-hover:[-webkit-text-stroke:1.5px_var(--color-ballpoint-600)]"
+                  aria-hidden
+                >
                   {s.n}
                 </span>
-                <h3 className="mt-4 font-display text-lg font-bold tracking-tight">{s.title}</h3>
-                <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/55">{s.body}</p>
+                <div>
+                  <h3 className="font-display text-lg font-bold tracking-tight">{s.title}</h3>
+                  <p className="mt-1.5 max-w-lg text-sm leading-relaxed text-ink/60">{s.body}</p>
+                </div>
               </div>
             ))}
           </div>

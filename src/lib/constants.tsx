@@ -23,6 +23,8 @@ export const CATEGORIES: Record<
     label: string;
     icon: LucideIcon;
     badge: string;
+    /** Full-color treatment for the landing page's category tiles. */
+    tile: string;
     examples: string;
     /** Sensible anonymous default when starting a form in this category. */
     anonymousDefault: boolean;
@@ -33,6 +35,7 @@ export const CATEGORIES: Record<
     icon: BedDouble,
     badge:
       'bg-amber-100 text-amber-900 ring-amber-600/15',
+    tile: 'bg-amber-200/70 text-amber-950 hover:bg-amber-200',
     examples: 'Maintenance complaints, curfew feedback, room changes',
     anonymousDefault: false,
   },
@@ -41,6 +44,7 @@ export const CATEGORIES: Record<
     icon: UtensilsCrossed,
     badge:
       'bg-emerald-100 text-emerald-900 ring-emerald-600/15',
+    tile: 'bg-emerald-200/70 text-emerald-950 hover:bg-emerald-200',
     examples: 'Weekly food feedback, menu votes, hygiene reports',
     anonymousDefault: true,
   },
@@ -49,6 +53,7 @@ export const CATEGORIES: Record<
     icon: PartyPopper,
     badge:
       'bg-violet-100 text-violet-900 ring-violet-600/15',
+    tile: 'bg-violet-200/70 text-violet-950 hover:bg-violet-200',
     examples: 'Hackathons, fest registrations, volunteer signups',
     anonymousDefault: false,
   },
@@ -57,6 +62,7 @@ export const CATEGORIES: Record<
     icon: GraduationCap,
     badge:
       'bg-sky-100 text-sky-900 ring-sky-600/15',
+    tile: 'bg-sky-200/70 text-sky-950 hover:bg-sky-200',
     examples: 'Course surveys, library hours, exam logistics',
     anonymousDefault: true,
   },
@@ -65,6 +71,7 @@ export const CATEGORIES: Record<
     icon: ClipboardList,
     badge:
       'bg-slate-200/80 text-slate-800 ring-slate-500/15',
+    tile: 'bg-slate-300/60 text-slate-950 hover:bg-slate-300',
     examples: 'Anything else your office needs to collect',
     anonymousDefault: false,
   },
@@ -73,27 +80,32 @@ export const CATEGORIES: Record<
 /** Per-category accent used to theme the fill page and browse cards. */
 export const CATEGORY_ACCENT: Record<
   FormCategory,
-  { band: string; button: string }
+  { band: string; button: string; stripe: string }
 > = {
   hostel: {
     band: 'bg-amber-100/70 text-amber-900',
     button: 'bg-amber-600 hover:bg-amber-700 active:bg-amber-800',
+    stripe: 'border-l-amber-400',
   },
   mess: {
     band: 'bg-emerald-100/70 text-emerald-900',
     button: 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800',
+    stripe: 'border-l-emerald-400',
   },
   event: {
     band: 'bg-violet-100/70 text-violet-900',
     button: 'bg-violet-600 hover:bg-violet-700 active:bg-violet-800',
+    stripe: 'border-l-violet-400',
   },
   academics: {
     band: 'bg-sky-100/70 text-sky-900',
     button: 'bg-sky-600 hover:bg-sky-700 active:bg-sky-800',
+    stripe: 'border-l-sky-400',
   },
   general: {
     band: 'bg-ink/[0.05] text-ink/70',
     button: 'bg-ink hover:bg-ink/90 active:bg-ink',
+    stripe: 'border-l-slate-400',
   },
 };
 

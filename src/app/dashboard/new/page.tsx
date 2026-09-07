@@ -51,7 +51,7 @@ export default function NewFormPage() {
           <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             What kind of form is this?
           </h1>
-          <p className="mt-3 text-[15px] leading-relaxed text-ink/55">
+          <p className="mt-3 text-[15px] leading-relaxed text-ink/60">
             Start from a ready template for the job — hostel complaint, mess
             poll, hackathon signup — then tweak the questions. Everything stays
             editable in the builder.
@@ -98,7 +98,7 @@ export default function NewFormPage() {
                 key={t.id}
                 type="button"
                 onClick={() => setForm(templateToForm(t))}
-                className="group flex min-h-44 flex-col rounded-2xl border border-ink/[0.08] bg-card p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+                className="group flex min-h-44 flex-col rounded-2xl border border-ink/10 bg-card p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
               >
                 <div className="flex items-center gap-2">
                   <CategoryBadge category={t.category} />

@@ -92,7 +92,7 @@ const AVATAR_COLORS = [
 ];
 
 export function avatarColor(name: string | null): string {
-  if (!name) return 'bg-ink/[0.07] text-ink/50';
+  if (!name) return 'bg-ink/[0.06] text-ink/50';
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) | 0;
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];

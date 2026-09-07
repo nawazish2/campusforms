@@ -105,14 +105,14 @@ export function FormRenderer({
           <div
             key={q.id}
             data-error={err ? 'true' : undefined}
-            className="border-t border-ink/[0.07] pt-6 first:border-t-0 first:pt-0"
+            className="border-t border-ink/[0.06] pt-6 first:border-t-0 first:pt-0"
           >
             <div className="flex items-baseline gap-2.5">
-              <span className="font-mono text-xs font-medium text-ink/35">
+              <span className="font-mono text-xs font-medium text-ink/40">
                 Q{i + 1}
               </span>
               <p className="text-sm font-semibold text-ink">
-                {q.title || <span className="text-ink/35">Untitled question</span>}
+                {q.title || <span className="text-ink/40">Untitled question</span>}
                 {q.required ? <span className="ml-0.5 text-red-500">*</span> : null}
               </p>
             </div>
@@ -318,7 +318,7 @@ function ChoiceCard({
         'group flex cursor-pointer items-center gap-3 rounded-xl border px-3.5 py-2.5 text-sm transition',
         checked
           ? 'border-ballpoint-500 bg-ballpoint-50 ring-1 ring-ballpoint-500'
-          : 'border-ink/10 bg-card hover:border-ink/25 hover:bg-ink/[0.02]',
+          : 'border-ink/10 bg-card hover:border-ink/20 hover:bg-ink/[0.05]',
         disabled && 'pointer-events-none cursor-default'
       )}
     >
@@ -339,7 +339,7 @@ function ChoiceCard({
             ? multi
               ? 'border-ballpoint-600 bg-ballpoint-600'
               : 'border-ballpoint-600'
-            : 'border-ink/25 bg-card group-hover:border-ink/40'
+            : 'border-ink/20 bg-card group-hover:border-ink/40'
         )}
       >
         {checked ? (

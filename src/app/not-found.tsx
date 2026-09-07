@@ -15,7 +15,7 @@ export default function NotFound() {
         <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight">
           This page didn’t fill itself in.
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink/55">
+        <p className="mt-3 text-sm leading-relaxed text-ink/60">
           The page you’re looking for doesn’t exist. Check the notice board for
           open forms, or head to your dashboard.
         </p>

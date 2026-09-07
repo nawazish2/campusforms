@@ -3,19 +3,19 @@
 /* One theme: a cream sheet with ballpoint ink on it. */
 :root {
   color-scheme: light;
-  --paper: #f7f5ef;
+  --paper: #efe6d3;
   --ink: #181b25;
-  --card: #ffffff;
+  --card: #fffdf7;
 
   /* Paper elevation: tight, warm, low-spread — sheets stacked on a desk,
      not floating glass. */
-  --elev-1: 0 1px 1px rgb(24 27 37 / 0.04), 0 1px 3px rgb(24 27 37 / 0.05);
-  --elev-2: 0 1px 2px rgb(24 27 37 / 0.05), 0 6px 14px -6px rgb(24 27 37 / 0.14);
-  --elev-3: 0 2px 4px rgb(24 27 37 / 0.05), 0 14px 28px -12px rgb(24 27 37 / 0.2);
-  --elev-4: 0 4px 8px rgb(24 27 37 / 0.06), 0 24px 48px -18px rgb(24 27 37 / 0.26);
+  --elev-1: 0 1px 1px rgb(24 27 37 / 0.05), 0 1px 3px rgb(24 27 37 / 0.06);
+  --elev-2: 0 1px 2px rgb(24 27 37 / 0.06), 0 6px 14px -6px rgb(24 27 37 / 0.18);
+  --elev-3: 0 2px 4px rgb(24 27 37 / 0.06), 0 14px 28px -12px rgb(24 27 37 / 0.24);
+  --elev-4: 0 4px 8px rgb(24 27 37 / 0.08), 0 24px 48px -18px rgb(24 27 37 / 0.3);
 
-  /* Ruled-sheet ink. */
-  --rule: rgb(24 27 37 / 0.06);
+  /* Ruled-sheet ink — dark enough to actually read as a page, not a hint of one. */
+  --rule: rgb(24 27 37 / 0.14);
 }
 @theme {
   /* Ballpoint blue — forms are filled in blue pen. */
