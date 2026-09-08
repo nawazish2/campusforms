@@ -56,6 +56,7 @@ import {
   pluralize,
   timeAgo,
 } from '@/lib/utils';
+import { publishBlockers } from '@/lib/validation';
 import type {
   AnswerValue,
   FormDefinition,
@@ -188,12 +189,19 @@ export default function FormResultsPage() {
         () => setFormStatus(db, form.id, 'closed'),
         'Form closed — it no longer accepts responses'
       );
-    } else {
-      mutate(
-        () => setFormStatus(db, form.id, 'open'),
-        form.status === 'draft' ? 'Form published — share the link' : 'Form reopened'
-      );
+      return;
     }
+    if (form.status === 'draft') {
+      const problems = publishBlockers(form);
+      if (problems.length > 0) {
+        toast(problems[0], 'error');
+        return;
+      }
+    }
+    mutate(
+      () => setFormStatus(db, form.id, 'open'),
+      form.status === 'draft' ? 'Form published — share the link' : 'Form reopened'
+    );
   };
 
   return (
@@ -599,7 +607,7 @@ function ResponseCard({
           <p className="font-mono text-[11px] text-ink/40">{fmtDateTime(response.submittedAt)}</p>
         </div>
         <span className="ml-auto hidden shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink/30 sm:inline">
-          #{response.id.slice(-6).toUpperCase()}
+          #{response.ref.toUpperCase()}
         </span>
       </header>
 

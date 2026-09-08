@@ -92,6 +92,26 @@ export async function getForm(db: Client, id: string): Promise<FormDefinition | 
 }
 
 /**
+ * The organizer's form, or null if it isn't theirs. `forms` are world-readable,
+ * so a plain `getForm` would render someone else's draft as an empty results
+ * page rather than "not found".
+ */
+export async function getOwnedForm(
+  db: Client,
+  id: string,
+  ownerId: string
+): Promise<FormSummary | null> {
+  const { data, error } = await db
+    .from('forms')
+    .select('*')
+    .eq('id', id)
+    .eq('owner_id', ownerId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data ? toSummary(data) : null;
+}
+
+/**
  * The fill page's version of `getForm`: it also needs the response count,
  * which it can't derive itself because a visitor can't read a response row.
  */
@@ -99,16 +119,6 @@ export async function getPublicForm(db: Client, id: string): Promise<FormSummary
   const { data, error } = await db.from('forms').select('*').eq('id', id).maybeSingle();
   if (error) throw new Error(error.message);
   return data ? toSummary(data) : null;
-}
-
-/**
- * Response counts for the public pages. `/browse` and the fill page show
- * "6 responses" to people who can't read a single response row, so the count
- * is kept on the form itself by trigger.
- */
-export async function getResponseCounts(db: Client): Promise<Map<string, number>> {
-  const rows = unwrap(await db.from('forms').select('id, response_count'));
-  return new Map(rows.map((r) => [r.id, r.response_count]));
 }
 
 /** Creates a form. The id comes from the database, not the browser. */
@@ -165,10 +175,10 @@ export async function setFormPinned(db: Client, id: string, pinned: boolean): Pr
 
 /**
  * The public half of the REF code on the success screen: the student enters
- * the six characters and gets their response's triage status back. A
+ * the sixteen characters and gets the response's triage status back. A
  * security-definer RPC does the reading (RLS gives response reads to the
  * organizer alone); the function itself is the guardrail — it returns no
- * respondent identity, and answers only for non-anonymous forms.
+ * answers and no respondent identity.
  */
 export async function lookupResponseByRef(db: Client, ref: string) {
   const { data, error } = await db.rpc('lookup_response_by_ref', { p_ref: ref });
@@ -187,7 +197,7 @@ export async function duplicateForm(
   ownerId: string,
   id: string
 ): Promise<FormDefinition | null> {
-  const src = await getForm(db, id);
+  const src = await getOwnedForm(db, id, ownerId);
   if (!src) return null;
   return createForm(db, ownerId, {
     ...src,
@@ -209,12 +219,20 @@ export async function listResponses(db: Client, formId: string): Promise<FormRes
   return rows.map(toResponse);
 }
 
+/** 16 lowercase hex chars — the public receipt a student can type back. */
+function newResponseRef(): string {
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 /**
- * Files a student's submission and returns its reference id.
+ * Files a student's submission and returns its public REF.
  *
- * The id is generated here rather than by the database because the submitter
- * can't read the row back — RLS gives response reads to the organizer alone —
- * and the confirmation screen shows them their own reference number.
+ * Both `id` and `ref` are generated here rather than by the database because
+ * the submitter can't read the row back — RLS gives response reads to the
+ * organizer alone — and the confirmation screen has to show the receipt
+ * without a SELECT. The insert trigger still rejects a malformed `ref`.
  *
  * Anonymity isn't trusted to this call either: a trigger clears the name and
  * email on any response to a form marked anonymous.
@@ -228,16 +246,29 @@ export async function addResponse(
     answers: Record<string, AnswerValue>;
   }
 ): Promise<string> {
-  const id = `r-${crypto.randomUUID()}`;
-  const { error } = await db.from('responses').insert({
-    id,
-    form_id: input.formId,
-    respondent_name: input.respondentName,
-    respondent_email: input.respondentEmail,
-    answers: input.answers,
-  });
-  if (error) throw new Error(error.message);
-  return id;
+  const write = async (ref: string) => {
+    const { error } = await db.from('responses').insert({
+      id: `r-${crypto.randomUUID()}`,
+      ref,
+      form_id: input.formId,
+      respondent_name: input.respondentName,
+      respondent_email: input.respondentEmail,
+      answers: input.answers,
+    });
+    return error;
+  };
+
+  const first = newResponseRef();
+  const error = await write(first);
+  if (!error) return first;
+  // Unique `ref` collision is vanishingly rare; retry once, then surface.
+  if (error.code === '23505') {
+    const retry = newResponseRef();
+    const again = await write(retry);
+    if (!again) return retry;
+    throw new Error(again.message);
+  }
+  throw new Error(error.message);
 }
 
 export async function setResponseStatus(

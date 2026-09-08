@@ -58,9 +58,13 @@ export default function PrivacyPage() {
         <p>
           Only the organizer who created the form. Access is enforced by the
           database itself, not by the interface — a link to a form lets anyone
-          read the questions and the response count, and nothing more. Other
-          students, other organizers and anyone with the link cannot read
-          submitted answers.
+          read the questions and the response count, and nothing more. The REF
+          code on your confirmation screen looks up queue status on{' '}
+          <Link href="/status" className="font-medium text-ballpoint-700 underline underline-offset-2">
+            /status
+          </Link>
+          ; it never returns your answers. Other students, other organizers and
+          anyone with the link cannot read submitted answers.
         </p>
       </Section>
 

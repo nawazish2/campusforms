@@ -6,19 +6,18 @@ import { EyeOff, FileQuestion, Search } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { CategoryBadge } from '@/components/category-badge';
-import { Stars } from '@/components/stars';
 import { Button } from '@/components/ui/button';
 import { useDb } from '@/lib/db/hooks';
 import { lookupResponseByRef } from '@/lib/db/forms';
 import { RESPONSE_STATUS_META } from '@/lib/constants';
-import { answerToText, cn, fmtDateTime } from '@/lib/utils';
-import type { AnswerValue, Question, ResponseStatus } from '@/lib/types';
+import { cn, fmtDateTime } from '@/lib/utils';
+import type { ResponseStatus } from '@/lib/types';
 
 type LookupResult = NonNullable<Awaited<ReturnType<typeof lookupResponseByRef>>>;
 
-/** REF codes are the last six characters of a response id — letters+digits. */
+/** REF codes are sixteen hex characters from the confirmation screen. */
 function normalizeRef(raw: string): string {
-  return raw.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  return raw.toUpperCase().replace(/[^A-F0-9]/g, '').slice(0, 16);
 }
 
 export default function StatusPage() {
@@ -30,10 +29,10 @@ export default function StatusPage() {
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Deep link from the success screen: /status?ref=ABC123
+  // Deep link from the success screen: /status?ref=A1B2C3D4E5F60708
   useEffect(() => {
     const fromUrl = normalizeRef(new URLSearchParams(window.location.search).get('ref') ?? '');
-    if (fromUrl.length === 6) {
+    if (fromUrl.length === 16) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- one-shot URL hydration; track() flips loading state before its first await.
       setRef(fromUrl);
       void track(fromUrl);
@@ -43,8 +42,8 @@ export default function StatusPage() {
 
   async function track(code: string) {
     const clean = normalizeRef(code);
-    if (clean.length !== 6) {
-      setError('A REF code is six letters and numbers, like ABC123.');
+    if (clean.length !== 16) {
+      setError('A REF code is sixteen letters and numbers, like the one on your confirmation screen.');
       return;
     }
     setLoading(true);
@@ -52,10 +51,10 @@ export default function StatusPage() {
     setNotFound(false);
     setResult(null);
     try {
-      const found = await lookupResponseByRef(db, clean);
+      const found = await lookupResponseByRef(db, clean.toLowerCase());
+      setLookedUpRef(clean);
       if (found) {
         setResult(found);
-        setLookedUpRef(clean);
       } else {
         setNotFound(true);
       }
@@ -83,7 +82,8 @@ export default function StatusPage() {
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-ink/60">
             Every submission gets a REF code. Enter it to see where your
-            response sits in the organizer’s queue — no sign-in needed.
+            response sits in the organizer’s queue — no sign-in, and never
+            your answers.
           </p>
         </div>
 
@@ -98,16 +98,16 @@ export default function StatusPage() {
             <input
               value={ref}
               onChange={(e) => setRef(normalizeRef(e.target.value))}
-              placeholder="ABC123"
+              placeholder="16-character REF"
               aria-label="Your REF code"
-              maxLength={6}
+              maxLength={16}
               autoCapitalize="characters"
               autoCorrect="off"
               spellCheck={false}
-              className="h-12 w-full rounded-xl border border-ink/10 bg-card text-center font-mono text-lg font-semibold uppercase tracking-[0.3em] text-ink shadow-sm outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ballpoint-400 focus:ring-2 focus:ring-ballpoint-500/20"
+              className="h-12 w-full rounded-xl border border-ink/10 bg-card text-center font-mono text-sm font-semibold uppercase tracking-[0.18em] text-ink shadow-sm outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ballpoint-400 focus:ring-2 focus:ring-ballpoint-500/20"
             />
           </div>
-          <Button size="lg" type="submit" disabled={loading || ref.length !== 6}>
+          <Button size="lg" type="submit" disabled={loading || ref.length !== 16}>
             <Search />
             {loading ? 'Looking…' : 'Track'}
           </Button>
@@ -129,7 +129,7 @@ export default function StatusPage() {
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
               {lookedUpRef
-                ? `No response matches REF #${lookedUpRef}. Double-check the six characters from your confirmation screen.`
+                ? `No response matches REF #${lookedUpRef}. Double-check the code from your confirmation screen.`
                 : 'Check the code on your confirmation screen and try again.'}
             </p>
           </div>
@@ -162,15 +162,12 @@ export default function StatusPage() {
                 </span>
               </div>
 
-              {result.is_anonymous ? (
-                <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm leading-relaxed text-ballpoint-900">
-                  <EyeOff className="mt-0.5 size-4 shrink-0 text-ballpoint-600" aria-hidden />
-                  This was an anonymous response, so the details stay private —
-                  even from this page. The organizer sees your status above.
-                </p>
-              ) : (
-                <AnswersList answers={result.answers ?? {}} questions={result.form_questions ?? []} />
-              )}
+              <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink/70">
+                <EyeOff className="mt-0.5 size-4 shrink-0 text-ink/40" aria-hidden />
+                {result.is_anonymous
+                  ? 'This was an anonymous response. The organizer sees the status above; the answers stay with them, not this page.'
+                  : 'The organizer has your answers. This page only shows where they sit in the queue.'}
+              </p>
             </div>
           </div>
         ) : null}
@@ -186,50 +183,5 @@ export default function StatusPage() {
 
       <SiteFooter />
     </div>
-  );
-}
-
-function AnswersList({
-  answers,
-  questions,
-}: {
-  answers: Record<string, AnswerValue>;
-  questions: Question[];
-}) {
-  return (
-    <dl className="mt-6 divide-y divide-ink/[0.06] border-t border-ink/[0.06]">
-      {questions.map((q) => (
-        <div key={q.id} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
-          <dt className="text-[13px] leading-snug text-ink/50">{q.title}</dt>
-          <dd className="min-w-0 text-sm">
-            <Answer answer={answers[q.id]} question={q} />
-          </dd>
-        </div>
-      ))}
-    </dl>
-  );
-}
-
-function Answer({ answer, question }: { answer: AnswerValue | undefined; question: Question }) {
-  if (answer === undefined || answer === '' || (Array.isArray(answer) && answer.length === 0)) {
-    return <span className="text-ink/30">—</span>;
-  }
-  if (question.type === 'rating' && typeof answer === 'number') {
-    return (
-      <span className="flex items-center gap-2">
-        <Stars value={answer} max={question.maxRating} />
-        <span className="font-mono text-xs text-ink/50">
-          {answer}/{question.maxRating}
-        </span>
-      </span>
-    );
-  }
-  if (Array.isArray(answer)) {
-    return <span className="font-medium text-ink/80">{answer.join(' · ')}</span>;
-  }
-  return (
-    <span className="whitespace-pre-wrap font-medium text-ink/80">
-      {answerToText(answer, question)}
-    </span>
   );
 }

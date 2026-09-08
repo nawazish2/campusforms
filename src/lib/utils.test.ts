@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { answerToText, deadlineInfo, initials, pluralize } from './utils';
+import { answerToText, deadlineInfo, initials, pluralize, safeNextPath } from './utils';
 import { newQuestion } from './factories';
 
 afterEach(() => {
@@ -81,5 +81,14 @@ describe('small formatters', () => {
     expect(initials('Aarav Sharma')).toBe('AS');
     expect(initials('  aarav  kumar sharma ')).toBe('AK');
     expect(initials(null)).toBe('?');
+  });
+});
+
+describe('safeNextPath', () => {
+  it('keeps same-site paths and rejects the rest', () => {
+    expect(safeNextPath('/dashboard/form/abc')).toBe('/dashboard/form/abc');
+    expect(safeNextPath('https://evil.example/phish')).toBe('/dashboard');
+    expect(safeNextPath('//evil.example')).toBe('/dashboard');
+    expect(safeNextPath(null, '/browse')).toBe('/browse');
   });
 });

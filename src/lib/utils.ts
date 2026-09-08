@@ -10,6 +10,12 @@ export function uid(prefix = ''): string {
   return prefix + Math.random().toString(36).slice(2, 10);
 }
 
+/** Same-site path only: an absolute URL here would be an open redirect. */
+export function safeNextPath(raw: string | null | undefined, fallback = '/dashboard'): string {
+  if (!raw) return fallback;
+  return raw.startsWith('/') && !raw.startsWith('//') ? raw : fallback;
+}
+
 function parseDate(iso: string): Date {
   // Date-only strings ("2026-09-15") are parsed as UTC by the spec;
   // anchor them to local midnight so day boundaries stay intuitive.

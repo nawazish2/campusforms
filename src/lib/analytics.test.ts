@@ -13,6 +13,7 @@ function response(submittedAt: string, answers: Record<string, AnswerValue> = {}
   return {
     id: `r-${n}`,
     formId: 'f-1',
+    ref: n.toString(16).padStart(16, '0'),
     respondentName: `Student ${n}`,
     respondentEmail: null,
     submittedAt,

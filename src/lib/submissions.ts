@@ -29,11 +29,3 @@ export function markSubmitted(formId: string): void {
     // Nothing to do — worst case the reminder doesn't appear next time.
   }
 }
-
-export function clearSubmitted(formId: string): void {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(read().filter((id) => id !== formId)));
-  } catch {
-    // Ignore.
-  }
-}

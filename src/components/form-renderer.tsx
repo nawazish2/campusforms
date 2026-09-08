@@ -83,7 +83,11 @@ export function FormRenderer({
               </p>
             ) : null}
           </div>
-          <div>
+          <div
+            data-error={
+              errors.__respondent || errors.__respondentEmail ? 'true' : undefined
+            }
+          >
             <label htmlFor="__respondent-email" className="mb-1.5 block text-[13px] font-medium text-ink/80">
               Email <span className="text-ink/40">(optional)</span>
             </label>
@@ -94,7 +98,18 @@ export function FormRenderer({
               onChange={(e) => onRespondentChange({ email: e.target.value })}
               placeholder="you@univ.edu"
               disabled={disabled}
+              aria-invalid={Boolean(errors.__respondentEmail)}
+              aria-describedby={errors.__respondentEmail ? '__respondent-email-error' : undefined}
             />
+            {errors.__respondentEmail ? (
+              <p
+                id="__respondent-email-error"
+                role="alert"
+                className="mt-1.5 text-[13px] font-medium text-red-600"
+              >
+                {errors.__respondentEmail}
+              </p>
+            ) : null}
           </div>
         </div>
       ) : null}

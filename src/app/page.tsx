@@ -33,8 +33,8 @@ const FEATURES = [
   },
   {
     icon: CalendarDays,
-    title: 'Deadlines that close themselves',
-    body: 'Registrations shut at midnight on the date you set. The warden can reopen a form with one click.',
+    title: 'Deadlines that close the form',
+    body: 'Set a date and the form stops accepting responses. The warden can reopen it with one click.',
   },
   {
     icon: BarChart3,
@@ -62,7 +62,7 @@ const STEPS = [
   {
     n: '03',
     title: 'Watch responses land',
-    body: 'Charts and averages update the moment a student hits submit. Export to CSV whenever the office asks.',
+    body: 'Open results and the charts are waiting. Export to CSV whenever the office asks.',
   },
 ];
 

@@ -9,7 +9,7 @@ export interface RespondentInput {
 
 /**
  * Validates a fill-in attempt. Returns a map of questionId → error message,
- * plus the reserved key `__respondent` for the name field.
+ * plus the reserved keys `__respondent` and `__respondentEmail`.
  */
 export function validateFill(
   form: FormDefinition,
@@ -20,6 +20,9 @@ export function validateFill(
 
   if (!form.anonymous && !respondent.name.trim()) {
     errors.__respondent = 'Your name is required.';
+  }
+  if (!form.anonymous && respondent.email.trim() && !EMAIL_RE.test(respondent.email.trim())) {
+    errors.__respondentEmail = 'Enter a valid email address.';
   }
 
   for (const q of form.questions) {
@@ -101,4 +104,16 @@ export function validateDraft(form: FormDefinition): string[] {
   });
 
   return problems;
+}
+
+/**
+ * Why this form can't go live. Empty questions first, then the draft checks;
+ * an empty array means Publish is safe. Used by the builder, the dashboard
+ * list, and the results page so they can't disagree.
+ */
+export function publishBlockers(form: FormDefinition): string[] {
+  if (form.questions.length === 0) {
+    return ['Add at least one question before publishing'];
+  }
+  return validateDraft(form);
 }

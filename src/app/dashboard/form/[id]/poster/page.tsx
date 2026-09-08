@@ -8,7 +8,7 @@ import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { useEditableForm, useRequireAuth } from '@/lib/db/hooks';
 import { CATEGORIES, CATEGORY_ACCENT } from '@/lib/constants';
-import { cn, deadlineInfo } from '@/lib/utils';
+import { cn, deadlineInfo, estimateFillMinutes } from '@/lib/utils';
 
 /**
  * An A4 sheet for the notice board: the form, a big scannable QR and nothing
@@ -97,7 +97,7 @@ export default function PosterPage() {
         </div>
 
         <p className="mt-8 font-display text-2xl font-bold tracking-tight">
-          Scan to fill — takes ~{Math.max(1, Math.ceil(form.questions.length / 3))} min
+          Scan to fill — takes ~{estimateFillMinutes(form.questions)} min
         </p>
         <p className="mt-2 break-all font-mono text-[13px] text-ink/50">{shareLink}</p>
 

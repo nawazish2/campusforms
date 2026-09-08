@@ -46,6 +46,7 @@ export function NotificationsBell() {
   const [open, setOpen] = useState(false);
   const [responses, setResponses] = useState<FormResponse[]>([]);
   const [titles, setTitles] = useState<Map<string, string>>(new Map());
+  const [seenOverride, setSeenOverride] = useState<number | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
@@ -88,7 +89,7 @@ export function NotificationsBell() {
 
   if (!configured || !ready || !user) return null;
 
-  const seen = lastSeenAt(user.id);
+  const seen = seenOverride ?? lastSeenAt(user.id);
   const unread = responses.filter((r) => new Date(r.submittedAt).getTime() > seen).length;
 
   return (
@@ -126,7 +127,10 @@ export function NotificationsBell() {
               <button
                 type="button"
                 role="menuitem"
-                onClick={() => markAllSeen(user.id)}
+                onClick={() => {
+                  markAllSeen(user.id);
+                  setSeenOverride(Date.now());
+                }}
                 className="text-[12px] font-medium text-ballpoint-700 transition hover:text-ballpoint-800"
               >
                 Mark all read

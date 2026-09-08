@@ -57,7 +57,7 @@ export function ActivityChart({ responses }: { responses: FormResponse[] }) {
             <div className="flex w-full flex-1 items-end">
               <div
                 className={cn(
-                  'animate-grow-x w-full rounded-t-[4px]',
+                  'animate-grow-y w-full rounded-t-[4px]',
                   d.count === 0
                     ? 'h-[3px] bg-ink/[0.06]'
                     : d.isToday

@@ -30,6 +30,7 @@ export type FormRow = {
 export type ResponseRow = {
   id: string;
   form_id: string;
+  ref: string;
   respondent_name: string | null;
   respondent_email: string | null;
   answers: Record<string, AnswerValue>;
@@ -55,7 +56,7 @@ export type Database = {
           response_count?: number;
           pinned?: boolean;
         };
-        Update: Partial<Omit<FormRow, 'id' | 'owner_id' | 'created_at'>>;
+        Update: Partial<Omit<FormRow, 'id' | 'owner_id' | 'created_at' | 'response_count'>>;
         Relationships: [];
       };
       responses: {
@@ -77,8 +78,6 @@ export type Database = {
           form_category: FormCategory;
           response_status: ResponseStatus;
           submitted_at: string;
-          answers: Record<string, AnswerValue> | null;
-          form_questions: Question[] | null;
           is_anonymous: boolean;
         }[];
       };
@@ -118,10 +117,17 @@ export function toSummary(row: FormRow): FormSummary {
   return { ...toForm(row), responseCount: row.response_count };
 }
 
+export function toDefinition(summary: FormSummary): FormDefinition {
+  const { id, title, description, category, status, anonymous, deadline, questions, pinned, createdAt } =
+    summary;
+  return { id, title, description, category, status, anonymous, deadline, questions, pinned, createdAt };
+}
+
 export function toResponse(row: ResponseRow): FormResponse {
   return {
     id: row.id,
     formId: row.form_id,
+    ref: row.ref,
     respondentName: row.respondent_name,
     respondentEmail: row.respondent_email,
     submittedAt: row.submitted_at,

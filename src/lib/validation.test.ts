@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { validateDraft, validateFill } from './validation';
+import { publishBlockers, validateDraft, validateFill } from './validation';
 import { blankForm, newQuestion } from './factories';
 import type { FormDefinition, Question, QuestionType } from './types';
 
@@ -52,6 +52,15 @@ describe('validateFill', () => {
     expect(check('  student@univ.edu ')).toBeUndefined();
     expect(check('student@univ')).toBe('Enter a valid email address.');
   });
+
+  it('rejects a malformed optional respondent email', () => {
+    const named = form([], { anonymous: false });
+    expect(validateFill(named, {}, { name: 'Aarav', email: '' })).toEqual({});
+    expect(validateFill(named, {}, { name: 'Aarav', email: 'not-an-email' }).__respondentEmail).toBe(
+      'Enter a valid email address.'
+    );
+    expect(validateFill(named, {}, { name: 'Aarav', email: 'aarav@univ.edu' })).toEqual({});
+  });
 });
 
 describe('validateDraft', () => {
@@ -76,5 +85,16 @@ describe('validateDraft', () => {
 
   it('leaves non-choice questions' + " options alone", () => {
     expect(validateDraft(form([question('rating', { options: [] })]))).toEqual([]);
+  });
+});
+
+describe('publishBlockers', () => {
+  it('asks for a question before anything else', () => {
+    expect(publishBlockers(form([]))).toEqual(['Add at least one question before publishing']);
+  });
+
+  it('surfaces draft problems once there is a question', () => {
+    const problems = publishBlockers(form([question('short-text', { title: '' })]));
+    expect(problems[0]).toContain('needs a title');
   });
 });

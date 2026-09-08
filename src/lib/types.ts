@@ -47,6 +47,8 @@ export type ResponseStatus = 'new' | 'in-progress' | 'done';
 export interface FormResponse {
   id: string;
   formId: string;
+  /** 16-hex public receipt shown on the success screen and /status. */
+  ref: string;
   respondentName: string | null;
   respondentEmail: string | null;
   submittedAt: string;

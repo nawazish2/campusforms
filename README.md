@@ -48,6 +48,7 @@ The schema supports that claim rather than working around it:
   there is nothing to leak, subpoena or accidentally join against.
 - **A student can't read their own response back.** The confirmation screen
   shows a reference number instead, generated client-side before the write.
+  `/status` looks that code up and returns queue status only — never answers.
 - **Forms carry a trigger-maintained `response_count`,** which is how a public
   page can say "37 responses" while nobody but the organizer can read a single
   one.
@@ -70,7 +71,7 @@ src/
     analytics   response summaries
   proxy.ts      session refresh and the /dashboard guard
 supabase/
-  migrations/   schema, policies and triggers, in three ordered files
+  migrations/   schema, policies and triggers, in six ordered files
 ```
 
 ### Row level security is the whole authorization model

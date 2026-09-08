@@ -7,6 +7,7 @@ import { ArrowLeft, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useAuth } from '@/components/auth-provider';
+import { safeNextPath } from '@/lib/utils';
 
 /** Google's mark. Lucide has no brand icons, and a generic key icon here reads as a password field. */
 function GoogleMark() {
@@ -38,7 +39,7 @@ function LoginCard() {
   const { user, ready, configured, signInWithGoogle } = useAuth();
   const [busy, setBusy] = useState(false);
 
-  const next = params.get('next') ?? '/dashboard';
+  const next = safeNextPath(params.get('next'));
   const error = params.get('error');
 
   useEffect(() => {

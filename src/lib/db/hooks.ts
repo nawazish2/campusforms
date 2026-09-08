@@ -6,7 +6,7 @@ import { useAuth } from '@/components/auth-provider';
 import { createClient, isSupabaseConfigured } from './client';
 import * as api from './forms';
 import type { FormSummary } from './schema';
-import type { FormDefinition, FormResponse } from '@/lib/types';
+import type { FormResponse } from '@/lib/types';
 
 /**
  * Read hooks for the organizer pages. They deliberately mirror what the
@@ -84,7 +84,7 @@ export function useDashboard() {
 }
 
 export interface FormResults {
-  form: FormDefinition | null;
+  form: FormSummary | null;
   responses: FormResponse[];
 }
 
@@ -102,7 +102,7 @@ export function useFormResults(id: string | undefined) {
 
     (async () => {
       try {
-        const form = await api.getForm(db, id);
+        const form = await api.getOwnedForm(db, id, user.id);
         // No form means nothing to fetch responses for, and the page renders
         // its "not found" panel.
         const responses = form ? await api.listResponses(db, id) : [];
@@ -132,18 +132,18 @@ export function useFormResults(id: string | undefined) {
   };
 }
 
-/** Just the form definition — what the builder needs in edit mode. */
+/** The organizer's own form — what the builder and poster need in edit mode. */
 export function useEditableForm(id: string | undefined) {
   const db = useDb();
   const { user, ready, configured } = useAuth();
-  const [form, setForm] = useState<FormDefinition | null | undefined>(undefined);
+  const [form, setForm] = useState<FormSummary | null | undefined>(undefined);
 
   useEffect(() => {
     if (!ready || !user || !id) return;
     let alive = true;
     (async () => {
       try {
-        const found = await api.getForm(db, id);
+        const found = await api.getOwnedForm(db, id, user.id);
         if (alive) setForm(found);
       } catch {
         if (alive) setForm(null);

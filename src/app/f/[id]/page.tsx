@@ -50,13 +50,7 @@ const CONFETTI = [
   { c: 'bg-rose-400', tx: '-10px', ty: '80px', rot: '-90deg' },
 ] as const;
 
-function ClosedPanel({
-  reason,
-  formId,
-}: {
-  reason: string;
-  formId?: string;
-}) {
+function ClosedPanel({ reason }: { reason: string }) {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
       <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
@@ -74,11 +68,6 @@ function ClosedPanel({
           <ArrowLeft />
           Browse open forms
         </Link>
-        {formId ? (
-          <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/30">
-            REF {formId.toUpperCase()}
-          </p>
-        ) : null}
       </div>
     </main>
   );
@@ -175,7 +164,6 @@ export default function FillFormPage() {
         <SiteHeader />
         <ClosedPanel
           reason="The organizer hasn’t published this form yet. Check back once it’s announced."
-          formId={form.id}
         />
         <SiteFooter />
       </div>
@@ -192,7 +180,6 @@ export default function FillFormPage() {
               ? 'The organizer closed this form. It may reopen — keep an eye on the notice board.'
               : `The deadline passed on ${dl.label?.replace('Deadline passed ', '')}. Late responses aren’t accepted.`
           }
-          formId={form.id}
         />
         <SiteFooter />
       </div>
@@ -213,7 +200,7 @@ export default function FillFormPage() {
     }
     setSubmitting(true);
     try {
-      const id = await addResponse(db, {
+      const ref = await addResponse(db, {
         formId: form.id,
         respondentName: form.anonymous ? null : respondent.name.trim(),
         respondentEmail: form.anonymous ? null : respondent.email.trim() || null,
@@ -224,7 +211,7 @@ export default function FillFormPage() {
       markSubmitted(form.id);
       clearDraft(form.id);
       setDraftRestored(null);
-      setSubmittedId(id);
+      setSubmittedId(ref);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
       toast(e instanceof Error ? e.message : 'That didn’t send. Try again.', 'error');
@@ -292,7 +279,7 @@ export default function FillFormPage() {
                 : `Thanks, ${respondent.name.trim().split(/\s+/)[0]} — the organizer can see your name on this one.`}
             </p>
             <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/40">
-              REF #{submittedId.slice(-6).toUpperCase()} · {form.title}
+              REF #{submittedId.toUpperCase()} · {form.title}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button
@@ -312,7 +299,7 @@ export default function FillFormPage() {
                 Browse more forms
               </Link>
               <Link
-                href={`/status?ref=${submittedId.slice(-6).toUpperCase()}`}
+                href={`/status?ref=${submittedId.toUpperCase()}`}
                 className={buttonVariants({ variant: 'ghost' })}
               >
                 Track this response
@@ -454,8 +441,8 @@ export default function FillFormPage() {
                 );
               }).length;
               const totalRequired = required.length + (form.anonymous ? 0 : 1);
-              const doneRequired =
-                answeredRequired + (form.anonymous || respondent.name.trim() ? 1 : 0);
+              const nameDone = !form.anonymous && Boolean(respondent.name.trim());
+              const doneRequired = answeredRequired + (nameDone ? 1 : 0);
               const pct = totalRequired
                 ? Math.round((doneRequired / totalRequired) * 100)
                 : 100;

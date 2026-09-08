@@ -26,13 +26,14 @@ import { StatusBadge } from '@/components/status-badge';
 import { useToast } from '@/components/ui/toast';
 import { useEditableForm, useRequireAuth } from '@/lib/db/hooks';
 import { createForm, updateForm } from '@/lib/db/forms';
+import { toDefinition } from '@/lib/db/schema';
 import {
   clearBuilderDraft,
   loadBuilderDraft,
   saveBuilderDraft,
   type BuilderDraft,
 } from '@/lib/drafts';
-import { validateDraft } from '@/lib/validation';
+import { publishBlockers } from '@/lib/validation';
 import { blankForm, newQuestion } from '@/lib/factories';
 import {
   CATEGORIES,
@@ -103,15 +104,17 @@ export function FormBuilder({
 
   useEffect(() => {
     if (mode === 'edit' && !loading && existing && !draft) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- the draft can only be seeded once localStorage has rehydrated.
-      setDraft(structuredClone(existing));
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the draft can only be seeded once the fetch has resolved.
+      setDraft(structuredClone(toDefinition(existing)));
     }
   }, [mode, loading, existing, draft]);
+
+  const existingDef = existing ? toDefinition(existing) : null;
 
   const dirty =
     draft !== null &&
     JSON.stringify(draft) !==
-      JSON.stringify(baseline ?? (mode === 'create' ? pristine : existing));
+      JSON.stringify(baseline ?? (mode === 'create' ? pristine : existingDef));
 
   useEffect(() => {
     if (!dirty) return;
@@ -139,6 +142,7 @@ export function FormBuilder({
   }
 
   const form = draft as FormDefinition;
+  const anonymityLocked = (existing?.responseCount ?? 0) > 0;
   const patch = (p: Partial<FormDefinition>) =>
     setDraft((d) => (d ? { ...d, ...p } : d));
   const patchQuestion = (qid: string, p: Partial<Question>) =>
@@ -171,11 +175,7 @@ export function FormBuilder({
     // A draft is allowed to be half-finished; anything students can reach
     // has to hold together, so it's checked instead of quietly trimmed.
     if (status !== 'draft') {
-      if (draft.questions.length === 0) {
-        toast('Add at least one question before publishing', 'error');
-        return;
-      }
-      const problems = validateDraft(draft);
+      const problems = publishBlockers(draft);
       if (problems.length > 0) {
         toast(problems[0], 'error');
         return;
@@ -418,12 +418,15 @@ export function FormBuilder({
                 <div>
                   <p className="text-[13px] font-semibold text-ink">Anonymous responses</p>
                   <p className="mt-0.5 text-xs text-ink/50">
-                    Names and emails won’t be stored. Best for mess & library feedback.
+                    {anonymityLocked
+                      ? 'Locked after the first response — changing it would mix named and unnamed rows.'
+                      : 'Names and emails won’t be stored. Best for mess & library feedback.'}
                   </p>
                 </div>
                 <Switch
                   checked={form.anonymous}
                   onCheckedChange={(v) => patch({ anonymous: v })}
+                  disabled={anonymityLocked}
                   aria-label="Anonymous responses"
                 />
               </div>

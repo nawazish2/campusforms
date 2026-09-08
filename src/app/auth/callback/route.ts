@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/lib/db/server';
+import { safeNextPath } from '@/lib/utils';
 
 /**
  * Where Google sends the organizer back. Trades the one-time code for a
@@ -12,7 +13,7 @@ export async function GET(request: NextRequest) {
 
   // Only same-site paths: an absolute URL here would make this an open
   // redirect for anyone who can craft the callback link.
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard';
+  const next = safeNextPath(rawNext);
 
   // Google and Supabase report their own failures here, with no code at all.
   // Passing the description through matters: "missing_code" would send

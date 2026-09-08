@@ -30,6 +30,7 @@ import { useToast } from '@/components/ui/toast';
 import { useDashboard, useRequireAuth } from '@/lib/db/hooks';
 import { CATEGORY_ACCENT } from '@/lib/constants';
 import { deleteForm, duplicateForm, setFormPinned, setFormStatus } from '@/lib/db/forms';
+import { publishBlockers } from '@/lib/validation';
 import type { FormSummary } from '@/lib/db/schema';
 import {
   avatarColor,
@@ -107,8 +108,9 @@ export default function DashboardPage() {
           size="sm"
           disabled={busy}
           onClick={() => {
-            if (f.questions.length === 0) {
-              toast('Add at least one question before publishing', 'error');
+            const problems = publishBlockers(f);
+            if (problems.length > 0) {
+              toast(problems[0], 'error');
               return;
             }
             mutate(() => setFormStatus(db, f.id, 'open'), 'Form published — share the link');
