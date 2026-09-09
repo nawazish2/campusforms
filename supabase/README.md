@@ -1,17 +1,18 @@
 # Database
 
-Six migrations, applied in order. At this scale the simplest route is the
-Supabase dashboard's SQL editor — paste each file and run it. The CLI
-(`supabase db push`) works too but wants Docker for its local stack.
+Seven migrations, applied in order. They carry the timestamp names the
+Supabase CLI expects, so `supabase db push` applies them and the GitHub
+integration keeps the project in step with this directory.
 
 | File | What it does |
 |---|---|
-| `0001_init.sql` | `forms` and `responses`, the anonymity and counter triggers, and every RLS policy |
-| `0002_restrict_organizers.sql` | Rejects sign-ups from anyone not in `allowed_organizers` — **add the organizers' emails before running it** |
-| `0003_guard_responses.sql` | Enforces the deadline, a per-form flood limit and the shape of `answers` on write |
-| `0004_ref_lookup.sql` | Public RPC behind the "track my response" page |
-| `0005_pin_forms.sql` | `forms.pinned` — lets organizers float a form to the top of the notice board |
-| `0006_tighten_writes.sql` | Insert defaults, a 16-hex unique `ref`, status-only response updates, immutable `response_count`, anonymity locked after the first response, and a status-only lookup |
+| `20260906010928_init.sql` | `forms` and `responses`, the anonymity and counter triggers, and every RLS policy |
+| `20260906012426_restrict_organizers.sql` | Rejects sign-ups from anyone not in `allowed_organizers` — **add the organizers' emails before running it** |
+| `20260906111342_guard_responses.sql` | Enforces the deadline, a per-form flood limit and the shape of `answers` on write |
+| `20260906223958_ref_lookup.sql` | Public RPC behind the "track my response" page |
+| `20260906223959_pin_forms.sql` | `forms.pinned` — lets organizers float a form to the top of the notice board |
+| `20260908201959_tighten_writes.sql` | Insert defaults, a 16-hex unique `ref`, status-only response updates, immutable `response_count`, anonymity locked after the first response, and a status-only lookup |
+| `20260909210532_validate_answer_types.sql` | Checks each answer against its question's type — ratings in range, choices among the options, email and date shapes |
 
 ## Then, in the dashboard
 

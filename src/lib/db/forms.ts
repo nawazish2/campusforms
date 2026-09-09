@@ -23,7 +23,7 @@ type Client = SupabaseClient<Database>;
  * localStorage store it replaced is gone.
  *
  * Authorization is not re-checked here on purpose: the RLS policies in
- * `supabase/migrations/0001_init.sql` decide what each caller may touch, so a
+ * `supabase/migrations/20260906010928_init.sql` decide what each caller may touch, so a
  * forbidden write fails at the database rather than depending on this file
  * being called correctly.
  */
