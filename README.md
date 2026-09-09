@@ -71,7 +71,7 @@ src/
     analytics   response summaries
   proxy.ts      session refresh and the /dashboard guard
 supabase/
-  migrations/   schema, policies and triggers, in six ordered files
+  migrations/   schema, policies and triggers, in seven ordered files
 ```
 
 ### Row level security is the whole authorization model
@@ -95,8 +95,8 @@ in the browser is therefore enforced nowhere — anyone willing to POST to the
 REST endpoint directly skips it entirely, and that takes about a minute to
 work out.
 
-So the deadline, a per-form flood limit, and the shape of `answers` are all
-triggers. `validateFill` still runs in the browser, but its job is to give a
+So the deadline, a per-form flood limit, and the shape *and types* of
+`answers` are all triggers. `validateFill` still runs in the browser, but its job is to give a
 student a good error message, not to keep bad rows out.
 
 ### Two schema choices that look odd and aren't
@@ -137,9 +137,6 @@ know where they stop.
 - **Anonymous means unnamed, not untraceable.** Submission time and row order
   still exist. On a form with very few responses, timing could narrow down who
   wrote something.
-- **Answer *types* aren't validated server-side.** The write guard rejects
-  unknown question ids, missing required answers and oversized payloads, but a
-  rating could still arrive as a string.
 - **The flood limit counts per form, not per submitter.** Responses carry no IP
   and no submitter id, on purpose, so there is nothing else to count. It stops
   a script; it wouldn't stop thirty phones.
