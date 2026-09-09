@@ -20,10 +20,11 @@ import type { FormCategory, FormDefinition } from '@/lib/types';
  */
 export default function NewFormPage() {
   const [form, setForm] = useState<FormDefinition | null>(null);
+  const [fromTemplate, setFromTemplate] = useState(false);
   const [category, setCategory] = useState<FormCategory | 'all'>('all');
 
   if (form) {
-    return <FormBuilder mode="create" initial={form} />;
+    return <FormBuilder mode="create" initial={form} fromTemplate={fromTemplate} />;
   }
 
   const visible =
@@ -97,7 +98,10 @@ export default function NewFormPage() {
               <button
                 key={t.id}
                 type="button"
-                onClick={() => setForm(templateToForm(t))}
+                onClick={() => {
+                  setFromTemplate(true);
+                  setForm(templateToForm(t));
+                }}
                 className="group flex min-h-44 flex-col rounded-2xl border border-ink/10 bg-card p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
               >
                 <div className="flex items-center gap-2">

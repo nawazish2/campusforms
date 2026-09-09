@@ -54,11 +54,14 @@ export function FormBuilder({
   mode,
   formId,
   initial,
+  fromTemplate,
 }: {
   mode: 'create' | 'edit';
   formId?: string;
   /** Pre-filled draft for create mode (e.g. built from a template). */
   initial?: FormDefinition;
+  /** True when `initial` came from a template rather than the blank start. */
+  fromTemplate?: boolean;
 }) {
   const router = useRouter();
   const toast = useToast();
@@ -84,15 +87,17 @@ export function FormBuilder({
 
   // Create-mode autosave: an unpublished form survives a closed tab. A stored
   // draft is offered as a banner rather than auto-applied, so a template the
-  // organizer just picked always wins.
+  // organizer just picked always wins. Blank is not a pick, so the banner
+  // shows there — otherwise the autosave would write a draft nothing could
+  // ever restore, since the builder is only reachable through the picker.
   const [savedBuilderDraft, setSavedBuilderDraft] = useState<BuilderDraft | null>(null);
 
   useEffect(() => {
     if (mode !== 'create') return;
     const stored = loadBuilderDraft();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- readable only after rehydration.
-    if (stored && !initial) setSavedBuilderDraft(stored);
-  }, [mode, initial]);
+    if (stored && !fromTemplate) setSavedBuilderDraft(stored);
+  }, [mode, fromTemplate]);
 
   useEffect(() => {
     if (mode !== 'create' || !draft) return;
