@@ -78,15 +78,23 @@ export default async function Image({
               height: 56,
               borderRadius: 16,
               backgroundColor: '#2f53de',
-              color: '#ffffff',
-              fontSize: 34,
-              fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            ✓
+            {/* Drawn, not typed: the font satori falls back to has no U+2713,
+                so the glyph rendered as a tofu box on every shared link. */}
+            <div
+              style={{
+                width: 22,
+                height: 12,
+                marginTop: -6,
+                borderLeft: '5px solid #ffffff',
+                borderBottom: '5px solid #ffffff',
+                transform: 'rotate(-45deg)',
+              }}
+            />
           </div>
           <div style={{ fontSize: 34, fontWeight: 700, color: '#181b25', display: 'flex' }}>
             Campus<span style={{ color: '#2f53de', display: 'flex' }}>Forms</span>
