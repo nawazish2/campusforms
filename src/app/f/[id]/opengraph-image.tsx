@@ -24,10 +24,11 @@ const BAND_TEXT: Record<FormCategory, string> = {
   general: '#334155',
 };
 
-export default async function Image(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const form = await getPublicForm(await createClient(), id).catch(() => null);
 
