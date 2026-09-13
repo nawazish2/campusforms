@@ -16,6 +16,12 @@
 
   /* Ruled-sheet ink — dark enough to actually read as a page, not a hint of one. */
   --rule: rgb(24 27 37 / 0.14);
+
+  /* Correction-pen red — the one red in the whole app (required marks, errors,
+     destructive actions). Warmer and less saturated than Tailwind's red-600
+     so it reads as ink on paper, not a UI-kit alert color. */
+  --correction: #b53d2e;
+  --correction-soft: #fbe9e4;
 }
 @theme {
   /* Ballpoint blue — forms are filled in blue pen. */
@@ -43,6 +49,8 @@
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-card: var(--card);
+  --color-correction: var(--correction);
+  --color-correction-soft: var(--correction-soft);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-display: var(--font-bricolage), var(--font-geist-sans), ui-sans-serif,
@@ -77,6 +85,66 @@ body {
   background-position: 0 -1px;
   -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+
+/* Faint fibre texture so paper-colored surfaces don't read as flat UI color.
+   Multiply blend keeps it invisible on white and just barely present on
+   --paper / --card. */
+.bg-grain {
+  position: relative;
+}
+.bg-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Two punch holes along the top edge of a card, like a sheet off a form pad.
+   Use on cards with enough top padding to clear them (pt-9 or more). */
+.punch-holes {
+  position: relative;
+}
+.punch-holes::before,
+.punch-holes::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 1px 2px rgb(24 27 37 / 0.18);
+}
+.punch-holes::before {
+  left: 22px;
+}
+.punch-holes::after {
+  right: 22px;
+}
+
+/* A perforated tear-off line — the seam where one part of the form ends and
+   the next begins. Draws a row of tick marks, not a plain rule. */
+.edge-torn {
+  position: relative;
+  border: none;
+  height: 1px;
+  background: none;
+}
+.edge-torn::before {
+  content: '';
+  display: block;
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--rule) 0,
+    var(--rule) 6px,
+    transparent 6px,
+    transparent 12px
+  );
 }
 
 /* Same ruling, drawn on the constant-ink CTA slab. */

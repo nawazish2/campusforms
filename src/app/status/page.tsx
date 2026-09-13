@@ -114,7 +114,7 @@ export default function StatusPage() {
         </form>
 
         {error ? (
-          <p className="mx-auto mt-4 max-w-md text-center text-sm font-medium text-red-600" role="alert">
+          <p className="mx-auto mt-4 max-w-md text-center text-sm font-medium text-correction" role="alert">
             {error}
           </p>
         ) : null}

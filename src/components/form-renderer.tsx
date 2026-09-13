@@ -62,7 +62,7 @@ export function FormRenderer({
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="__respondent-name" className="mb-1.5 block text-[13px] font-medium text-ink/80">
-              Your name <span className="text-red-500">*</span>
+              Your name <span className="text-correction">*</span>
             </label>
             <Input
               id="__respondent-name"
@@ -77,7 +77,7 @@ export function FormRenderer({
               <p
                 id="__respondent-error"
                 role="alert"
-                className="mt-1.5 text-[13px] font-medium text-red-600"
+                className="mt-1.5 text-[13px] font-medium text-correction"
               >
                 {errors.__respondent}
               </p>
@@ -105,7 +105,7 @@ export function FormRenderer({
               <p
                 id="__respondent-email-error"
                 role="alert"
-                className="mt-1.5 text-[13px] font-medium text-red-600"
+                className="mt-1.5 text-[13px] font-medium text-correction"
               >
                 {errors.__respondentEmail}
               </p>
@@ -128,7 +128,7 @@ export function FormRenderer({
               </span>
               <p className="text-sm font-semibold text-ink">
                 {q.title || <span className="text-ink/40">Untitled question</span>}
-                {q.required ? <span className="ml-0.5 text-red-500">*</span> : null}
+                {q.required ? <span className="ml-0.5 text-correction">*</span> : null}
               </p>
             </div>
             {q.description ? (
@@ -156,7 +156,7 @@ export function FormRenderer({
               {err ? (
                 <p
                   id={`${q.id}-error`}
-                  className="mt-2 text-[13px] font-medium text-red-600"
+                  className="mt-2 text-[13px] font-medium text-correction"
                   role="alert"
                 >
                   {err}

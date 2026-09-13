@@ -93,7 +93,7 @@ export default function BrowsePage() {
 
         {/* Grid */}
         {error ? (
-          <div className="animate-fade-up mt-8 grid place-items-center rounded-3xl border border-dashed border-red-200 bg-red-50/50 px-6 py-16 text-center">
+          <div className="animate-fade-up mt-8 grid place-items-center rounded-3xl border border-dashed border-correction/30 bg-correction-soft/50 px-6 py-16 text-center">
             <h2 className="font-display text-lg font-bold tracking-tight">
               Couldn’t load the notice board
             </h2>

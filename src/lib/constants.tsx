@@ -146,7 +146,7 @@ export const STATUS_META: Record<
   },
   closed: {
     label: 'Closed',
-    badge: 'bg-red-50 text-red-700 ring-red-600/10',
+    badge: 'bg-correction-soft text-correction ring-correction/10',
   },
 };
 

@@ -627,7 +627,7 @@ function ResponseCard({
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto text-ink/50 hover:bg-red-50 hover:text-red-600"
+          className="ml-auto text-ink/50 hover:bg-correction-soft hover:text-correction"
           onClick={onDelete}
         >
           <Trash2 />

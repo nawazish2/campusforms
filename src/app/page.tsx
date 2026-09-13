@@ -147,6 +147,7 @@ export default function Home() {
               ))}
             </div>
           </div>
+          <div className="edge-torn mx-auto max-w-6xl px-4 sm:px-6" aria-hidden />
         </section>
 
         {/* Categories */}

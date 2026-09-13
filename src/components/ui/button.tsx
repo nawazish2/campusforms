@@ -12,8 +12,8 @@ const buttonVariants = cva(
           'border border-ink/10 bg-card text-ink shadow-sm hover:bg-ink/[0.05] active:bg-ink/[0.06]',
         ghost: 'text-ink/70 hover:bg-ink/[0.05] hover:text-ink',
         'danger-ghost':
-          'text-red-600 hover:bg-red-50',
-        danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700',
+          'text-correction hover:bg-correction-soft',
+        danger: 'bg-correction text-white shadow-sm hover:brightness-110',
         'tick': 'bg-tick text-white shadow-sm hover:bg-tick/90',
       },
       size: {

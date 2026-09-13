@@ -64,7 +64,7 @@ export function HeroDemo() {
         </p>
       </div>
 
-      <div className="relative rotate-[1.2deg] rounded-2xl border border-ink/10 bg-card p-6 shadow-xl shadow-ink/[0.07] transition-transform duration-300 hover:rotate-0">
+      <div className="punch-holes relative rotate-[1.2deg] rounded-2xl border border-ink/10 bg-card pb-6 pt-9 px-6 shadow-xl shadow-ink/[0.07] transition-transform duration-300 hover:rotate-0">
         <div className="flex items-center justify-between">
           <CategoryBadge category="hostel" />
           <span className="font-mono text-[10px] uppercase tracking-wider text-ink/40">
@@ -76,7 +76,7 @@ export function HeroDemo() {
         </h3>
 
         <p className="mt-5 text-sm font-semibold">
-          What’s the issue? <span className="text-red-500">*</span>
+          What’s the issue? <span className="text-correction">*</span>
         </p>
         <div className="mt-2 grid gap-1.5">
           {ISSUES.map((opt) => {
@@ -109,7 +109,7 @@ export function HeroDemo() {
         </div>
 
         <p className="mt-5 text-sm font-semibold">
-          How urgent is it? <span className="text-red-500">*</span>
+          How urgent is it? <span className="text-correction">*</span>
         </p>
         <div className="mt-1.5">
           <StarInput value={urgency} onChange={setUrgency} max={5} />
