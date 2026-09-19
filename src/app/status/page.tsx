@@ -162,6 +162,17 @@ export default function StatusPage() {
                 </span>
               </div>
 
+              {result.public_note ? (
+                <div className="mt-5 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
+                  <p className="font-mono text-[11px] uppercase tracking-wider text-ballpoint-700">
+                    From the organizer
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-ballpoint-950">
+                    {result.public_note}
+                  </p>
+                </div>
+              ) : null}
+
               <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink/70">
                 <EyeOff className="mt-0.5 size-4 shrink-0 text-ink/40" aria-hidden />
                 {result.is_anonymous

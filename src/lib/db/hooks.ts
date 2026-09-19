@@ -219,7 +219,9 @@ export function usePublicForm(id: string | undefined) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!configured || !id) return;
+    if (!configured || !id) {
+      return;
+    }
     let alive = true;
     (async () => {
       try {
@@ -239,6 +241,6 @@ export function usePublicForm(id: string | undefined) {
     form,
     error,
     configured,
-    loading: configured && form === undefined && error === null,
+    loading: Boolean(id) && configured && form === undefined && error === null,
   };
 }

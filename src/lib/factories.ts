@@ -26,6 +26,7 @@ export function blankForm(): FormDefinition {
     deadline: null,
     questions: [],
     pinned: false,
+    maxResponses: null,
     createdAt: new Date().toISOString(),
   };
 }

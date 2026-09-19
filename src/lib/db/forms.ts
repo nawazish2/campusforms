@@ -139,6 +139,7 @@ export async function createForm(
         anonymous: form.anonymous,
         deadline: form.deadline,
         questions: form.questions,
+        max_responses: form.maxResponses,
       })
       .select()
       .single()
@@ -159,6 +160,7 @@ export async function updateForm(
   if (patch.anonymous !== undefined) update.anonymous = patch.anonymous;
   if (patch.deadline !== undefined) update.deadline = patch.deadline;
   if (patch.questions !== undefined) update.questions = patch.questions;
+  if (patch.maxResponses !== undefined) update.max_responses = patch.maxResponses;
 
   const row = unwrap(await db.from('forms').update(update).eq('id', id).select().single());
   return toForm(row);
@@ -219,8 +221,30 @@ export async function listResponses(db: Client, formId: string): Promise<FormRes
   return rows.map(toResponse);
 }
 
+export const RESPONSE_FILES_BUCKET = 'response-files';
+
+export async function uploadResponsePhoto(
+  db: Client,
+  path: string,
+  blob: Blob
+): Promise<void> {
+  const { error } = await db.storage.from(RESPONSE_FILES_BUCKET).upload(path, blob, {
+    contentType: blob.type || 'image/jpeg',
+    upsert: false,
+  });
+  if (error) throw new Error(error.message);
+}
+
+export async function signedPhotoUrl(db: Client, path: string): Promise<string | null> {
+  const { data, error } = await db.storage
+    .from(RESPONSE_FILES_BUCKET)
+    .createSignedUrl(path, 60 * 60);
+  if (error) return null;
+  return data.signedUrl;
+}
+
 /** 16 lowercase hex chars — the public receipt a student can type back. */
-function newResponseRef(): string {
+export function newResponseRef(): string {
   const bytes = new Uint8Array(8);
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
@@ -244,6 +268,8 @@ export async function addResponse(
     respondentName: string | null;
     respondentEmail: string | null;
     answers: Record<string, AnswerValue>;
+    /** When photos were uploaded first, this is the ref those paths used. */
+    ref?: string;
   }
 ): Promise<string> {
   const write = async (ref: string) => {
@@ -258,11 +284,12 @@ export async function addResponse(
     return error;
   };
 
-  const first = newResponseRef();
+  const first = input.ref ?? newResponseRef();
   const error = await write(first);
   if (!error) return first;
   // Unique `ref` collision is vanishingly rare; retry once, then surface.
-  if (error.code === '23505') {
+  // Don't retry when the caller already bound photos to `ref`.
+  if (error.code === '23505' && !input.ref) {
     const retry = newResponseRef();
     const again = await write(retry);
     if (!again) return retry;
@@ -278,6 +305,26 @@ export async function setResponseStatus(
 ): Promise<void> {
   const { error } = await db.from('responses').update({ status }).eq('id', id);
   if (error) throw new Error(error.message);
+}
+
+export async function setResponseNote(db: Client, id: string, note: string): Promise<void> {
+  const { error } = await db
+    .from('responses')
+    .update({ public_note: note.slice(0, 280) })
+    .eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function requestOrganizerAccess(db: Client, email: string, note: string): Promise<void> {
+  const { error } = await db.from('organizer_requests').insert({
+    email: email.trim().toLowerCase(),
+    note: note.trim().slice(0, 500),
+  });
+  if (!error) return;
+  if (error.code === '23505') {
+    throw new Error('You’ve already asked — we’ll email you if a seat opens.');
+  }
+  throw new Error(error.message);
 }
 
 export async function deleteResponse(db: Client, id: string): Promise<void> {

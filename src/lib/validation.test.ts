@@ -53,6 +53,13 @@ describe('validateFill', () => {
     expect(check('student@univ')).toBe('Enter a valid email address.');
   });
 
+  it('requires a photo when the file question is required', () => {
+    const q = question('file', { required: true });
+    const file = new File(['x'], 'leak.jpg', { type: 'image/jpeg' });
+    expect(validateFill(form([q]), {}, { name: '', email: '' })[q.id]).toBe('Attach a photo.');
+    expect(validateFill(form([q]), {}, { name: '', email: '' }, { [q.id]: file })).toEqual({});
+  });
+
   it('rejects a malformed optional respondent email', () => {
     const named = form([], { anonymous: false });
     expect(validateFill(named, {}, { name: 'Aarav', email: '' })).toEqual({});
@@ -85,6 +92,13 @@ describe('validateDraft', () => {
 
   it('leaves non-choice questions' + " options alone", () => {
     expect(validateDraft(form([question('rating', { options: [] })]))).toEqual([]);
+  });
+
+  it('rejects a max-response cap that is not a positive integer', () => {
+    expect(validateDraft(form([question('short-text')], { maxResponses: 0 }))[0]).toContain(
+      'whole number'
+    );
+    expect(validateDraft(form([question('short-text')], { maxResponses: 12 }))).toEqual([]);
   });
 });
 

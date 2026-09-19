@@ -19,7 +19,7 @@ const FEATURES = [
   {
     icon: ClipboardList,
     title: 'Templates for every desk',
-    body: 'Ready-made forms for hostel complaints, mess polls, hackathon signups and course feedback — plus nine question types when you want to build it your way.',
+    body: 'Ready-made forms for hostel complaints, mess polls, hackathon signups and course feedback — plus ten question types when you want to build it your way.',
   },
   {
     icon: Link2,
@@ -164,7 +164,7 @@ export default function Home() {
               return (
                 <Link
                   key={c.key}
-                  href="/browse"
+                  href={`/browse?category=${c.key}`}
                   className={cn(
                     'group relative overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-1',
                     c.tile

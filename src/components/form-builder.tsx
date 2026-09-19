@@ -418,6 +418,32 @@ export function FormBuilder({
                     onChange={(e) => patch({ deadline: e.target.value || null })}
                   />
                 </div>
+                <div>
+                  <label htmlFor="fb-cap" className="mb-1.5 block text-[13px] font-medium text-ink/70">
+                    Max responses <span className="text-ink/40">(optional)</span>
+                  </label>
+                  <Input
+                    id="fb-cap"
+                    type="number"
+                    min={1}
+                    step={1}
+                    inputMode="numeric"
+                    placeholder="No limit"
+                    value={form.maxResponses ?? ''}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (raw === '') {
+                        patch({ maxResponses: null });
+                        return;
+                      }
+                      const n = Number(raw);
+                      patch({ maxResponses: Number.isFinite(n) ? n : null });
+                    }}
+                  />
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink/50">
+                    Event signups close automatically when this many land.
+                  </p>
+                </div>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 rounded-xl bg-paper px-4 py-3">
                 <div>
@@ -548,12 +574,22 @@ export function FormBuilder({
  */
 function LivePreview({ form }: { form: FormDefinition }) {
   const [values, setValues] = useState<Record<string, AnswerValue>>({});
+  const [files, setFiles] = useState<Record<string, File>>({});
   return (
     <FormRenderer
       form={form}
       values={values}
       respondent={{ name: '', email: '' }}
       errors={{}}
+      pendingFiles={files}
+      onFileChange={(qid, file) =>
+        setFiles((prev) => {
+          const next = { ...prev };
+          if (file) next[qid] = file;
+          else delete next[qid];
+          return next;
+        })
+      }
       onChange={(qid, value) => setValues((v) => ({ ...v, [qid]: value }))}
       onRespondentChange={() => {}}
       showRespondent={false}
@@ -689,6 +725,13 @@ function QuestionEditor({
             Add option
           </Button>
         </div>
+      ) : null}
+
+      {q.type === 'file' ? (
+        <p className="mt-3 rounded-xl bg-paper px-3.5 py-3 text-[13px] leading-relaxed text-ink/60">
+          Students attach a JPEG, PNG or WebP, up to 5 MB. On anonymous forms the
+          photo is re-encoded so location data doesn’t travel with it.
+        </p>
       ) : null}
 
       {q.type === 'rating' ? (

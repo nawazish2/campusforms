@@ -1,8 +1,10 @@
 'use client';
 
-import { Check, EyeOff } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { Check, EyeOff, ImagePlus, X } from 'lucide-react';
 import type { AnswerValue, FormDefinition, Question } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { PHOTO_ACCEPT } from '@/lib/photos';
 import { Input, Textarea } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { StarInput } from '@/components/stars';
@@ -15,6 +17,8 @@ interface FormRendererProps {
   errors: Record<string, string>;
   onChange: (qid: string, value: AnswerValue) => void;
   onRespondentChange: (patch: Partial<RespondentInput>) => void;
+  pendingFiles?: Record<string, File>;
+  onFileChange?: (qid: string, file: File | null) => void;
   /** Preview mode — inputs stay interactive but this flag marks the tree. */
   disabled?: boolean;
   showRespondent?: boolean;
@@ -44,6 +48,8 @@ export function FormRenderer({
   errors,
   onChange,
   onRespondentChange,
+  pendingFiles = {},
+  onFileChange,
   disabled = false,
   showRespondent = true,
 }: FormRendererProps) {
@@ -146,6 +152,8 @@ export function FormRenderer({
                 values={values}
                 errors={errors}
                 onChange={onChange}
+                file={pendingFiles[q.id] ?? null}
+                onFileChange={onFileChange}
                 disabled={disabled}
                 describedBy={
                   [q.description ? `${q.id}-hint` : null, err ? `${q.id}-error` : null]
@@ -175,6 +183,8 @@ function QuestionControl({
   values,
   errors,
   onChange,
+  file,
+  onFileChange,
   disabled,
   describedBy,
 }: {
@@ -182,6 +192,8 @@ function QuestionControl({
   values: Record<string, AnswerValue>;
   errors: Record<string, string>;
   onChange: (qid: string, value: AnswerValue) => void;
+  file: File | null;
+  onFileChange?: (qid: string, file: File | null) => void;
   disabled: boolean;
   /** Ids of the hint and error text belonging to this question. */
   describedBy?: string;
@@ -277,6 +289,23 @@ function QuestionControl({
     );
   }
 
+  if (q.type === 'file') {
+    return (
+      <FileControl
+        qid={q.id}
+        title={q.title || 'Photo'}
+        file={file}
+        invalid={invalid}
+        disabled={disabled}
+        describedBy={describedBy}
+        onFileChange={(next) => {
+          onFileChange?.(q.id, next);
+          onChange(q.id, next ? next.name : '');
+        }}
+      />
+    );
+  }
+
   if (q.type === 'long-text') {
     return (
       <Textarea
@@ -309,6 +338,82 @@ function QuestionControl({
         }
       }}
     />
+  );
+}
+
+function FileControl({
+  qid,
+  title,
+  file,
+  invalid,
+  disabled,
+  describedBy,
+  onFileChange,
+}: {
+  qid: string;
+  title: string;
+  file: File | null;
+  invalid: boolean;
+  disabled: boolean;
+  describedBy?: string;
+  onFileChange: (file: File | null) => void;
+}) {
+  const preview = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
+  useEffect(() => {
+    if (!preview) return;
+    return () => URL.revokeObjectURL(preview);
+  }, [preview]);
+
+  return (
+    <div>
+      {preview ? (
+        <div className="relative inline-block overflow-hidden rounded-xl border border-ink/10 bg-paper">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={preview} alt="" className="max-h-56 max-w-full object-contain" />
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => onFileChange(null)}
+            className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-card/90 text-ink/70 shadow-sm ring-1 ring-ink/10 transition hover:text-correction outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+            aria-label="Remove photo"
+          >
+            <X className="size-4" />
+          </button>
+          <p className="max-w-[16rem] truncate px-3 py-2 font-mono text-[11px] text-ink/50">{file?.name}</p>
+        </div>
+      ) : (
+        <label
+          className={cn(
+            'flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed px-4 py-8 text-center transition',
+            invalid
+              ? 'border-correction/40 bg-correction-soft/40'
+              : 'border-ink/20 bg-paper hover:border-ballpoint-400',
+            disabled && 'pointer-events-none opacity-60'
+          )}
+        >
+          <ImagePlus className="size-6 text-ink/40" aria-hidden />
+          <span className="text-sm font-medium text-ink/70">Add a photo</span>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink/40">
+            JPEG, PNG or WebP · up to 5 MB
+          </span>
+          <input
+            id={`${qid}-file`}
+            type="file"
+            accept={PHOTO_ACCEPT}
+            disabled={disabled}
+            aria-label={title}
+            aria-invalid={invalid}
+            aria-describedby={describedBy}
+            className="sr-only"
+            onChange={(e) => {
+              const next = e.target.files?.[0] ?? null;
+              onFileChange(next);
+              e.target.value = '';
+            }}
+          />
+        </label>
+      )}
+    </div>
   );
 }
 

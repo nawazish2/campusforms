@@ -49,6 +49,11 @@ export const FORM_TEMPLATES: FormTemplate[] = [
       },
       { type: 'long-text', title: 'Describe the issue', description: 'Include when you first noticed it.', required: true },
       {
+        type: 'file',
+        title: 'Photo of the issue',
+        description: 'A picture of the leak, the fan, the corridor — whatever helps find it.',
+      },
+      {
         type: 'dropdown',
         title: 'Preferred repair window',
         description: 'You will be in the room during this window.',

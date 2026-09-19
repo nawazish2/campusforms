@@ -14,7 +14,8 @@ export interface RespondentInput {
 export function validateFill(
   form: FormDefinition,
   values: Record<string, AnswerValue>,
-  respondent: RespondentInput
+  respondent: RespondentInput,
+  files: Record<string, File> = {}
 ): Record<string, string> {
   const errors: Record<string, string> = {};
 
@@ -28,13 +29,15 @@ export function validateFill(
   for (const q of form.questions) {
     const v = values[q.id];
     const empty =
-      v === undefined ||
-      v === null ||
-      v === '' ||
-      (Array.isArray(v) && v.length === 0);
+      q.type === 'file'
+        ? !files[q.id]
+        : v === undefined ||
+          v === null ||
+          v === '' ||
+          (Array.isArray(v) && v.length === 0);
 
     if (q.required && empty) {
-      errors[q.id] = 'This question is required.';
+      errors[q.id] = q.type === 'file' ? 'Attach a photo.' : 'This question is required.';
       continue;
     }
     if (empty) continue;
@@ -102,6 +105,13 @@ export function validateDraft(form: FormDefinition): string[] {
       problems.push(`Question ${i + 1} lists “${dupe}” twice — options must be unique.`);
     }
   });
+
+  if (
+    form.maxResponses != null &&
+    (!Number.isInteger(form.maxResponses) || form.maxResponses < 1)
+  ) {
+    problems.push('Max responses has to be a whole number of 1 or more.');
+  }
 
   return problems;
 }

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalPage eyebrow="Legal" title="Privacy policy" updated="6 September 2026">
+    <LegalPage eyebrow="Legal" title="Privacy policy" updated="10 September 2026">
       <Section heading="The short version">
         <p>
           Students don’t make an account. Filling a form stores your answers and
@@ -26,7 +26,8 @@ export default function PrivacyPage() {
             <strong className="font-medium text-ink/80">If you fill a form:</strong>{' '}
             your answers, the form it belongs to, a reference number, and the
             submission time. Your name and email are stored only when the form
-            collects them and is not anonymous.
+            collects them and is not anonymous. If a question asks for a photo,
+            the file is stored privately and only the organizer can open it.
           </li>
           <li>
             <strong className="font-medium text-ink/80">If you run forms:</strong>{' '}
@@ -50,7 +51,9 @@ export default function PrivacyPage() {
         <p>
           One honest limit: the submission time and the order of submissions
           still exist. If very few people answer a form, that timing could narrow
-          down who wrote something. Anonymous means unnamed, not untraceable.
+          down who wrote something. A photo can also identify you — a room
+          number on the wall, a face in the frame — even after we re-encode the
+          file to strip location data. Anonymous means unnamed, not untraceable.
         </p>
       </Section>
 
@@ -63,8 +66,10 @@ export default function PrivacyPage() {
           <Link href="/status" className="font-medium text-ballpoint-700 underline underline-offset-2">
             /status
           </Link>
-          ; it never returns your answers. Other students, other organizers and
-          anyone with the link cannot read submitted answers.
+          ; it never returns your answers. The organizer can leave a short note
+          on that page (“electrician Tuesday”) so you know what happened. Other
+          students, other organizers and anyone with the link cannot read
+          submitted answers.
         </p>
       </Section>
 

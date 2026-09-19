@@ -1,5 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { answerToText, deadlineInfo, initials, pluralize, safeNextPath } from './utils';
+import {
+  answerToText,
+  deadlineInfo,
+  formShareText,
+  initials,
+  isFormAccepting,
+  pluralize,
+  safeNextPath,
+  spotsLeft,
+} from './utils';
 import { newQuestion } from './factories';
 
 afterEach(() => {
@@ -67,6 +76,35 @@ describe('answerToText', () => {
   it('keeps a zero rating rather than dropping it', () => {
     // 0 is falsy but is a real answer once a student clears their rating.
     expect(answerToText(0, rating)).toBe('0/5');
+  });
+
+  it('does not leak a storage path for a photo', () => {
+    expect(answerToText('fabc/ref/q1', newQuestion('file'))).toBe('Photo attached');
+  });
+});
+
+describe('capacity', () => {
+  it('treats a missing cap as unlimited', () => {
+    expect(spotsLeft({ maxResponses: null, responseCount: 12 })).toBeNull();
+    expect(
+      isFormAccepting({ status: 'open', deadline: null, maxResponses: null, responseCount: 99 })
+    ).toBe(true);
+  });
+
+  it('closes the form when the cap is reached', () => {
+    expect(spotsLeft({ maxResponses: 30, responseCount: 29 })).toBe(1);
+    expect(spotsLeft({ maxResponses: 30, responseCount: 30 })).toBe(0);
+    expect(
+      isFormAccepting({ status: 'open', deadline: null, maxResponses: 30, responseCount: 30 })
+    ).toBe(false);
+  });
+});
+
+describe('formShareText', () => {
+  it('puts the title above the URL so WhatsApp previews the link', () => {
+    expect(formShareText('Mess feedback', 'https://campusforms.vercel.app/f/demo')).toBe(
+      'Mess feedback\nhttps://campusforms.vercel.app/f/demo'
+    );
   });
 });
 

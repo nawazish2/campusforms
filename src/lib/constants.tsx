@@ -8,6 +8,7 @@ import {
   GraduationCap,
   Hash,
   ListChecks,
+  ImagePlus,
   Mail,
   PartyPopper,
   Star,
@@ -129,6 +130,7 @@ export const QUESTION_TYPES: {
   { type: 'date', label: 'Date', hint: 'Pick a date', icon: CalendarDays, hasOptions: false },
   { type: 'number', label: 'Number', hint: 'Numeric answer', icon: Hash, hasOptions: false },
   { type: 'email', label: 'Email', hint: 'Email address', icon: Mail, hasOptions: false },
+  { type: 'file', label: 'Photo', hint: 'A picture of the issue', icon: ImagePlus, hasOptions: false },
 ];
 
 export const QUESTION_TYPE_MAP = Object.fromEntries(

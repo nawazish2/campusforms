@@ -18,15 +18,26 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { FormRenderer } from '@/components/form-renderer';
 import { Button, buttonVariants } from '@/components/ui/button';
+import { CopyLinkButton, WhatsAppShareButton } from '@/components/copy-link-button';
 import { SetupRequired } from '@/components/setup-required';
 import { usePublicForm } from '@/lib/db/hooks';
-import { addResponse } from '@/lib/db/forms';
+import { addResponse, newResponseRef, uploadResponsePhoto } from '@/lib/db/forms';
 import { useToast } from '@/components/ui/toast';
 import { validateFill, type RespondentInput } from '@/lib/validation';
 import { hasSubmitted, markSubmitted } from '@/lib/submissions';
 import { clearDraft, loadDraft, saveDraft } from '@/lib/drafts';
 import { CATEGORIES, CATEGORY_ACCENT } from '@/lib/constants';
-import { cn, deadlineInfo, estimateFillMinutes, pluralize, timeAgo } from '@/lib/utils';
+import { DEMO_FORM_ID, demoForm, isDemoFormId } from '@/lib/demo';
+import { preparePhoto, responseFilePath } from '@/lib/photos';
+import {
+  cn,
+  deadlineInfo,
+  estimateFillMinutes,
+  isFormAccepting,
+  pluralize,
+  spotsLeft,
+  timeAgo,
+} from '@/lib/utils';
 import type { AnswerValue } from '@/lib/types';
 
 function PageSkeleton() {
@@ -76,8 +87,12 @@ function ClosedPanel({ reason }: { reason: string }) {
 export default function FillFormPage() {
   const params = useParams<{ id: string }>();
   const toast = useToast();
-  const { db, form, error, configured, loading } = usePublicForm(params.id);
+  const isDemo = isDemoFormId(params.id);
+  const publicForm = usePublicForm(isDemo ? undefined : params.id);
+  const { db, error, configured, loading } = publicForm;
+  const form = isDemo ? demoForm() : publicForm.form ?? null;
   const [submitting, setSubmitting] = useState(false);
+  const [pendingFiles, setPendingFiles] = useState<Record<string, File>>({});
 
   const [values, setValues] = useState<Record<string, AnswerValue>>({});
   const [respondent, setRespondent] = useState<RespondentInput>({ name: '', email: '' });
@@ -108,15 +123,19 @@ export default function FillFormPage() {
   }, [formId]);
 
   // Autosave (debounced) as they type; wiped the moment a submit lands.
+  // Photos don't survive a refresh — File can't go in localStorage.
   useEffect(() => {
-    if (!formId || submittedId) return;
-    const t = setTimeout(() => saveDraft(formId, { values, respondent }), 500);
+    if (!formId || submittedId || !form) return;
+    const persistable = Object.fromEntries(
+      Object.entries(values).filter(([id]) => form.questions.find((q) => q.id === id)?.type !== 'file')
+    );
+    const t = setTimeout(() => saveDraft(formId, { values: persistable, respondent }), 500);
     return () => clearTimeout(t);
-  }, [formId, values, respondent, submittedId]);
+  }, [formId, form, values, respondent, submittedId]);
 
-  if (!configured) return <SetupRequired variant="public" />;
+  if (!configured && !isDemo) return <SetupRequired variant="public" />;
 
-  if (loading) {
+  if (loading && !isDemo) {
     return (
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
@@ -170,7 +189,9 @@ export default function FillFormPage() {
     );
   }
 
-  if (form.status === 'closed' || dl.expired) {
+  const full = !isDemo && !isFormAccepting(form) && form.status === 'open' && !dl.expired;
+
+  if (!isDemo && (form.status === 'closed' || dl.expired || full)) {
     return (
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
@@ -178,7 +199,9 @@ export default function FillFormPage() {
           reason={
             form.status === 'closed'
               ? 'The organizer closed this form. It may reopen — keep an eye on the notice board.'
-              : `The deadline passed on ${dl.label?.replace('Deadline passed ', '')}. Late responses aren’t accepted.`
+              : dl.expired
+                ? `The deadline passed on ${dl.label?.replace('Deadline passed ', '')}. Late responses aren’t accepted.`
+                : 'This form is full — the organizer set a cap and it’s been reached.'
           }
         />
         <SiteFooter />
@@ -188,7 +211,7 @@ export default function FillFormPage() {
 
   const handleSubmit = async () => {
     if (submitting) return;
-    const errs = validateFill(form, values, respondent);
+    const errs = validateFill(form, values, respondent, pendingFiles);
     setErrors(errs);
     if (Object.keys(errs).length > 0) {
       requestAnimationFrame(() => {
@@ -200,11 +223,36 @@ export default function FillFormPage() {
     }
     setSubmitting(true);
     try {
-      const ref = await addResponse(db, {
+      if (isDemo) {
+        markSubmitted(DEMO_FORM_ID);
+        clearDraft(DEMO_FORM_ID);
+        setDraftRestored(null);
+        setSubmittedId('demo');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      const ref = newResponseRef();
+      const answers: Record<string, AnswerValue> = { ...values };
+      for (const q of form.questions) {
+        if (q.type !== 'file') continue;
+        const file = pendingFiles[q.id];
+        if (!file) {
+          delete answers[q.id];
+          continue;
+        }
+        const blob = await preparePhoto(file);
+        const path = responseFilePath(form.id, ref, q.id);
+        await uploadResponsePhoto(db, path, blob);
+        answers[q.id] = path;
+      }
+
+      await addResponse(db, {
         formId: form.id,
         respondentName: form.anonymous ? null : respondent.name.trim(),
         respondentEmail: form.anonymous ? null : respondent.email.trim() || null,
-        answers: values,
+        answers,
+        ref,
       });
       // Only mark it locally once the write actually landed — otherwise a
       // failed submit would lock this browser out of retrying.
@@ -274,19 +322,37 @@ export default function FillFormPage() {
               Response submitted
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink/60">
-              {form.anonymous
-                ? 'Thanks — this response is anonymous. Your name and email weren’t collected.'
-                : `Thanks, ${respondent.name.trim().split(/\s+/)[0]} — the organizer can see your name on this one.`}
+              {isDemo
+                ? 'That’s how a real submission feels. This sample stayed on your device — a hostel office never sees it.'
+                : form.anonymous
+                  ? 'Thanks — this response is anonymous. Your name and email weren’t collected.'
+                  : `Thanks, ${respondent.name.trim().split(/\s+/)[0]} — the organizer can see your name on this one.`}
             </p>
-            <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/40">
-              REF #{submittedId.toUpperCase()} · {form.title}
-            </p>
+            {isDemo ? null : (
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/40">
+                REF #{submittedId.toUpperCase()} · {form.title}
+              </p>
+            )}
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              {isDemo ? null : (
+                <>
+                  <CopyLinkButton
+                    link={submittedId.toUpperCase()}
+                    label="Copy REF"
+                    copiedToast="REF copied — keep it to track this response"
+                  />
+                  <WhatsAppShareButton
+                    title={form.title}
+                    url={`${window.location.origin}/f/${form.id}`}
+                  />
+                </>
+              )}
               <Button
                 variant="secondary"
                 onClick={() => {
                   setValues({});
                   setRespondent({ name: '', email: '' });
+                  setPendingFiles({});
                   setErrors({});
                   setSubmittedId(null);
                   setFillAgain(true);
@@ -298,16 +364,20 @@ export default function FillFormPage() {
               <Link href="/browse" className={buttonVariants()}>
                 Browse more forms
               </Link>
-              <Link
-                href={`/status?ref=${submittedId.toUpperCase()}`}
-                className={buttonVariants({ variant: 'ghost' })}
-              >
-                Track this response
-              </Link>
+              {isDemo ? null : (
+                <Link
+                  href={`/status?ref=${submittedId.toUpperCase()}`}
+                  className={buttonVariants({ variant: 'ghost' })}
+                >
+                  Track this response
+                </Link>
+              )}
             </div>
-            <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/40">
-              Save your REF code — it’s how you check back on this response.
-            </p>
+            {isDemo ? null : (
+              <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/40">
+                Save your REF code — it’s how you check back on this response.
+              </p>
+            )}
           </div>
         </main>
         <SiteFooter />
@@ -372,11 +442,18 @@ export default function FillFormPage() {
             <span className="text-[13px] font-semibold">
               {CATEGORIES[form.category].label} form
             </span>
-            {form.anonymous ? (
-              <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-card/70 px-2.5 py-0.5 text-xs font-medium">
-                Anonymous
-              </span>
-            ) : null}
+            <span className="ml-auto flex items-center gap-1.5">
+              {isDemo ? (
+                <span className="inline-flex items-center rounded-full bg-card/70 px-2.5 py-0.5 text-xs font-medium">
+                  Sample
+                </span>
+              ) : null}
+              {form.anonymous ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-card/70 px-2.5 py-0.5 text-xs font-medium">
+                  Anonymous
+                </span>
+              ) : null}
+            </span>
           </div>
 
           <div className="p-6 sm:p-8">
@@ -386,11 +463,21 @@ export default function FillFormPage() {
             {form.description ? (
               <p className="mt-2.5 text-[15px] leading-relaxed text-ink/60">{form.description}</p>
             ) : null}
+            {isDemo ? (
+              <p className="mt-4 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm leading-relaxed text-ballpoint-900">
+                This is a sample. Submitting it doesn’t go to a hostel office —
+                try it to see how a real form feels.
+              </p>
+            ) : null}
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-ink/[0.06] pb-4 font-mono text-[11px] text-ink/50">
-              <span className="inline-flex items-center gap-1.5">
-                <Users className="size-3.5" aria-hidden />
-                {pluralize(form.responseCount, 'response')} so far
-              </span>
+              {isDemo ? null : (
+                <span className="inline-flex items-center gap-1.5">
+                  <Users className="size-3.5" aria-hidden />
+                  {spotsLeft(form) == null
+                    ? `${pluralize(form.responseCount, 'response')} so far`
+                    : `${spotsLeft(form)} ${spotsLeft(form) === 1 ? 'spot' : 'spots'} left`}
+                </span>
+              )}
               <span className="inline-flex items-center gap-1.5">
                 <Timer className="size-3.5" aria-hidden />
                 ~{estimateFillMinutes(form.questions)} min to fill
@@ -432,6 +519,7 @@ export default function FillFormPage() {
             {(() => {
               const required = form.questions.filter((q) => q.required);
               const answeredRequired = required.filter((q) => {
+                if (q.type === 'file') return Boolean(pendingFiles[q.id]);
                 const v = values[q.id];
                 return !(
                   v === undefined ||
@@ -480,6 +568,21 @@ export default function FillFormPage() {
                 values={values}
                 respondent={respondent}
                 errors={errors}
+                pendingFiles={pendingFiles}
+                onFileChange={(qid, file) => {
+                  setPendingFiles((prev) => {
+                    const next = { ...prev };
+                    if (file) next[qid] = file;
+                    else delete next[qid];
+                    return next;
+                  });
+                  setErrors((e) => {
+                    if (!(qid in e)) return e;
+                    const next = { ...e };
+                    delete next[qid];
+                    return next;
+                  });
+                }}
                 onChange={(qid, value) => {
                   setValues((v) => ({ ...v, [qid]: value }));
                   setErrors((e) => {
@@ -512,10 +615,11 @@ export default function FillFormPage() {
                 {submitting ? 'Sending…' : 'Submit response'}
               </Button>
               <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-ink/40">
-                {form.anonymous
-                  ? 'Anonymous — no name stored'
-                  : 'Your name is attached to this response'}{' '}
-                · Goes straight to the organizer’s dashboard
+                {isDemo
+                  ? 'Sample — nothing leaves this browser'
+                  : form.anonymous
+                    ? 'Anonymous — no name stored · Goes straight to the organizer’s dashboard'
+                    : 'Your name is attached to this response · Goes straight to the organizer’s dashboard'}
               </p>
             </div>
           </div>

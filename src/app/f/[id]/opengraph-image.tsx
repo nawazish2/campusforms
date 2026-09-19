@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og';
 import { getPublicForm } from '@/lib/db/forms';
 import { createClient } from '@/lib/db/server';
 import { CATEGORIES } from '@/lib/constants';
+import { demoForm, isDemoFormId } from '@/lib/demo';
 import type { FormCategory } from '@/lib/types';
 
 export const size = { width: 1200, height: 630 };
@@ -30,7 +31,9 @@ export default async function Image({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const form = await getPublicForm(await createClient(), id).catch(() => null);
+  const form = isDemoFormId(id)
+    ? demoForm()
+    : await getPublicForm(await createClient(), id).catch(() => null);
 
   const title = form?.title || 'Untitled form';
   const category = (form?.category ?? 'general') as FormCategory;

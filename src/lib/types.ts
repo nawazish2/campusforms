@@ -7,7 +7,8 @@ export type QuestionType =
   | 'rating'
   | 'date'
   | 'number'
-  | 'email';
+  | 'email'
+  | 'file';
 
 export interface Question {
   id: string;
@@ -36,6 +37,8 @@ export interface FormDefinition {
   questions: Question[];
   /** Pinned forms float to the top of the notice board. */
   pinned: boolean;
+  /** Null means no cap. Enforced in the write trigger, same as the deadline. */
+  maxResponses: number | null;
   createdAt: string;
 }
 
@@ -55,4 +58,6 @@ export interface FormResponse {
   answers: Record<string, AnswerValue>;
   /** Absent on responses saved before triage existed — treat as "new". */
   status?: ResponseStatus;
+  /** Shown on /status when the student tracks their REF. Never answers. */
+  publicNote?: string;
 }

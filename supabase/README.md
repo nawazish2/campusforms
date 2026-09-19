@@ -1,6 +1,6 @@
 # Database
 
-Seven migrations, applied in order. They carry the timestamp names the
+Eight migrations, applied in order. They carry the timestamp names the
 Supabase CLI expects, so `supabase db push` applies them and the GitHub
 integration keeps the project in step with this directory.
 
@@ -13,6 +13,7 @@ integration keeps the project in step with this directory.
 | `20260906223959_pin_forms.sql` | `forms.pinned` — lets organizers float a form to the top of the notice board |
 | `20260908201959_tighten_writes.sql` | Insert defaults, a 16-hex unique `ref`, status-only response updates, immutable `response_count`, anonymity locked after the first response, and a status-only lookup |
 | `20260909210532_validate_answer_types.sql` | Checks each answer against its question's type — ratings in range, choices among the options, email and date shapes |
+| `20260910120000_notes_capacity_photos_requests.sql` | Public ticket notes, max-response caps, photo uploads (`response-files` bucket), and `organizer_requests` |
 
 ## Then, in the dashboard
 
@@ -60,13 +61,9 @@ That single check proves RLS, the trigger and anonymity are all live.
 
 ## Still to do before this is live
 
-- **Answer *types* are still unchecked.** `0003` rejects unknown question ids,
-  missing required answers and oversized payloads, but it doesn't verify that
-  a rating is a number in range or that a choice is one of the options.
 - **The flood limit counts per form, not per submitter.** Responses carry no
   IP and no submitter id, on purpose, so there is nothing else to count. It
   stops a script; it would not stop thirty phones.
-- **Seed data.** There is none: a fresh database starts empty, so `/browse`
-  is blank until an organizer publishes a form. Seeding would mean writing
-  `supabase/seed.sql` against a real `owner_id`, which only exists after the
-  first sign-in.
+- **Seed data.** There is none: a fresh database starts empty. `/browse` still
+  shows a sample mess-feedback form that does not write to the database, so
+  the board is never a blank room.

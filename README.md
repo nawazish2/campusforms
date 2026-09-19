@@ -19,7 +19,7 @@ the interface, and a results view the hostel office can read in a morning.
 
 ## What it does
 
-**For organizers.** Sign in with Google, build a form from nine question types,
+**For organizers.** Sign in with Google, build a form from ten question types,
 or start from one of fourteen templates written for the job — Hostel
 Maintenance Complaint, Weekly Mess Feedback, Event Registration, Weekend Leave
 / Night Pass. Publish, and you get a link plus a printable QR code for the
@@ -71,7 +71,7 @@ src/
     analytics   response summaries
   proxy.ts      session refresh and the /dashboard guard
 supabase/
-  migrations/   schema, policies and triggers, in seven ordered files
+  migrations/   schema, policies and triggers, in eight ordered files
 ```
 
 ### Row level security is the whole authorization model
@@ -118,9 +118,6 @@ What's next, roughly in the order the campus would feel it.
 - **Email digests** — a nightly "3 new complaints, 2 urgent" to organizers.
   Needs a service-role Supabase key, an email provider (e.g. Resend) and a
   Vercel Cron route; none of that exists yet.
-- **File uploads** — a photo of the broken fan beats a paragraph about it.
-  Supabase Storage bucket, a `file` question type and an `AnswerValue` shape
-  for uploaded paths.
 - **AI assist** — draft a form from one sentence ("room change requests"),
   weekly "top themes from 214 responses" summaries, auto-triage of complaint
   urgency. Needs an LLM API key.
@@ -136,12 +133,13 @@ know where they stop.
 
 - **Anonymous means unnamed, not untraceable.** Submission time and row order
   still exist. On a form with very few responses, timing could narrow down who
-  wrote something.
+  wrote something. A photo can identify you even after EXIF is stripped.
 - **The flood limit counts per form, not per submitter.** Responses carry no IP
   and no submitter id, on purpose, so there is nothing else to count. It stops
   a script; it wouldn't stop thirty phones.
 - **Sign-in is allowlisted.** Organizer accounts are added by hand to
-  `allowed_organizers`; there is no invitation flow yet.
+  `allowed_organizers`. Anyone can request access from `/login`; the inbox is
+  `organizer_requests`, read from the SQL editor, same as the allowlist.
 
 ---
 

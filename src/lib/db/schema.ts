@@ -22,6 +22,7 @@ export type FormRow = {
   deadline: string | null;
   questions: Question[];
   pinned: boolean;
+  max_responses: number | null;
   response_count: number;
   created_at: string;
 };
@@ -35,6 +36,7 @@ export type ResponseRow = {
   respondent_email: string | null;
   answers: Record<string, AnswerValue>;
   status: ResponseStatus;
+  public_note: string;
   submitted_at: string;
 };
 
@@ -50,22 +52,38 @@ export type Database = {
         Row: FormRow;
         Insert: Omit<
           FormRow,
-          'id' | 'created_at' | 'response_count' | 'pinned'
+          'id' | 'created_at' | 'response_count' | 'pinned' | 'max_responses'
         > & {
           id?: string;
           response_count?: number;
           pinned?: boolean;
+          max_responses?: number | null;
         };
         Update: Partial<Omit<FormRow, 'id' | 'owner_id' | 'created_at' | 'response_count'>>;
         Relationships: [];
       };
       responses: {
         Row: ResponseRow;
-        Insert: Omit<ResponseRow, 'submitted_at' | 'status'> & {
+        Insert: Omit<ResponseRow, 'submitted_at' | 'status' | 'public_note'> & {
           status?: ResponseStatus;
+          public_note?: string;
           submitted_at?: string;
         };
-        Update: Partial<Pick<ResponseRow, 'status'>>;
+        Update: Partial<Pick<ResponseRow, 'status' | 'public_note'>>;
+        Relationships: [];
+      };
+      organizer_requests: {
+        Row: {
+          id: string;
+          email: string;
+          note: string;
+          created_at: string;
+        };
+        Insert: {
+          email: string;
+          note?: string;
+        };
+        Update: Record<string, never>;
         Relationships: [];
       };
     };
@@ -79,6 +97,7 @@ export type Database = {
           response_status: ResponseStatus;
           submitted_at: string;
           is_anonymous: boolean;
+          public_note: string;
         }[];
       };
     };
@@ -106,6 +125,7 @@ export function toForm(row: FormRow): FormDefinition {
     deadline: row.deadline,
     questions: row.questions,
     pinned: row.pinned,
+    maxResponses: row.max_responses,
     createdAt: row.created_at,
   };
 }
@@ -118,9 +138,32 @@ export function toSummary(row: FormRow): FormSummary {
 }
 
 export function toDefinition(summary: FormSummary): FormDefinition {
-  const { id, title, description, category, status, anonymous, deadline, questions, pinned, createdAt } =
-    summary;
-  return { id, title, description, category, status, anonymous, deadline, questions, pinned, createdAt };
+  const {
+    id,
+    title,
+    description,
+    category,
+    status,
+    anonymous,
+    deadline,
+    questions,
+    pinned,
+    maxResponses,
+    createdAt,
+  } = summary;
+  return {
+    id,
+    title,
+    description,
+    category,
+    status,
+    anonymous,
+    deadline,
+    questions,
+    pinned,
+    maxResponses,
+    createdAt,
+  };
 }
 
 export function toResponse(row: ResponseRow): FormResponse {
@@ -133,5 +176,6 @@ export function toResponse(row: ResponseRow): FormResponse {
     submittedAt: row.submitted_at,
     answers: row.answers,
     status: row.status,
+    publicNote: row.public_note,
   };
 }

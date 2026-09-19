@@ -6,7 +6,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, ShieldCheck, TriangleAlert } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { Button, buttonVariants } from '@/components/ui/button';
+import { Input, Textarea } from '@/components/ui/input';
+import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/components/auth-provider';
+import { requestOrganizerAccess } from '@/lib/db/forms';
+import { useDb } from '@/lib/db/hooks';
 import { safeNextPath } from '@/lib/utils';
 
 /** Google's mark. Lucide has no brand icons, and a generic key icon here reads as a password field. */
@@ -33,14 +37,31 @@ function GoogleMark() {
   );
 }
 
+function isAllowlistError(error: string | null): boolean {
+  if (!error) return false;
+  const e = error.toLowerCase();
+  return (
+    e.includes('organizer list') ||
+    e.includes('database error saving new user') ||
+    e.includes('insufficient_privilege')
+  );
+}
+
 function LoginCard() {
   const params = useSearchParams();
   const router = useRouter();
+  const toast = useToast();
+  const db = useDb();
   const { user, ready, configured, signInWithGoogle } = useAuth();
   const [busy, setBusy] = useState(false);
+  const [requestOpen, setRequestOpen] = useState(false);
+  const [requestEmail, setRequestEmail] = useState('');
+  const [requestNote, setRequestNote] = useState('');
+  const [requesting, setRequesting] = useState(false);
 
   const next = safeNextPath(params.get('next'));
   const error = params.get('error');
+  const blocked = isAllowlistError(error);
 
   useEffect(() => {
     if (ready && user) router.replace(next);
@@ -69,7 +90,9 @@ function LoginCard() {
                 ? 'That sign-in link expired before it was used. Try again.'
                 : error === 'access_denied'
                   ? 'Sign-in was cancelled.'
-                  : error}
+                  : blocked
+                    ? 'This Google account isn’t on the organizer list. Request access below — students never need to sign in.'
+                    : error}
             </p>
           </div>
         ) : null}
@@ -109,6 +132,58 @@ function LoginCard() {
           Sign-in is limited to approved organizers. We store your name and
           email to label the forms you create.
         </p>
+
+        <div className="mt-6 border-t border-ink/[0.06] pt-5">
+          <button
+            type="button"
+            onClick={() => setRequestOpen((o) => !o)}
+            className="text-[13px] font-medium text-ballpoint-700 underline decoration-ballpoint-300 underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 rounded"
+          >
+            {blocked || requestOpen ? 'Request organizer access' : 'Need an organizer account?'}
+          </button>
+          {blocked || requestOpen ? (
+            <form
+              className="mt-3 space-y-3"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (requesting) return;
+                setRequesting(true);
+                try {
+                  await requestOrganizerAccess(db, requestEmail, requestNote);
+                  toast('Request sent. We’ll email you if a seat opens.');
+                  setRequestEmail('');
+                  setRequestNote('');
+                  setRequestOpen(false);
+                } catch (err) {
+                  toast(err instanceof Error ? err.message : 'That didn’t send. Try again.', 'error');
+                } finally {
+                  setRequesting(false);
+                }
+              }}
+            >
+              <Input
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@univ.edu"
+                value={requestEmail}
+                onChange={(e) => setRequestEmail(e.target.value)}
+                aria-label="Email for organizer access"
+              />
+              <Textarea
+                rows={3}
+                maxLength={500}
+                placeholder="Who you are and which desk you run — hostel office, mess committee, coding club…"
+                value={requestNote}
+                onChange={(e) => setRequestNote(e.target.value)}
+                aria-label="Why you need access"
+              />
+              <Button type="submit" size="sm" disabled={requesting || !configured}>
+                {requesting ? 'Sending…' : 'Send request'}
+              </Button>
+            </form>
+          ) : null}
+        </div>
       </div>
 
       <div className="mt-6 flex items-center justify-center gap-3">

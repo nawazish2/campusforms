@@ -84,8 +84,24 @@ export function deadlineInfo(deadline: string | null): {
   };
 }
 
-export function isFormAccepting(form: { status: string; deadline: string | null }): boolean {
-  return form.status === 'open' && !deadlineInfo(form.deadline).expired;
+/** Remaining seats when the form has a cap; null means unlimited. */
+export function spotsLeft(form: {
+  maxResponses: number | null;
+  responseCount: number;
+}): number | null {
+  if (form.maxResponses == null) return null;
+  return Math.max(0, form.maxResponses - form.responseCount);
+}
+
+export function isFormAccepting(form: {
+  status: string;
+  deadline: string | null;
+  maxResponses?: number | null;
+  responseCount?: number;
+}): boolean {
+  if (form.status !== 'open' || deadlineInfo(form.deadline).expired) return false;
+  if (form.maxResponses == null) return true;
+  return (form.responseCount ?? 0) < form.maxResponses;
 }
 
 const AVATAR_COLORS = [
@@ -116,11 +132,21 @@ export function answerToText(value: AnswerValue | undefined, question: Question)
   if (value === undefined || value === null || value === '') return '';
   if (Array.isArray(value)) return value.join('; ');
   if (question.type === 'rating') return `${value}/${question.maxRating}`;
+  if (question.type === 'file') return 'Photo attached';
   return String(value);
 }
 
 export function pluralize(n: number, singular: string, plural = `${singular}s`): string {
   return `${n.toLocaleString('en-US')} ${n === 1 ? singular : plural}`;
+}
+
+/** Prefilled WhatsApp message — campus distribution is a group chat. */
+export function whatsappShareHref(text: string): string {
+  return `https://wa.me/?text=${encodeURIComponent(text)}`;
+}
+
+export function formShareText(title: string, url: string): string {
+  return `${title}\n${url}`;
 }
 
 /** Rough "time to fill" shown on cards and the fill page. */
@@ -129,6 +155,8 @@ export function estimateFillMinutes(questions: Question[]): number {
     switch (q.type) {
       case 'long-text':
         return sum + 0.6;
+      case 'file':
+        return sum + 0.4;
       case 'rating':
         return sum + 0.15;
       case 'single-choice':

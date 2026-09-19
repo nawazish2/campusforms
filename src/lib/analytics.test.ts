@@ -99,4 +99,11 @@ describe('summarizeQuestion', () => {
     expect(summary.count).toBe(2);
     expect(summary.answers.map((a) => a.value)).toEqual(['Tap leaking', 'Fan broken']);
   });
+
+  it('does not list storage paths for photo answers', () => {
+    const q = newQuestion('file');
+    const summary = summarizeQuestion(q, answersFor(q, ['f1/ref/q', undefined]));
+    if (summary.kind !== 'text') throw new Error('expected a text summary');
+    expect(summary.answers.map((a) => a.value)).toEqual(['Photo attached']);
+  });
 });

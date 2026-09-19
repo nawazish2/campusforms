@@ -73,6 +73,20 @@ export function summarizeQuestion(q: Question, responses: FormResponse[]): Quest
     return { kind: 'choice', total: values.length, bars };
   }
 
+  if (q.type === 'file') {
+    return {
+      kind: 'text',
+      count: values.length,
+      answers: responses
+        .filter((r) => r.answers[q.id] !== undefined && r.answers[q.id] !== '')
+        .map((r) => ({
+          value: 'Photo attached',
+          respondent: r.respondentName,
+          submittedAt: r.submittedAt,
+        })),
+    };
+  }
+
   return {
     kind: 'text',
     count: values.length,

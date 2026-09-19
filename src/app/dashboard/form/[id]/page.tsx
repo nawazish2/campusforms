@@ -23,13 +23,14 @@ import { CategoryBadge } from '@/components/category-badge';
 import { StatusBadge } from '@/components/status-badge';
 import { AnonymousBadge } from '@/components/anonymous-badge';
 import { QuestionSummaryCard } from '@/components/question-summary';
-import { CopyLinkButton } from '@/components/copy-link-button';
+import { CopyLinkButton, WhatsAppShareButton } from '@/components/copy-link-button';
 import { QrShare } from '@/components/qr-share';
+import { PhotoAnswer } from '@/components/photo-answer';
 import { ActivityChart } from '@/components/activity-chart';
 import { Stars } from '@/components/stars';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { Input, Textarea } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { SearchInput } from '@/components/ui/search-input';
 import { FilterChip } from '@/components/ui/filter-chip';
@@ -41,6 +42,7 @@ import {
   deleteResponse,
   setFormPinned,
   setFormStatus,
+  setResponseNote,
   setResponseStatus,
 } from '@/lib/db/forms';
 import { downloadResponsesCsv } from '@/lib/csv';
@@ -50,6 +52,7 @@ import {
   avatarColor,
   cn,
   deadlineInfo,
+  isFormAccepting,
   fmtDateTime,
   fmtDeadline,
   initials,
@@ -327,6 +330,14 @@ export default function FormResultsPage() {
             </p>
           </Notice>
         ) : null}
+        {form.status === 'open' && !dl.expired && !isFormAccepting(form) ? (
+          <Notice tone="amber">
+            <p>
+              <strong className="font-semibold">This form is full.</strong>{' '}
+              {form.maxResponses} responses landed — raise the cap or it stays closed.
+            </p>
+          </Notice>
+        ) : null}
 
         {/* Share + stats */}
         <div className="mt-6 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
@@ -335,9 +346,10 @@ export default function FormResultsPage() {
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
                 Share link
               </p>
-              <div className="mt-3 flex items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Input readOnly value={shareLink} className="font-mono text-[13px]" aria-label="Share link" />
                 <CopyLinkButton link={shareLink} label="Copy" />
+                <WhatsAppShareButton title={form.title} url={shareLink} />
               </div>
               <p className="mt-3 text-[13px] leading-relaxed text-ink/50">
                 Drop it in the hostel group, pin it to the notice board, or
@@ -355,7 +367,15 @@ export default function FormResultsPage() {
             </div>
           </div>
           <dl className="flex h-full flex-col justify-between rounded-2xl bg-ballpoint-600 px-5 py-1 text-white shadow-md">
-            <StatRow label="Responses" value={stats.total} accent />
+            <StatRow
+              label="Responses"
+              value={
+                form.maxResponses
+                  ? `${stats.total} / ${form.maxResponses}`
+                  : stats.total
+              }
+              accent
+            />
             <StatRow label="Today" value={stats.today} accent />
             <StatRow label="Last response" value={stats.last ? timeAgo(stats.last) : '—'} accent />
             <StatRow
@@ -457,6 +477,9 @@ export default function FormResultsPage() {
                     form={form}
                     onStatusChange={(status) =>
                       mutate(() => setResponseStatus(db, r.id, status), 'Response updated')
+                    }
+                    onNoteChange={(note) =>
+                      mutate(() => setResponseNote(db, r.id, note), 'Note saved — the student can see it on /status')
                     }
                     onDelete={() => setConfirmDeleteResponse(r)}
                   />
@@ -580,14 +603,18 @@ function ResponseCard({
   response,
   form,
   onStatusChange,
+  onNoteChange,
   onDelete,
 }: {
   response: FormResponse;
   form: FormDefinition;
   onStatusChange: (status: ResponseStatus) => void;
+  onNoteChange: (note: string) => void;
   onDelete: () => void;
 }) {
   const status = response.status ?? 'new';
+  const [noteDraft, setNoteDraft] = useState<string | null>(null);
+  const note = noteDraft ?? response.publicNote ?? '';
   return (
     <article className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:p-6">
       <header className="flex items-center gap-3">
@@ -635,6 +662,24 @@ function ResponseCard({
         </Button>
       </div>
 
+      <label className="mt-3 block">
+        <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-ink/40">
+          Note the student sees on /status
+        </span>
+        <Textarea
+          rows={2}
+          maxLength={280}
+          value={note}
+          placeholder="Electrician Tuesday 4pm, Block C"
+          onChange={(e) => setNoteDraft(e.target.value)}
+          onBlur={() => {
+            const next = note.trim();
+            setNoteDraft(null);
+            if (next !== (response.publicNote ?? '').trim()) onNoteChange(next);
+          }}
+        />
+      </label>
+
       <dl className="mt-4 divide-y divide-ink/[0.06] border-t border-ink/[0.06]">
         {form.questions.map((q) => (
           <div key={q.id} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
@@ -668,6 +713,9 @@ function Answer({ answer, question }: { answer: AnswerValue | undefined; questio
         </span>
       </span>
     );
+  }
+  if (question.type === 'file' && typeof answer === 'string') {
+    return <PhotoAnswer path={answer} />;
   }
   if (Array.isArray(answer)) {
     return <span className="font-medium text-ink/80">{answer.join(' · ')}</span>;

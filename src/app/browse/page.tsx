@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Clock, Inbox, Pin, Timer, Users } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -9,34 +10,92 @@ import { CategoryBadge } from '@/components/category-badge';
 import { AnonymousBadge } from '@/components/anonymous-badge';
 import { SearchInput } from '@/components/ui/search-input';
 import { FilterChip } from '@/components/ui/filter-chip';
-import { SetupRequired } from '@/components/setup-required';
 import { useOpenForms } from '@/lib/db/hooks';
-import { CATEGORY_ACCENT, CATEGORY_LIST } from '@/lib/constants';
+import { CATEGORIES, CATEGORY_ACCENT, CATEGORY_LIST } from '@/lib/constants';
+import { demoForm, isDemoFormId } from '@/lib/demo';
 import {
   cn,
   deadlineInfo,
   estimateFillMinutes,
   isFormAccepting,
   pluralize,
+  spotsLeft,
 } from '@/lib/utils';
 import type { FormCategory } from '@/lib/types';
+import type { FormSummary } from '@/lib/db/schema';
+
+function parseCategory(raw: string | null): FormCategory | 'all' {
+  if (raw && raw in CATEGORIES) return raw as FormCategory;
+  return 'all';
+}
+
+function matchesQuery(form: FormSummary, q: string): boolean {
+  if (!q) return true;
+  return `${form.title} ${form.description}`.toLowerCase().includes(q);
+}
 
 export default function BrowsePage() {
-  const { forms, error, configured, loading } = useOpenForms();
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<FormCategory | 'all'>('all');
+  return (
+    <Suspense fallback={<BrowseSkeleton />}>
+      <BrowseBoard />
+    </Suspense>
+  );
+}
 
-  // The query already filters to open forms; a passed deadline closes a form
-  // without changing its status, so that check stays here.
+function BrowseSkeleton() {
+  return (
+    <div className="flex min-h-svh flex-col">
+      <SiteHeader />
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 lg:py-14" aria-hidden>
+        <div className="h-10 w-64 animate-pulse rounded bg-ink/[0.06]" />
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-44 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
+          ))}
+        </div>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function BrowseBoard() {
+  const { forms, error, loading } = useOpenForms();
+  const params = useSearchParams();
+  const router = useRouter();
+  const [query, setQuery] = useState('');
+  const category = parseCategory(params.get('category'));
+
+  const setCategory = (next: FormCategory | 'all') => {
+    const usp = new URLSearchParams(params.toString());
+    if (next === 'all') usp.delete('category');
+    else usp.set('category', next);
+    const qs = usp.toString();
+    router.replace(qs ? `/browse?${qs}` : '/browse', { scroll: false });
+  };
+
+  // The query already filters to open forms; a passed deadline or a full cap
+  // closes a form without changing its status, so that check stays here.
   const openForms = useMemo(() => forms.filter((f) => isFormAccepting(f)), [forms]);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     return openForms
       .filter((f) => category === 'all' || f.category === category)
-      .filter((f) => `${f.title} ${f.description}`.toLowerCase().includes(q))
+      .filter((f) => matchesQuery(f, q))
       .sort((a, b) => Number(b.pinned) - Number(a.pinned) || b.createdAt.localeCompare(a.createdAt));
   }, [openForms, category, query]);
+
+  const sample = useMemo(() => demoForm(), []);
+  const showSample = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return (category === 'all' || category === sample.category) && matchesQuery(sample, q);
+  }, [category, query, sample]);
+
+  const cards = useMemo(() => {
+    if (!showSample) return visible;
+    return visible.length === 0 ? [sample, ...visible] : [...visible, sample];
+  }, [showSample, visible, sample]);
 
   const responsesOnOpen = useMemo(
     () => openForms.reduce((sum, f) => sum + f.responseCount, 0),
@@ -44,8 +103,6 @@ export default function BrowsePage() {
   );
 
   const hasFilters = query.trim() !== '' || category !== 'all';
-
-  if (!configured) return <SetupRequired variant="public" />;
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -71,7 +128,6 @@ export default function BrowsePage() {
           ) : null}
         </div>
 
-        {/* Filters */}
         <div className="animate-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:items-center [animation-delay:80ms]">
           <SearchInput value={query} onChange={setQuery} label="Search forms…" />
           <div className="flex flex-wrap items-center gap-1.5">
@@ -91,7 +147,6 @@ export default function BrowsePage() {
           </div>
         </div>
 
-        {/* Grid */}
         {error ? (
           <div className="animate-fade-up mt-8 grid place-items-center rounded-3xl border border-dashed border-correction/30 bg-correction-soft/50 px-6 py-16 text-center">
             <h2 className="font-display text-lg font-bold tracking-tight">
@@ -107,67 +162,11 @@ export default function BrowsePage() {
             </button>
           </div>
         ) : !loading ? (
-          visible.length > 0 ? (
+          cards.length > 0 ? (
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {visible.map((f, i) => {
-                const dl = deadlineInfo(f.deadline);
-                return (
-                  <Link
-                    key={f.id}
-                    href={`/f/${f.id}`}
-                    className={cn(
-                      'group animate-fade-up relative flex flex-col overflow-hidden rounded-2xl border border-l-4 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
-                      f.pinned ? 'border-ink/10 bg-marker/10' : 'border-ink/10 hover:border-ballpoint-300',
-                      CATEGORY_ACCENT[f.category].stripe
-                    )}
-                    style={{ animationDelay: `${Math.min(i * 60, 360)}ms` }}
-                  >
-                    <div className="flex items-center gap-2">
-                      {f.pinned ? (
-                        <span
-                          className="inline-flex items-center gap-1 rounded-full bg-marker px-2.5 py-0.5 text-xs font-medium text-ink"
-                          title="Pinned by the organizer"
-                        >
-                          <Pin className="size-3" aria-hidden />
-                          Pinned
-                        </span>
-                      ) : null}
-                      <CategoryBadge category={f.category} />
-                      {f.anonymous ? <AnonymousBadge /> : null}
-                      <span className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] text-ink/40">
-                        <Timer className="size-3" aria-hidden />
-                        ~{estimateFillMinutes(f.questions)} min
-                      </span>
-                    </div>
-                    <h2 className="mt-3.5 font-display text-[17px] font-bold leading-snug tracking-tight group-hover:text-ballpoint-800">
-                      {f.title}
-                    </h2>
-                    <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-ink/50">
-                      {f.description}
-                    </p>
-                    <div className="mt-4 flex-1" />
-                    <div className="flex items-center gap-3 border-t border-ink/[0.06] pt-3.5 font-mono text-[11px] text-ink/50">
-                      <span className="inline-flex items-center gap-1">
-                        <Users className="size-3" aria-hidden />
-                        {pluralize(f.responseCount, 'response')}
-                      </span>
-                      {dl.label ? (
-                        <span
-                          className={cn(
-                            'inline-flex items-center gap-1',
-                            dl.label.startsWith('Closes today')
-                              ? 'font-semibold text-amber-600'
-                              : null
-                          )}
-                        >
-                          <Clock className="size-3" aria-hidden />
-                          {dl.label}
-                        </span>
-                      ) : null}
-                    </div>
-                  </Link>
-                );
-              })}
+              {cards.map((f, i) => (
+                <FormCard key={f.id} form={f} delay={Math.min(i * 60, 360)} />
+              ))}
             </div>
           ) : (
             <div className="animate-fade-up mt-8 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-20 text-center">
@@ -205,5 +204,76 @@ export default function BrowsePage() {
 
       <SiteFooter />
     </div>
+  );
+}
+
+function FormCard({ form: f, delay }: { form: FormSummary; delay: number }) {
+  const dl = deadlineInfo(f.deadline);
+  const spots = spotsLeft(f);
+  const sample = isDemoFormId(f.id);
+  return (
+    <Link
+      href={`/f/${f.id}`}
+      className={cn(
+        'group animate-fade-up relative flex flex-col overflow-hidden rounded-2xl border border-l-4 bg-card p-5 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+        f.pinned ? 'border-ink/10 bg-marker/10' : 'border-ink/10 hover:border-ballpoint-300',
+        CATEGORY_ACCENT[f.category].stripe
+      )}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="flex items-center gap-2">
+        {sample ? (
+          <span className="inline-flex items-center gap-1 rounded-full bg-marker px-2.5 py-0.5 text-xs font-medium text-ink">
+            Sample
+          </span>
+        ) : f.pinned ? (
+          <span
+            className="inline-flex items-center gap-1 rounded-full bg-marker px-2.5 py-0.5 text-xs font-medium text-ink"
+            title="Pinned by the organizer"
+          >
+            <Pin className="size-3" aria-hidden />
+            Pinned
+          </span>
+        ) : null}
+        <CategoryBadge category={f.category} />
+        {f.anonymous ? <AnonymousBadge /> : null}
+        <span className="ml-auto inline-flex items-center gap-1 font-mono text-[11px] text-ink/40">
+          <Timer className="size-3" aria-hidden />
+          ~{estimateFillMinutes(f.questions)} min
+        </span>
+      </div>
+      <h2 className="mt-3.5 font-display text-[17px] font-bold leading-snug tracking-tight group-hover:text-ballpoint-800">
+        {f.title}
+      </h2>
+      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-ink/50">
+        {sample ? 'Try it — this one doesn’t go to a hostel office.' : f.description}
+      </p>
+      <div className="mt-4 flex-1" />
+      <div className="flex items-center gap-3 border-t border-ink/[0.06] pt-3.5 font-mono text-[11px] text-ink/50">
+        {sample ? (
+          <span>No sign-in · answers stay on this device</span>
+        ) : (
+          <>
+            <span className="inline-flex items-center gap-1">
+              <Users className="size-3" aria-hidden />
+              {spots == null
+                ? pluralize(f.responseCount, 'response')
+                : `${spots} ${spots === 1 ? 'spot' : 'spots'} left`}
+            </span>
+            {dl.label ? (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1',
+                  dl.label.startsWith('Closes today') ? 'font-semibold text-amber-600' : null
+                )}
+              >
+                <Clock className="size-3" aria-hidden />
+                {dl.label}
+              </span>
+            ) : null}
+          </>
+        )}
+      </div>
+    </Link>
   );
 }
