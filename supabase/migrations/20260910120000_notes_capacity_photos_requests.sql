@@ -265,6 +265,7 @@ create unique index if not exists organizer_requests_email
 
 alter table organizer_requests enable row level security;
 
+drop policy if exists organizer_requests_insert on organizer_requests;
 create policy organizer_requests_insert on organizer_requests
   for insert to anon, authenticated
   with check (true);
