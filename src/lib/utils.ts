@@ -106,11 +106,11 @@ export function isFormAccepting(form: {
 
 const AVATAR_COLORS = [
   'bg-ballpoint-100 text-ballpoint-700',
-  'bg-amber-100 text-amber-800',
-  'bg-emerald-100 text-emerald-800',
-  'bg-violet-100 text-violet-800',
-  'bg-sky-100 text-sky-800',
-  'bg-rose-100 text-rose-800',
+  'bg-cath-soft text-cath-ink',
+  'bg-catm-soft text-catm-ink',
+  'bg-cate-soft text-cate-ink',
+  'bg-cata-soft text-cata-ink',
+  'bg-tick-soft text-tick',
 ];
 
 export function avatarColor(name: string | null): string {

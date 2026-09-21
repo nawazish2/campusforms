@@ -11,7 +11,7 @@ export function Logo({ href = '/', className }: { href?: string; className?: str
         className
       )}
     >
-      <span className="grid size-8 shrink-0 place-items-center rounded-[9px] bg-ballpoint-600 text-white shadow-sm transition-transform duration-200 group-hover:-rotate-6">
+      <span className="grid size-8 shrink-0 place-items-center rounded-[9px] bg-accent-solid text-on-accent shadow-sm transition-transform duration-200 group-hover:-rotate-6">
         <SquareCheckBig className="size-[18px]" strokeWidth={2.4} />
       </span>
       <span className="font-display text-[17px] font-bold tracking-tight text-ink sm:text-[19px]">

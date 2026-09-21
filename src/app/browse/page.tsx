@@ -8,7 +8,8 @@ import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { CategoryBadge } from '@/components/category-badge';
 import { AnonymousBadge } from '@/components/anonymous-badge';
-import { SearchInput } from '@/components/ui/search-input';
+import { MorphSearchCapsule } from '@/components/ui/morph-search-capsule';
+import { CanvasShimmerSkeleton } from '@/components/ui/canvas-shimmer-skeleton';
 import { FilterChip } from '@/components/ui/filter-chip';
 import { useOpenForms } from '@/lib/db/hooks';
 import { CATEGORIES, CATEGORY_ACCENT, CATEGORY_LIST } from '@/lib/constants';
@@ -110,26 +111,23 @@ function BrowseBoard() {
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 lg:py-14">
         <div className="animate-fade-up max-w-2xl">
-          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
-            Student notice board
-          </p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+          <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
             Open forms
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-ink/60">
             Fill a complaint, register for an event, or drop anonymous
-            feedback — no sign-in needed.
+            feedback. No sign-in needed.
           </p>
           {!loading && openForms.length > 0 ? (
-            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40">
-              {pluralize(openForms.length, 'open form')} ·{' '}
+            <p className="mt-4 text-sm text-ink/40">
+              {pluralize(openForms.length, 'open form')},{' '}
               {pluralize(responsesOnOpen, 'response')} collected
             </p>
           ) : null}
         </div>
 
         <div className="animate-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:items-center [animation-delay:80ms]">
-          <SearchInput value={query} onChange={setQuery} label="Search forms…" />
+          <MorphSearchCapsule value={query} onSearch={setQuery} placeholder="Search forms…" />
           <div className="flex flex-wrap items-center gap-1.5">
             <FilterChip active={category === 'all'} onClick={() => setCategory('all')}>
               All
@@ -194,9 +192,9 @@ function BrowseBoard() {
             </div>
           )
         ) : (
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-hidden>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-44 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
+              <CanvasShimmerSkeleton key={i} className="h-44" label="Loading open forms" />
             ))}
           </div>
         )}

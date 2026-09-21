@@ -110,7 +110,7 @@ export default function NewFormPage() {
                   <span
                     className={cn(
                       'ml-auto grid size-8 place-items-center rounded-lg text-ink/30 transition-all',
-                      'group-hover:bg-ballpoint-600 group-hover:text-white'
+                      'group-hover:bg-accent-solid group-hover:text-on-accent'
                     )}
                     aria-hidden
                   >

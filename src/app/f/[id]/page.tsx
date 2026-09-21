@@ -43,8 +43,8 @@ import type { AnswerValue } from '@/lib/types';
 function PageSkeleton() {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10" aria-hidden>
-      <div className="h-4 w-28 animate-pulse rounded bg-ink/[0.06]" />
-      <div className="mt-6 h-64 animate-pulse rounded-3xl border border-ink/[0.06] bg-card/70" />
+      <div className="skeleton h-4 w-28 rounded" />
+      <div className="skeleton mt-6 h-64 rounded-3xl" />
     </main>
   );
 }
@@ -275,13 +275,13 @@ export default function FillFormPage() {
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-14">
           <div className="rounded-3xl border border-ink/10 bg-card px-6 py-14 text-center shadow-sm sm:px-12">
             <div className="relative mx-auto size-20">
-              <svg viewBox="0 0 100 100" className="size-20" role="img" aria-label="Submitted">
+              <svg viewBox="0 0 100 100" className="size-20 text-tick" role="img" aria-label="Submitted">
                 <circle
                   cx="50"
                   cy="50"
                   r="46"
                   fill="none"
-                  stroke="#178a50"
+                  stroke="currentColor"
                   strokeWidth="4"
                   strokeLinecap="round"
                   className="draw-ring"
@@ -290,7 +290,7 @@ export default function FillFormPage() {
                 <path
                   d="M31 52 L45 65 L70 38"
                   fill="none"
-                  stroke="#178a50"
+                  stroke="currentColor"
                   strokeWidth="6"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -391,8 +391,8 @@ export default function FillFormPage() {
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
           <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
-            <span className="grid size-14 place-items-center rounded-2xl bg-emerald-50">
-              <CheckCircle2 className="size-7 text-emerald-600" aria-hidden />
+            <span className="grid size-14 place-items-center rounded-2xl bg-tick-soft">
+              <CheckCircle2 className="size-7 text-tick" aria-hidden />
             </span>
             <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
               You’ve already responded
@@ -486,7 +486,7 @@ export default function FillFormPage() {
                 <span
                   className={`inline-flex items-center gap-1.5 ${
                     dl.label.startsWith('Closes today')
-                      ? 'font-semibold text-amber-600'
+                      ? 'font-semibold text-warn-tx'
                       : ''
                   }`}
                 >

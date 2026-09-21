@@ -20,7 +20,7 @@ export function Switch({ checked, onCheckedChange, className, disabled, ...rest 
       onClick={() => onCheckedChange(!checked)}
       className={cn(
         'relative inline-flex h-[22px] w-[38px] shrink-0 items-center rounded-full transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-50',
-        checked ? 'bg-ballpoint-600' : 'bg-ink/15',
+        checked ? 'bg-accent-solid' : 'bg-ink/15',
         className
       )}
       {...rest}

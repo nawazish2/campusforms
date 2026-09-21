@@ -34,45 +34,40 @@ export const CATEGORIES: Record<
   hostel: {
     label: 'Hostel',
     icon: BedDouble,
-    badge:
-      'bg-amber-100 text-amber-900 ring-amber-600/15',
-    tile: 'bg-amber-200/70 text-amber-950 hover:bg-amber-200',
+    badge: 'bg-cath-soft text-cath-ink ring-cath-accent/25',
+    tile: 'bg-cath-soft text-cath-ink hover:brightness-95',
     examples: 'Maintenance complaints, curfew feedback, room changes',
     anonymousDefault: false,
   },
   mess: {
     label: 'Mess',
     icon: UtensilsCrossed,
-    badge:
-      'bg-emerald-100 text-emerald-900 ring-emerald-600/15',
-    tile: 'bg-emerald-200/70 text-emerald-950 hover:bg-emerald-200',
+    badge: 'bg-catm-soft text-catm-ink ring-catm-accent/25',
+    tile: 'bg-catm-soft text-catm-ink hover:brightness-95',
     examples: 'Weekly food feedback, menu votes, hygiene reports',
     anonymousDefault: true,
   },
   event: {
     label: 'Event',
     icon: PartyPopper,
-    badge:
-      'bg-violet-100 text-violet-900 ring-violet-600/15',
-    tile: 'bg-violet-200/70 text-violet-950 hover:bg-violet-200',
+    badge: 'bg-cate-soft text-cate-ink ring-cate-accent/25',
+    tile: 'bg-cate-soft text-cate-ink hover:brightness-95',
     examples: 'Hackathons, fest registrations, volunteer signups',
     anonymousDefault: false,
   },
   academics: {
     label: 'Academics',
     icon: GraduationCap,
-    badge:
-      'bg-sky-100 text-sky-900 ring-sky-600/15',
-    tile: 'bg-sky-200/70 text-sky-950 hover:bg-sky-200',
+    badge: 'bg-cata-soft text-cata-ink ring-cata-accent/25',
+    tile: 'bg-cata-soft text-cata-ink hover:brightness-95',
     examples: 'Course surveys, library hours, exam logistics',
     anonymousDefault: true,
   },
   general: {
     label: 'General',
     icon: ClipboardList,
-    badge:
-      'bg-slate-200/80 text-slate-800 ring-slate-500/15',
-    tile: 'bg-slate-300/60 text-slate-950 hover:bg-slate-300',
+    badge: 'bg-catg-soft text-catg-ink ring-catg-accent/25',
+    tile: 'bg-catg-soft text-catg-ink hover:brightness-95',
     examples: 'Anything else your office needs to collect',
     anonymousDefault: false,
   },
@@ -84,29 +79,29 @@ export const CATEGORY_ACCENT: Record<
   { band: string; button: string; stripe: string }
 > = {
   hostel: {
-    band: 'bg-amber-100/70 text-amber-900',
+    band: 'bg-cath-soft text-cath-ink',
     button: 'bg-amber-600 hover:bg-amber-700 active:bg-amber-800',
-    stripe: 'border-l-amber-400',
+    stripe: 'border-l-cath-accent',
   },
   mess: {
-    band: 'bg-emerald-100/70 text-emerald-900',
+    band: 'bg-catm-soft text-catm-ink',
     button: 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800',
-    stripe: 'border-l-emerald-400',
+    stripe: 'border-l-catm-accent',
   },
   event: {
-    band: 'bg-violet-100/70 text-violet-900',
+    band: 'bg-cate-soft text-cate-ink',
     button: 'bg-violet-600 hover:bg-violet-700 active:bg-violet-800',
-    stripe: 'border-l-violet-400',
+    stripe: 'border-l-cate-accent',
   },
   academics: {
-    band: 'bg-sky-100/70 text-sky-900',
+    band: 'bg-cata-soft text-cata-ink',
     button: 'bg-sky-600 hover:bg-sky-700 active:bg-sky-800',
-    stripe: 'border-l-sky-400',
+    stripe: 'border-l-cata-accent',
   },
   general: {
     band: 'bg-ink/[0.05] text-ink/70',
     button: 'bg-ink hover:bg-ink/90 active:bg-ink',
-    stripe: 'border-l-slate-400',
+    stripe: 'border-l-catg-accent',
   },
 };
 
@@ -158,6 +153,6 @@ export const RESPONSE_STATUS_META: Record<
   { label: string; chip: string }
 > = {
   new: { label: 'New', chip: 'border-ballpoint-300 bg-ballpoint-50 text-ballpoint-800' },
-  'in-progress': { label: 'In progress', chip: 'border-amber-300 bg-amber-50 text-amber-800' },
-  done: { label: 'Done', chip: 'border-emerald-300 bg-emerald-50 text-emerald-800' },
+  'in-progress': { label: 'In progress', chip: 'border-warn-bd bg-warn-bg text-warn-tx' },
+  done: { label: 'Done', chip: 'border-tick/30 bg-tick-soft text-tick' },
 };

@@ -125,6 +125,17 @@ export default function FormResultsPage() {
     return counts;
   }, [formResponses]);
 
+  // Oldest waiting response — the one number that tells the organizer
+  // whether the pile is growing faster than the triage.
+  const oldestNewAt = useMemo(() => {
+    let oldest: string | null = null;
+    for (const r of formResponses) {
+      if ((r.status ?? 'new') !== 'new') continue;
+      if (oldest === null || r.submittedAt < oldest) oldest = r.submittedAt;
+    }
+    return oldest;
+  }, [formResponses]);
+
   if (!configured) return <SetupRequired />;
 
   if (loading) {
@@ -132,8 +143,8 @@ export default function FormResultsPage() {
       <div className="min-h-svh">
         <DashboardHeader />
         <div className="mx-auto max-w-6xl space-y-4 px-4 py-8 sm:px-6" aria-hidden>
-          <div className="h-28 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
-          <div className="h-40 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
+          <div className="skeleton h-28 rounded-2xl" />
+          <div className="skeleton h-40 rounded-2xl" />
         </div>
       </div>
     );
@@ -144,8 +155,8 @@ export default function FormResultsPage() {
       <div className="min-h-svh">
         <DashboardHeader />
         <div className="mx-auto max-w-xl px-4 py-20 text-center">
-          <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-amber-50">
-            <TriangleAlert className="size-7 text-amber-600" aria-hidden />
+          <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-warn-bg">
+            <TriangleAlert className="size-7 text-warn-tx" aria-hidden />
           </span>
           <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
             Couldn’t load this form
@@ -366,7 +377,7 @@ export default function FormResultsPage() {
               </Link>
             </div>
           </div>
-          <dl className="flex h-full flex-col justify-between rounded-2xl bg-ballpoint-600 px-5 py-1 text-white shadow-md">
+          <dl className="flex h-full flex-col justify-between rounded-2xl bg-accent-solid px-5 py-1 text-on-accent shadow-md">
             <StatRow
               label="Responses"
               value={
@@ -389,6 +400,52 @@ export default function FormResultsPage() {
         <div className="mt-3">
           <ActivityChart responses={formResponses} />
         </div>
+
+        {/* Morning brief — one line that says whether triage is keeping up. */}
+        {stats.total > 0 ? (
+          <div className="animate-fade-up mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-ink/10 bg-card px-4 py-3 shadow-sm sm:px-5">
+            {statusCounts.new > 0 ? (
+              <>
+                <span className="relative grid size-8 shrink-0 place-items-center rounded-full bg-warn-bg">
+                  <Inbox className="size-4 text-warn-tx" aria-hidden />
+                  <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-accent-solid font-mono text-[9px] font-bold text-on-accent">
+                    {statusCounts.new > 9 ? '9+' : statusCounts.new}
+                  </span>
+                </span>
+                <p className="min-w-0 flex-1 text-[13.5px] leading-snug">
+                  <strong className="font-semibold">
+                    {pluralize(statusCounts.new, 'response')} waiting
+                  </strong>
+                  <span className="text-ink/55">
+                    {oldestNewAt ? ` · oldest sitting ${timeAgo(oldestNewAt)}` : ''}
+                  </span>
+                </p>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => {
+                    setTab('responses');
+                    setStatusFilter('new');
+                  }}
+                >
+                  Review now
+                </Button>
+              </>
+            ) : (
+              <>
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-tick-soft">
+                  <span className="text-[15px] font-bold text-tick" aria-hidden>
+                    ✓
+                  </span>
+                </span>
+                <p className="text-[13.5px]">
+                  <strong className="font-semibold">All caught up</strong>
+                  <span className="text-ink/55"> — every response is triaged.</span>
+                </p>
+              </>
+            )}
+          </div>
+        ) : null}
 
         {/* Tabs */}
         <div className="mt-8 flex items-center justify-between gap-4">
@@ -562,13 +619,13 @@ function StatRow({
     <div
       className={cn(
         'flex items-baseline justify-between gap-3 border-b py-3 last:border-0',
-        accent ? 'border-white/15' : 'border-ink/[0.06]'
+        accent ? 'border-on-accent/15' : 'border-ink/[0.06]'
       )}
     >
       <dt
         className={cn(
           'font-mono text-[11px] uppercase tracking-wider',
-          accent ? 'text-white/70' : 'text-ink/50'
+          accent ? 'text-on-accent/70' : 'text-ink/50'
         )}
       >
         {label}
@@ -591,7 +648,7 @@ function Notice({ tone, children }: { tone: 'ballpoint' | 'amber'; children: Rea
         'mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed',
         tone === 'ballpoint'
           ? 'border-ballpoint-200 bg-ballpoint-50 text-ballpoint-900'
-          : 'border-amber-200 bg-amber-50 text-amber-900'
+          : 'border-warn-bd bg-warn-bg text-warn-tx'
       )}
     >
       {children}

@@ -457,16 +457,16 @@ function ChoiceCard({
           multi ? 'rounded-[6px]' : 'rounded-full',
           checked
             ? multi
-              ? 'border-ballpoint-600 bg-ballpoint-600'
-              : 'border-ballpoint-600'
+              ? 'border-accent-solid bg-accent-solid'
+              : 'border-accent-solid'
             : 'border-ink/20 bg-card group-hover:border-ink/40'
         )}
       >
         {checked ? (
           multi ? (
-            <Check className="size-3 text-white" strokeWidth={3.5} />
+            <Check className="size-3 text-on-accent" strokeWidth={3.5} />
           ) : (
-            <span className="size-2.5 rounded-full bg-ballpoint-600" />
+            <span className="size-2.5 rounded-full bg-accent-solid" />
           )
         ) : null}
       </span>

@@ -22,7 +22,7 @@ export default function PosterPage() {
   if (loading) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-16" aria-hidden>
-        <div className="mx-auto h-[720px] w-full max-w-[640px] animate-pulse rounded-3xl border border-ink/[0.06] bg-card/70" />
+        <div className="skeleton mx-auto h-[720px] w-full max-w-[640px] rounded-3xl" />
       </main>
     );
   }
@@ -103,11 +103,16 @@ export default function PosterPage() {
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3 font-mono text-[12px] text-ink/50">
           <span>No sign-in needed</span>
+          {form.anonymous ? (
+            <span className="rounded-full border border-ballpoint-300 bg-ballpoint-50 px-3 py-1 font-semibold text-ballpoint-800">
+              Anonymous — names aren’t collected
+            </span>
+          ) : null}
           {dl.label ? (
             <span
               className={cn(
                 'rounded-full border border-ink/10 px-3 py-1',
-                dl.label.startsWith('Closes today') && 'border-amber-300 font-semibold text-amber-700'
+                dl.label.startsWith('Closes today') && 'border-warn-bd font-semibold text-warn-tx'
               )}
             >
               {dl.label}

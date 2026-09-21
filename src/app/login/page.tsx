@@ -68,24 +68,24 @@ function LoginCard() {
   }, [ready, user, next, router]);
 
   return (
-    <div className="w-full max-w-md">
+    <div className="mx-auto w-full max-w-md">
       <div className="rounded-3xl border border-ink/10 bg-card p-8 shadow-md sm:p-10">
         <Logo />
         <h1 className="mt-7 font-display text-[28px] font-extrabold leading-tight tracking-tight">
           Sign in to run forms
         </h1>
         <p className="mt-2.5 text-[15px] leading-relaxed text-ink/60">
-          Organizers sign in with Google. Students don’t need an account —
-          they just open the link you share.
+          Organizers sign in with Google. Students don’t need an account.
+          They just open the link you share.
         </p>
 
         {error ? (
           <div
             role="alert"
-            className="mt-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3"
+            className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn-bd bg-warn-bg px-4 py-3"
           >
-            <TriangleAlert className="mt-0.5 size-4 shrink-0 text-amber-600" aria-hidden />
-            <p className="text-[13px] leading-relaxed text-amber-900">
+            <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn-tx" aria-hidden />
+            <p className="text-[13px] leading-relaxed text-warn-tx">
               {error === 'missing_code'
                 ? 'That sign-in link expired before it was used. Try again.'
                 : error === 'access_denied'
@@ -201,10 +201,12 @@ function LoginCard() {
 
 export default function LoginPage() {
   return (
-    <main className="bg-ruled flex min-h-svh items-center justify-center px-4 py-12">
-      <Suspense fallback={<div className="h-[420px] w-full max-w-md animate-pulse rounded-3xl bg-card/70" />}>
-        <LoginCard />
-      </Suspense>
+    <main className="flex min-h-svh items-center justify-center bg-paper px-4 py-12">
+      <div className="w-full">
+        <Suspense fallback={<div className="mx-auto h-[420px] w-full max-w-md animate-pulse rounded-3xl bg-card/70" />}>
+          <LoginCard />
+        </Suspense>
+      </div>
     </main>
   );
 }

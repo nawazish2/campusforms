@@ -31,12 +31,10 @@ export function HeroDemo() {
   }, [stamped]);
 
   return (
-    <div className="relative mx-auto w-full max-w-md pt-12 pb-10">
+    <div className="relative mx-auto w-full max-w-md pt-8 pb-8">
       {/* Floating response-stats chip */}
-      <div className="animate-float-a absolute -right-3 -top-4 z-10 rotate-2 rounded-2xl border border-ink/10 bg-card px-4 py-3 shadow-lg shadow-ink/[0.06] sm:-right-8">
-        <p className="font-mono text-[10px] uppercase tracking-wider text-ink/50">
-          This week
-        </p>
+      <div className="animate-float-a absolute -right-3 -top-4 z-10 rounded-2xl border border-ink/10 bg-card px-4 py-3 shadow-md sm:-right-8">
+        <p className="text-sm text-ink/50">This week</p>
         <div className="mt-1.5 flex items-end gap-3">
           <p className="font-display text-xl font-bold leading-none">128</p>
           <div className="flex items-end gap-[3px]">
@@ -57,19 +55,17 @@ export function HeroDemo() {
       </div>
 
       {/* Floating anonymous chip */}
-      <div className="animate-float-b absolute -bottom-2 -left-2 z-10 -rotate-2 rounded-full border border-ink/10 bg-card px-4 py-2.5 shadow-lg shadow-ink/[0.06] sm:-left-7">
+      <div className="animate-float-b absolute -bottom-2 -left-2 z-10 rounded-full border border-ink/10 bg-card px-4 py-2.5 shadow-md sm:-left-7">
         <p className="flex items-center gap-2 text-[13px] font-medium text-ink/70">
           <EyeOff className="size-3.5 text-ballpoint-600" aria-hidden />
-          Anonymous mess feedback on
+          Anonymous by default
         </p>
       </div>
 
-      <div className="punch-holes relative rotate-[1.2deg] rounded-2xl border border-ink/10 bg-card pb-6 pt-9 px-6 shadow-xl shadow-ink/[0.07] transition-transform duration-300 hover:rotate-0">
+      <div className="relative rounded-2xl border border-ink/10 bg-card px-6 pt-6 pb-6 shadow-lg">
         <div className="flex items-center justify-between">
           <CategoryBadge category="hostel" />
-          <span className="font-mono text-[10px] uppercase tracking-wider text-ink/40">
-            HST-01 · Open
-          </span>
+          <span className="text-sm text-ink/45">HST-01, open</span>
         </div>
         <h3 className="mt-3.5 font-display text-lg font-bold tracking-tight">
           Hostel Maintenance Complaint

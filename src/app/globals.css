@@ -1,56 +1,217 @@
 @import "tailwindcss";
 
-/* One theme: a cream sheet with ballpoint ink on it. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Cool zinc canvas, ballpoint-blue accent. VengeanceUI tokens map onto these. */
 :root {
   color-scheme: light;
-  --paper: #efe6d3;
-  --ink: #181b25;
-  --card: #fffdf7;
+  --paper: #f3f4f8;
+  --ink: #14151c;
+  --card: #ffffff;
+  --stripe-color: #ffffff;
 
-  /* Paper elevation: tight, warm, low-spread — sheets stacked on a desk,
-     not floating glass. */
-  --elev-1: 0 1px 1px rgb(24 27 37 / 0.05), 0 1px 3px rgb(24 27 37 / 0.06);
-  --elev-2: 0 1px 2px rgb(24 27 37 / 0.06), 0 6px 14px -6px rgb(24 27 37 / 0.18);
-  --elev-3: 0 2px 4px rgb(24 27 37 / 0.06), 0 14px 28px -12px rgb(24 27 37 / 0.24);
-  --elev-4: 0 4px 8px rgb(24 27 37 / 0.08), 0 24px 48px -18px rgb(24 27 37 / 0.3);
+  --elev-1: 0 1px 1px rgb(20 22 32 / 0.04), 0 1px 3px rgb(20 22 32 / 0.06);
+  --elev-2: 0 1px 2px rgb(20 22 32 / 0.05), 0 10px 24px -10px rgb(20 22 32 / 0.18);
+  --elev-3: 0 2px 4px rgb(20 22 32 / 0.06), 0 18px 40px -16px rgb(20 22 32 / 0.22);
+  --elev-4: 0 4px 8px rgb(20 22 32 / 0.07), 0 28px 56px -20px rgb(20 22 32 / 0.28);
 
-  /* Ruled-sheet ink — dark enough to actually read as a page, not a hint of one. */
-  --rule: rgb(24 27 37 / 0.14);
+  --rule: rgb(20 22 32 / 0.1);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --border: rgb(20 22 32 / 0.1);
+  --ring: #3d5fe8;
+  --input: rgb(20 22 32 / 0.12);
+  --muted: #e8eaf0;
+  --muted-foreground: #5c6170;
 
   /* Correction-pen red — the one red in the whole app (required marks, errors,
      destructive actions). Warmer and less saturated than Tailwind's red-600
      so it reads as ink on paper, not a UI-kit alert color. */
   --correction: #b53d2e;
   --correction-soft: #fbe9e4;
-}
-@theme {
+
+  /* Solid action surfaces. These stay saturated in both themes so white
+     button text keeps AA contrast; only text/tint usages of the scales float. */
+  --accent-solid: #3d5fe8;
+  --on-accent: #ffffff;
+  --danger-solid: #b53d2e;
+  --on-danger: #ffffff;
+  --tick-solid: #178a50;
+  --on-tick: #ffffff;
+
+  /* Warning banner (deadlines, load errors). */
+  --warn-bg: #fef6e3;
+  --warn-bd: #f0dfb2;
+  --warn-tx: #8a5a12;
+
   /* Ballpoint blue — forms are filled in blue pen. */
-  --color-ballpoint-50: #eef3fe;
-  --color-ballpoint-100: #e0e9fd;
-  --color-ballpoint-200: #c5d4fb;
-  --color-ballpoint-300: #9db6f8;
-  --color-ballpoint-400: #6d90f2;
-  --color-ballpoint-500: #4a6feb;
-  --color-ballpoint-600: #2f53de;
-  --color-ballpoint-700: #2643b8;
-  --color-ballpoint-800: #223a94;
-  --color-ballpoint-900: #1f3477;
+  --ballpoint-50: #eef3fe;
+  --ballpoint-100: #e0e9fd;
+  --ballpoint-200: #c5d4fb;
+  --ballpoint-300: #9db6f8;
+  --ballpoint-400: #6d90f2;
+  --ballpoint-500: #4a6feb;
+  --ballpoint-600: #3d5fe8;
+  --ballpoint-700: #2643b8;
+  --ballpoint-800: #223a94;
+  --ballpoint-900: #1f3477;
 
   /* Highlighter marks, used sparingly. */
-  --color-marker: #fbf3a0;
-  --color-marker-strong: #eede4e;
+  --marker: #fbf3a0;
+  --marker-strong: #eede4e;
 
   /* Tick green — submitted, approved, done. */
-  --color-tick: #178a50;
-  --color-tick-soft: #e3f4ea;
+  --tick: #178a50;
+  --tick-soft: #e3f4ea;
+
+  /* Category inks — soft tint bg, readable text, saturated accent. */
+  --cath-soft: #fef3c7;
+  --cath-ink: #78350f;
+  --cath-accent: #f5b62b;
+  --catm-soft: #d9f2e4;
+  --catm-ink: #0c5c36;
+  --catm-accent: #34d399;
+  --cate-soft: #e7e1fb;
+  --cate-ink: #4c1d95;
+  --cate-accent: #a78bfa;
+  --cata-soft: #dcecfa;
+  --cata-ink: #0c4a6e;
+  --cata-accent: #38bdf8;
+  --catg-soft: #e6e6ea;
+  --catg-ink: #33333c;
+  --catg-accent: #94a3b8;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0c0d12;
+  --ink: #eceef4;
+  --card: #16171f;
+  --stripe-color: #000000;
+
+  --elev-1: 0 1px 1px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.4);
+  --elev-2: 0 1px 2px rgb(0 0 0 / 0.45), 0 10px 24px -10px rgb(0 0 0 / 0.6);
+  --elev-3: 0 2px 4px rgb(0 0 0 / 0.45), 0 20px 40px -16px rgb(0 0 0 / 0.65);
+  --elev-4: 0 4px 8px rgb(0 0 0 / 0.5), 0 32px 60px -20px rgb(0 0 0 / 0.7);
+
+  --rule: rgb(236 238 244 / 0.12);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --border: rgb(236 238 244 / 0.12);
+  --ring: #7d9bff;
+  --input: rgb(236 238 244 / 0.14);
+  --muted: #1c1d26;
+  --muted-foreground: #9aa0b2;
+
+  --correction: #e0705c;
+  --correction-soft: #3b241f;
+
+  --accent-solid: #5b7cff;
+  --on-accent: #ffffff;
+  --danger-solid: #c24834;
+  --on-danger: #ffffff;
+  --tick-solid: #1e7a48;
+  --on-tick: #ffffff;
+
+  --warn-bg: #2e2410;
+  --warn-bd: #57431a;
+  --warn-tx: #f0c573;
+
+  --ballpoint-50: #1b2342;
+  --ballpoint-100: #232d57;
+  --ballpoint-200: #31407c;
+  --ballpoint-300: #4a5fa8;
+  --ballpoint-400: #647fd6;
+  --ballpoint-500: #7d9bff;
+  --ballpoint-600: #93afff;
+  --ballpoint-700: #b3c6ff;
+  --ballpoint-800: #cfdbff;
+  --ballpoint-900: #e6ebff;
+
+  --marker: #6e611c;
+  --marker-strong: #8a7a24;
+
+  --tick: #46bd7f;
+  --tick-soft: #143327;
+
+  --cath-soft: #33270f;
+  --cath-ink: #f2c979;
+  --cath-accent: #d99a2b;
+  --catm-soft: #0f2f26;
+  --catm-ink: #7fd6a8;
+  --catm-accent: #34b37a;
+  --cate-soft: #2a2145;
+  --cate-ink: #c4b0f5;
+  --cate-accent: #8b6fe8;
+  --cata-soft: #12293d;
+  --cata-ink: #8ec8f2;
+  --cata-accent: #4aa3e0;
+  --catg-soft: #26262e;
+  --catg-ink: #c9c9d4;
+  --catg-accent: #8a8a99;
 }
 
 @theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-card: var(--card);
   --color-correction: var(--correction);
   --color-correction-soft: var(--correction-soft);
+
+  --color-accent-solid: var(--accent-solid);
+  --color-on-accent: var(--on-accent);
+  --color-danger-solid: var(--danger-solid);
+  --color-on-danger: var(--on-danger);
+  --color-tick-solid: var(--tick-solid);
+  --color-on-tick: var(--on-tick);
+
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-bd: var(--warn-bd);
+  --color-warn-tx: var(--warn-tx);
+
+  --color-ballpoint-50: var(--ballpoint-50);
+  --color-ballpoint-100: var(--ballpoint-100);
+  --color-ballpoint-200: var(--ballpoint-200);
+  --color-ballpoint-300: var(--ballpoint-300);
+  --color-ballpoint-400: var(--ballpoint-400);
+  --color-ballpoint-500: var(--ballpoint-500);
+  --color-ballpoint-600: var(--ballpoint-600);
+  --color-ballpoint-700: var(--ballpoint-700);
+  --color-ballpoint-800: var(--ballpoint-800);
+  --color-ballpoint-900: var(--ballpoint-900);
+
+  --color-marker: var(--marker);
+  --color-marker-strong: var(--marker-strong);
+
+  --color-tick: var(--tick);
+  --color-tick-soft: var(--tick-soft);
+
+  --color-cath-soft: var(--cath-soft);
+  --color-cath-ink: var(--cath-ink);
+  --color-cath-accent: var(--cath-accent);
+  --color-catm-soft: var(--catm-soft);
+  --color-catm-ink: var(--catm-ink);
+  --color-catm-accent: var(--catm-accent);
+  --color-cate-soft: var(--cate-soft);
+  --color-cate-ink: var(--cate-ink);
+  --color-cate-accent: var(--cate-accent);
+  --color-cata-soft: var(--cata-soft);
+  --color-cata-ink: var(--cata-ink);
+  --color-cata-accent: var(--cata-accent);
+  --color-catg-soft: var(--catg-soft);
+  --color-catg-ink: var(--catg-ink);
+  --color-catg-accent: var(--catg-accent);
+
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-display: var(--font-bricolage), var(--font-geist-sans), ui-sans-serif,
@@ -70,6 +231,28 @@ body {
 ::selection {
   background-color: var(--color-marker);
   color: #181b25;
+}
+[data-theme="dark"] ::selection {
+  color: #f2efe6;
+}
+
+/* Subtle desk scrollbar. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(127 127 140 / 0.45) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(127 127 140 / 0.45);
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* The sheet itself: horizontal rules on a 32px rhythm, faded out at the
@@ -101,6 +284,10 @@ body {
   mix-blend-mode: multiply;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-theme="dark"] .bg-grain::before {
+  mix-blend-mode: screen;
+  opacity: 0.04;
 }
 
 /* Two punch holes along the top edge of a card, like a sheet off a form pad.
@@ -156,6 +343,40 @@ body {
     rgb(247 245 239 / 0.07) 31px,
     rgb(247 245 239 / 0.07) 32px
   );
+}
+
+/* Skeleton shimmer shaped by the element itself — pair with the final
+   layout's shape (rounded-xl bars) instead of generic pulses. */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgb(127 127 140 / 0.16);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.35),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+[data-theme="dark"] .skeleton::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(255 255 255 / 0.08),
+    transparent
+  );
+}
+@keyframes skeleton-sweep {
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 @keyframes fade-up {
@@ -309,7 +530,8 @@ body {
   .animate-float-b,
   .confetti-particle,
   .draw-check,
-  .draw-ring {
+  .draw-ring,
+  .skeleton::after {
     animation: none;
   }
   .draw-check,
@@ -328,5 +550,93 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+  }
+}
+
+/* VengeanceUI component utilities */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes glow-angle-rotate {
+  to {
+    --glow-angle: 1turn;
+  }
+}
+
+.glow-conic {
+  border-image: conic-gradient(
+      from var(--glow-angle),
+      var(--glow-color-1, #3d5fe8),
+      var(--glow-color-2, #38bdf8),
+      var(--glow-color-3, #22d3ee),
+      var(--glow-color-4, #60a5fa),
+      var(--glow-color-5, #818cf8),
+      var(--glow-color-6, #3d5fe8),
+      var(--glow-color-7, #38bdf8),
+      var(--glow-color-8, #22d3ee),
+      var(--glow-color-9, #60a5fa),
+      var(--glow-color-10, #818cf8),
+      var(--glow-color-1, #3d5fe8)
+    )
+    1;
+  animation: glow-angle-rotate var(--glow-animation-duration, 4s) linear infinite;
+}
+
+@keyframes aurora-smooth-bg {
+  from {
+    background-position: 50% 50%, 50% 50%;
+  }
+  to {
+    background-position: 350% 50%, 350% 50%;
+  }
+}
+
+.animate-aurora-bg {
+  animation: aurora-smooth-bg 60s linear infinite;
+}
+
+.glass-border {
+  border: 1px solid rgb(20 22 32 / 0.12);
+}
+
+[data-theme='dark'] .glass-border,
+.dark .glass-border {
+  border: 1px solid rgb(255 255 255 / 0.16);
+}
+
+.spotlight-nav-bg {
+  background: rgb(255 255 255 / 0.82);
+  backdrop-filter: blur(12px);
+}
+
+[data-theme='dark'] .spotlight-nav-bg,
+.dark .spotlight-nav-bg {
+  background: rgb(12 13 18 / 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.spotlight-nav-shadow {
+  box-shadow: 0 10px 15px -3px rgb(20 22 32 / 0.08), 0 4px 6px -4px rgb(20 22 32 / 0.06);
+}
+
+[data-theme='dark'] .spotlight-nav-shadow,
+.dark .spotlight-nav-shadow {
+  box-shadow: 0 10px 24px -6px rgb(0 0 0 / 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-conic,
+  .animate-aurora-bg {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .spotlight-nav-bg {
+    background: var(--card);
+    backdrop-filter: none;
   }
 }

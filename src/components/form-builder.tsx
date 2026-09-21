@@ -42,7 +42,7 @@ import {
   QUESTION_TYPES,
   QUESTION_TYPE_MAP,
 } from '@/lib/constants';
-import { cn, timeAgo } from '@/lib/utils';
+import { cn, pluralize, timeAgo } from '@/lib/utils';
 import type {
   AnswerValue,
   FormDefinition,
@@ -250,10 +250,16 @@ export function FormBuilder({
             )}
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
               {mode === 'create' ? 'New form' : 'Edit form'}
+              {form.questions.length > 0 ? (
+                <span className="text-ink/35">
+                  {' '}
+                  · {pluralize(form.questions.length, 'question')}
+                </span>
+              ) : null}
             </span>
             {mode === 'edit' ? <StatusBadge status={form.status} /> : null}
             {dirty ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-800">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-warn-bg px-2.5 py-1 text-[11px] font-semibold text-warn-tx">
                 <TriangleAlert className="size-3" aria-hidden />
                 Unsaved
               </span>
@@ -619,7 +625,7 @@ function QuestionEditor({
   };
 
   return (
-    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm">
+    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm transition-colors focus-within:border-ballpoint-300">
       <div className="flex items-center gap-2">
         <span className="font-mono text-xs font-semibold text-ink/40">Q{index + 1}</span>
         <Select
@@ -768,11 +774,11 @@ function BuilderSkeleton() {
       <DashboardHeader />
       <div className="mx-auto grid max-w-6xl items-start gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_400px]" aria-hidden>
         <div className="space-y-5">
-          <div className="h-56 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
-          <div className="h-40 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
-          <div className="h-28 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70" />
+          <div className="skeleton h-56 rounded-2xl" />
+          <div className="skeleton h-40 rounded-2xl" />
+          <div className="skeleton h-28 rounded-2xl" />
         </div>
-        <div className="hidden h-96 animate-pulse rounded-2xl border border-ink/[0.06] bg-card/70 lg:block" />
+        <div className="skeleton hidden h-96 rounded-2xl lg:block" />
       </div>
     </div>
   );

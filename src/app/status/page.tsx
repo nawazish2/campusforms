@@ -164,14 +164,59 @@ export default function StatusPage() {
 
               {result.public_note ? (
                 <div className="mt-5 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
-                  <p className="font-mono text-[11px] uppercase tracking-wider text-ballpoint-700">
-                    From the organizer
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-ballpoint-950">
+                  <p className="text-sm font-medium text-ballpoint-700">From the organizer</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-ballpoint-900">
                     {result.public_note}
                   </p>
                 </div>
               ) : null}
+
+              <ol
+                className="mt-6 flex items-center"
+                aria-label={`Queue position: ${statusMeta.label}`}
+              >
+                {(['new', 'in-progress', 'done'] as const).map((s, i, arr) => {
+                  const order = { new: 0, 'in-progress': 1, done: 2 } as const;
+                  const current = order[status as ResponseStatus];
+                  const done = i < current;
+                  const active = i === current;
+                  const meta = RESPONSE_STATUS_META[s];
+                  return (
+                    <li key={s} className={cn('flex items-center', i < arr.length - 1 && 'flex-1')}>
+                      <div className="flex flex-col items-center gap-1.5">
+                        <span
+                          aria-hidden
+                          className={cn(
+                            'grid size-7 place-items-center rounded-full border text-[12px] font-bold transition',
+                            done && 'border-tick-solid bg-tick-solid text-on-tick',
+                            active && 'border-accent-solid bg-accent-solid text-on-accent shadow-sm',
+                            !done && !active && 'border-ink/15 bg-ink/[0.04] text-ink/40'
+                          )}
+                        >
+                          {done ? '✓' : i + 1}
+                        </span>
+                        <span
+                          className={cn(
+                            'whitespace-nowrap text-[11px] font-medium',
+                            active ? 'text-ink' : 'text-ink/45'
+                          )}
+                        >
+                          {meta.label}
+                        </span>
+                      </div>
+                      {i < arr.length - 1 ? (
+                        <span
+                          aria-hidden
+                          className={cn(
+                            'mx-2 mb-5 h-0.5 flex-1 rounded-full',
+                            i < current ? 'bg-tick-solid' : 'bg-ink/10'
+                          )}
+                        />
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ol>
 
               <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink/70">
                 <EyeOff className="mt-0.5 size-4 shrink-0 text-ink/40" aria-hidden />
