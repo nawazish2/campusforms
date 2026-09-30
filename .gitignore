@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Supabase CLI scratch
 supabase/.temp/
+/dist/
+.vinext/
+.cloudflare/
