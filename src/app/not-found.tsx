@@ -19,7 +19,7 @@ export default function NotFound() {
           The page you’re looking for doesn’t exist. Check the notice board for
           open forms, or head to your dashboard.
         </p>
-        <div className="mt-7 flex justify-center gap-3">
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
           <Link href="/browse" className={buttonVariants()}>
             Browse forms
           </Link>

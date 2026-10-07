@@ -53,11 +53,11 @@ function PageSkeleton() {
 function ClosedPanel({ reason }: { reason: string }) {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-      <div className="slip slip-pin grid place-items-center px-6 pb-16 pt-20 text-center">
+      <div className="slip slip-pin grid place-items-center px-5 pb-14 pt-16 text-center sm:px-6 sm:pb-16 sm:pt-20">
         <span className="grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
           <Clock className="size-7 text-ink/60" aria-hidden />
         </span>
-        <h1 className="mt-5 font-display text-3xl font-semibold">
+        <h1 className="mt-5 font-display text-2xl font-semibold sm:text-3xl">
           This form isn’t accepting responses
         </h1>
         <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/70">{reason}</p>
@@ -140,7 +140,7 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-          <div className="slip slip-pin grid place-items-center px-6 pb-16 pt-20 text-center">
+          <div className="slip slip-pin grid place-items-center px-5 pb-14 pt-16 text-center sm:px-6 sm:pb-16 sm:pt-20">
             <span className="grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
               <FileQuestion className="size-7 text-ink/60" aria-hidden />
             </span>
@@ -261,9 +261,9 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-14">
-          <div className="slip slip-pin px-6 pb-14 pt-16 text-center sm:px-12">
+          <div className="slip slip-pin px-5 pb-12 pt-14 text-center sm:px-12 sm:pb-14 sm:pt-16">
             <ReceivedStamp />
-            <h1 className="mt-6 font-display text-4xl font-semibold">
+            <h1 className="mt-6 font-display text-3xl font-semibold sm:text-4xl">
               Response submitted
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink/70">
@@ -278,7 +278,7 @@ export default function FillFormPage() {
                 REF #{(submittedId.toUpperCase().match(/.{1,4}/g) ?? []).join(' ')} · {form.title}
               </p>
             )}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 [&>*]:max-sm:w-full">
               {isDemo ? null : (
                 <>
                   <CopyLinkButton
@@ -335,7 +335,7 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-          <div className="slip slip-pin grid place-items-center px-6 pb-16 pt-20 text-center">
+          <div className="slip slip-pin grid place-items-center px-5 pb-14 pt-16 text-center sm:px-6 sm:pb-16 sm:pt-20">
             <span className="grid size-14 place-items-center rounded-lg bg-tick-soft">
               <CheckCircle2 className="size-7 text-tick" aria-hidden />
             </span>
@@ -346,7 +346,7 @@ export default function FillFormPage() {
               This browser submitted “{form.title}” once already. Fill it in
               again only if the organizer asked you to.
             </p>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3 [&>*]:max-sm:w-full">
               <Button variant="secondary" onClick={() => setFillAgain(true)}>
                 <RotateCcw />
                 Fill it in again
@@ -369,7 +369,7 @@ export default function FillFormPage() {
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:py-12">
         <Link
           href="/browse"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
+          className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           All open forms
@@ -378,7 +378,7 @@ export default function FillFormPage() {
         <div className="slip slip-pin mt-6">
           {/* Category band — tints the form by what it's for */}
           <div
-            className={cn('flex items-center gap-2 rounded-t-[5px] px-6 pb-3 pt-5 sm:px-8', CATEGORY_ACCENT[form.category].band)}
+            className={cn('flex items-center gap-2 rounded-t-[5px] px-5 pb-3 pt-5 sm:px-8', CATEGORY_ACCENT[form.category].band)}
           >
             {(() => {
               const Icon = CATEGORIES[form.category].icon;
@@ -401,8 +401,8 @@ export default function FillFormPage() {
             </span>
           </div>
 
-          <div className="p-6 sm:p-8">
-            <h1 className="font-display text-4xl font-semibold leading-tight">
+          <div className="p-5 sm:p-8">
+            <h1 className="font-display text-3xl font-semibold leading-tight sm:text-4xl">
               {form.title}
             </h1>
             {form.description ? (
@@ -454,7 +454,7 @@ export default function FillFormPage() {
                     setRespondent({ name: '', email: '' });
                     setDraftRestored(null);
                   }}
-                  className="ml-auto font-medium text-ballpoint-800 underline decoration-ballpoint-300 underline-offset-2 transition hover:text-ballpoint-600 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  className="ml-auto inline-flex min-h-10 items-center px-1 font-medium text-ballpoint-800 underline decoration-ballpoint-300 underline-offset-2 transition hover:text-ballpoint-600 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                 >
                   Discard
                 </button>

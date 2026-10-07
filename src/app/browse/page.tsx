@@ -129,7 +129,7 @@ function BrowseBoard() {
 
         <div className="animate-fade-up mt-8 flex flex-col gap-3 sm:flex-row sm:items-center [animation-delay:80ms]">
           <MorphSearchCapsule value={query} onSearch={setQuery} placeholder="Search forms…" />
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
             <FilterChip active={category === 'all'} onClick={() => setCategory('all')}>
               All
             </FilterChip>
@@ -158,7 +158,7 @@ function BrowseBoard() {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-5 rounded-full border-[1.5px] border-ink/20 bg-card px-4 py-2 text-[13px] font-medium text-ink transition hover:border-ink/50 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-5 rounded-full border-[1.5px] border-ink/20 bg-card px-4 py-2.5 text-[13px] font-medium text-ink transition hover:border-ink/50 outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Try again
             </button>
@@ -190,7 +190,7 @@ function BrowseBoard() {
                     setQuery('');
                     setCategory('all');
                   }}
-                  className="mt-5 rounded-full border-[1.5px] border-ink/20 bg-card px-4 py-2 text-[13px] font-medium text-ink transition hover:border-ink/50 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="mt-5 rounded-full border-[1.5px] border-ink/20 bg-card px-4 py-2.5 text-[13px] font-medium text-ink transition hover:border-ink/50 outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Clear filters
                 </button>

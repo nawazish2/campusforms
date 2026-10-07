@@ -25,7 +25,7 @@ export function LegalPage({
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
             {eyebrow}
           </p>
-          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight">
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             {title}
           </h1>
           <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">

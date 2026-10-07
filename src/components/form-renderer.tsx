@@ -132,7 +132,7 @@ export function FormRenderer({
               <span className="w-7 shrink-0 font-mono text-xs font-medium text-ink/60">
                 Q{i + 1}
               </span>
-              <p className="text-[15px] font-semibold text-ink">
+              <p className="min-w-0 text-[15px] font-semibold text-ink">
                 {q.title || <span className="text-ink/60">Untitled question</span>}
                 {q.required ? <span className="ml-0.5 text-correction">*</span> : null}
               </p>
@@ -374,12 +374,12 @@ function FileControl({
             type="button"
             disabled={disabled}
             onClick={() => onFileChange(null)}
-            className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-card/90 text-ink/70 shadow-sm ring-1 ring-ink/10 transition hover:text-correction outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-2 top-2 grid size-10 place-items-center sm:size-8 rounded-full bg-card/90 text-ink/70 shadow-sm ring-1 ring-ink/10 transition hover:text-correction outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Remove photo"
           >
             <X className="size-4" />
           </button>
-          <p className="max-w-[16rem] truncate px-3 py-2 font-mono text-[11px] text-ink/60">{file?.name}</p>
+          <p className="max-w-full truncate sm:max-w-[16rem] px-3 py-2 font-mono text-[11px] text-ink/60">{file?.name}</p>
         </div>
       ) : (
         <label
@@ -435,7 +435,7 @@ function ChoiceCard({
   return (
     <label
       className={cn(
-        'group flex cursor-pointer items-center gap-3 rounded-md border px-3.5 py-2.5 text-sm transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring',
+        'group flex min-h-11 cursor-pointer items-center gap-3 rounded-md border px-3.5 py-2.5 text-sm transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring',
         checked
           ? 'border-ballpoint-500 bg-ballpoint-50 ring-1 ring-ballpoint-500'
           : 'border-input bg-card hover:border-ink/40 hover:bg-ink/[0.04]',
@@ -470,7 +470,7 @@ function ChoiceCard({
           )
         ) : null}
       </span>
-      <span className={cn(checked ? 'font-medium text-ballpoint-900' : 'text-ink/80')}>
+      <span className={cn('min-w-0', checked ? 'font-medium text-ballpoint-900' : 'text-ink/80')}>
         {label}
       </span>
     </label>

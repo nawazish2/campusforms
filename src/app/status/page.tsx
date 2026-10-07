@@ -79,7 +79,7 @@ export default function StatusPage() {
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
             Track your response
           </p>
-          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight">
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             Where did it go?
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-ink/60">
@@ -90,7 +90,7 @@ export default function StatusPage() {
         </div>
 
         <form
-          className="mx-auto mt-7 flex max-w-md items-center gap-2"
+          className="mx-auto mt-7 flex max-w-md flex-col items-stretch gap-2 sm:flex-row sm:items-center"
           onSubmit={(e) => {
             e.preventDefault();
             void track(ref);
@@ -109,7 +109,7 @@ export default function StatusPage() {
               className="h-12 w-full rounded-lg border border-input bg-card text-center font-mono text-sm font-semibold uppercase tracking-[0.18em] text-ink outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ring focus:ring-2 focus:ring-ring/25"
             />
           </div>
-          <Button size="lg" type="submit" disabled={loading || ref.length !== 16}>
+          <Button size="lg" type="submit" className="w-full sm:w-auto" disabled={loading || ref.length !== 16}>
             <Search />
             {loading ? 'Looking…' : 'Track'}
           </Button>
@@ -122,7 +122,7 @@ export default function StatusPage() {
         ) : null}
 
         {notFound ? (
-          <div className="mx-auto mt-8 max-w-xl slip px-6 py-12 text-center">
+          <div className="mx-auto mt-8 max-w-xl slip px-5 py-10 text-center sm:px-6 sm:py-12">
             <span className="mx-auto grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
               <FileQuestion className="size-7 text-ink/60" aria-hidden />
             </span>
@@ -139,13 +139,13 @@ export default function StatusPage() {
 
         {result && statusMeta ? (
           <div className="animate-pop mx-auto mt-8 max-w-xl slip">
-            <div className="flex items-center gap-2 border-b border-ink/10 px-6 py-4 sm:px-8">
+            <div className="flex items-center gap-2 border-b border-ink/10 px-5 py-4 sm:px-8">
               <CategoryBadge category={result.formCategory} />
               <span className="ml-auto font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 REF #{lookedUpRef}
               </span>
             </div>
-            <div className="p-6 sm:p-8">
+            <div className="p-5 sm:p-8">
               <p className="font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 {result.formTitle}
               </p>

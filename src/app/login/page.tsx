@@ -125,7 +125,7 @@ function LoginCard() {
           <button
             type="button"
             onClick={() => setRequestOpen((o) => !o)}
-            className="text-[13px] font-medium text-ballpoint-700 underline decoration-ballpoint-300 underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            className="inline-flex min-h-10 items-center text-[13px] font-medium text-ballpoint-700 underline decoration-ballpoint-300 underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             {blocked || requestOpen ? 'Request organizer access' : 'Need an organizer account?'}
           </button>
