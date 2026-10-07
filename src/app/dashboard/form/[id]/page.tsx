@@ -35,7 +35,7 @@ import { Select } from '@/components/ui/select';
 import { SearchInput } from '@/components/ui/search-input';
 import { FilterChip } from '@/components/ui/filter-chip';
 import { useToast } from '@/components/ui/toast';
-import { CATEGORY_ACCENT, RESPONSE_STATUS_META } from '@/lib/constants';
+import { RESPONSE_STATUS_META } from '@/lib/constants';
 import { useFormResults, useRequireAuth } from '@/lib/db/hooks';
 import { errorMessage } from '@/lib/db/actions';
 import { downloadResponsesCsv } from '@/lib/csv';
@@ -225,12 +225,7 @@ export default function FormResultsPage() {
         </Link>
 
         {/* Header */}
-        <div
-          className={cn(
-            'mt-4 flex flex-wrap items-start justify-between gap-4 border-l-4 pl-4',
-            CATEGORY_ACCENT[form.category].stripe
-          )}
-        >
+        <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               {form.pinned ? (

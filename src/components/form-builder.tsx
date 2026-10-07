@@ -37,7 +37,6 @@ import { publishBlockers } from '@/lib/validation';
 import { blankForm, newQuestion } from '@/lib/factories';
 import {
   CATEGORIES,
-  CATEGORY_ACCENT,
   CATEGORY_LIST,
   QUESTION_TYPES,
   QUESTION_TYPE_MAP,
@@ -344,11 +343,7 @@ export function FormBuilder({
           <div className="min-w-0 space-y-5">
             {/* Form meta */}
             <section
-              className={cn(
-                'rounded-lg border border-l-4 bg-card p-5 shadow-sm sm:p-6',
-                'border-ink/10',
-                CATEGORY_ACCENT[form.category].stripe
-              )}
+              className="rounded-lg border border-ink/10 bg-card p-5 shadow-sm sm:p-6"
             >
               <Input
                 value={form.title}
