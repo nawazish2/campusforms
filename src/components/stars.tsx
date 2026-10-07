@@ -57,14 +57,16 @@ export function StarInput({ value, onChange, max = 5, disabled, describedBy }: S
           onMouseEnter={() => setHover(v)}
           onClick={() => onChange(v)}
           className={cn(
-            'rounded-md p-0.5 outline-none transition-transform focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+            'rounded-md p-0.5 outline-none transition-transform focus-visible:ring-2 focus-visible:ring-ring',
             !disabled && 'hover:scale-110 active:scale-95'
           )}
         >
           <Star
+            key={v === value ? `on-${value}` : 'off'}
             className={cn(
               'size-7 transition-colors',
-              v <= active ? 'fill-amber-400 text-amber-400' : 'text-ink/30'
+              v <= active ? 'fill-marker-strong text-[#d9a514]' : 'text-ink/30',
+              v === value && 'animate-star-pop'
             )}
           />
         </button>
@@ -95,7 +97,7 @@ export function Stars({
           aria-hidden
           className={cn(
             'size-4',
-            v <= Math.round(value) ? 'fill-amber-400 text-amber-400' : 'text-ink/30'
+            v <= Math.round(value) ? 'fill-marker-strong text-[#d9a514]' : 'text-ink/30'
           )}
         />
       ))}

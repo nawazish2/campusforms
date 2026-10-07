@@ -71,7 +71,7 @@ function LoginCard() {
     <div className="mx-auto w-full max-w-md">
       <div className="rounded-3xl border border-ink/10 bg-card p-8 shadow-md sm:p-10">
         <Logo />
-        <h1 className="mt-7 font-display text-[28px] font-extrabold leading-tight tracking-tight">
+        <h1 className="mt-7 font-display text-[28px] font-semibold leading-tight tracking-tight">
           Sign in to run forms
         </h1>
         <p className="mt-2.5 text-[15px] leading-relaxed text-ink/60">
@@ -137,7 +137,7 @@ function LoginCard() {
           <button
             type="button"
             onClick={() => setRequestOpen((o) => !o)}
-            className="text-[13px] font-medium text-ballpoint-700 underline decoration-ballpoint-300 underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 rounded"
+            className="text-[13px] font-medium text-ballpoint-700 underline decoration-ballpoint-300 underline-offset-2 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
           >
             {blocked || requestOpen ? 'Request organizer access' : 'Need an organizer account?'}
           </button>

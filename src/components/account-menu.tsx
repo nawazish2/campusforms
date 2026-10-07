@@ -55,7 +55,7 @@ export function AccountMenu() {
         aria-expanded={open}
         aria-label={`Account — ${name}`}
         className={cn(
-          'grid size-9 place-items-center rounded-full text-xs font-bold outline-none transition focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+          'grid size-9 place-items-center rounded-full text-xs font-bold outline-none transition focus-visible:ring-2 focus-visible:ring-ring',
           avatarColor(name)
         )}
       >

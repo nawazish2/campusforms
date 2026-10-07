@@ -83,7 +83,7 @@ export function StatCard({
         </p>
         <Icon className={accent ? 'size-4 shrink-0 text-on-accent/70' : 'size-4 shrink-0 text-ink/30'} aria-hidden />
       </div>
-      <p className="mt-2 font-display text-[26px] font-bold leading-none tracking-tight tabular-nums">
+      <p className="mt-2 font-display text-[26px] font-semibold leading-none tracking-tight tabular-nums">
         {numeric === null ? value : shown.toLocaleString('en-US')}
       </p>
       {sub ? (

@@ -77,7 +77,7 @@ export default function StatusPage() {
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
             Track your response
           </p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight">
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight">
             Where did it go?
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-ink/60">
@@ -104,7 +104,7 @@ export default function StatusPage() {
               autoCapitalize="characters"
               autoCorrect="off"
               spellCheck={false}
-              className="h-12 w-full rounded-xl border border-ink/10 bg-card text-center font-mono text-sm font-semibold uppercase tracking-[0.18em] text-ink shadow-sm outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ballpoint-400 focus:ring-2 focus:ring-ballpoint-500/20"
+              className="h-12 w-full rounded-xl border border-ink/10 bg-card text-center font-mono text-sm font-semibold uppercase tracking-[0.18em] text-ink shadow-sm outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ring focus:ring-2 focus:ring-ring/25"
             />
           </div>
           <Button size="lg" type="submit" disabled={loading || ref.length !== 16}>
@@ -124,7 +124,7 @@ export default function StatusPage() {
             <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
               <FileQuestion className="size-7 text-ink/40" aria-hidden />
             </span>
-            <h2 className="mt-4 font-display text-xl font-bold tracking-tight">
+            <h2 className="mt-4 font-display text-xl font-semibold tracking-tight">
               Nothing with that code
             </h2>
             <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink/60">

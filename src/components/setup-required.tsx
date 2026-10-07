@@ -17,7 +17,7 @@ export function SetupRequired({ variant = 'organizer' }: { variant?: 'organizer'
         <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
           <DatabaseZap className="size-7 text-ink/40" aria-hidden />
         </span>
-        <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
+        <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
           The database isn’t connected yet
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-ink/60">

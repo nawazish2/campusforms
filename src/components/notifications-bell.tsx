@@ -101,7 +101,7 @@ export function NotificationsBell() {
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
-          'relative grid size-9 place-items-center rounded-lg text-ink/60 transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+          'relative grid size-9 place-items-center rounded-lg text-ink/60 transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
           open ? 'bg-ink/[0.05] text-ink' : 'hover:bg-ink/[0.05] hover:text-ink'
         )}
       >

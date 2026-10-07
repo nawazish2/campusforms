@@ -11,6 +11,7 @@ import {
   Link2,
 } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
+import { NoticeSlip } from '@/components/ui/notice-slip';
 import { StatsCounter } from '@/components/ui/stats-counter';
 import { CATEGORIES, CATEGORY_ACCENT, QUESTION_TYPES } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -102,23 +103,23 @@ const CATEGORY_ORDER: FormCategory[] = [
 
 export function HomeStats() {
   return (
-    <div className="border-y border-ink/[0.06]">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-ink/[0.06] px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
+    <div className="border-y border-dashed border-ink/20">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-dashed divide-ink/20 px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6">
         <div className="flex items-baseline gap-3 py-6 sm:justify-center">
-          <span className="font-display text-2xl font-bold tracking-tight tabular-nums">
+          <span className="font-display text-3xl font-semibold tabular-nums">
             <StatsCounter value={QUESTION_TYPES.length} />
           </span>
-          <span className="text-sm leading-relaxed text-ink/65">question types</span>
+          <span className="font-mono text-xs uppercase leading-relaxed tracking-wider text-ink/65">question types</span>
         </div>
         <div className="flex items-baseline gap-3 py-6 sm:justify-center">
-          <span className="font-display text-2xl font-bold tracking-tight tabular-nums">
+          <span className="font-display text-3xl font-semibold tabular-nums">
             <StatsCounter value={0} />
           </span>
-          <span className="text-sm leading-relaxed text-ink/65">accounts students need</span>
+          <span className="font-mono text-xs uppercase leading-relaxed tracking-wider text-ink/65">accounts students need</span>
         </div>
         <div className="flex items-baseline gap-3 py-6 sm:justify-center">
-          <span className="font-display text-2xl font-bold tracking-tight">CSV</span>
-          <span className="text-sm leading-relaxed text-ink/65">export, any time</span>
+          <span className="font-display text-3xl font-semibold">CSV</span>
+          <span className="font-mono text-xs uppercase leading-relaxed tracking-wider text-ink/65">export, any time</span>
         </div>
       </div>
     </div>
@@ -128,33 +129,33 @@ export function HomeStats() {
 export function HomeCategories() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-      <h2 className="max-w-2xl text-pretty font-display text-3xl font-bold tracking-tight sm:text-4xl">
+      <h2 className="max-w-2xl text-pretty font-display text-3xl font-semibold tracking-tight sm:text-4xl">
         Built for the forms your campus actually sends.
       </h2>
       <p className="mt-4 max-w-[42ch] text-base leading-relaxed text-ink/70">
         Maintenance tickets, menu votes, fest signups, course surveys. Pick a
         category when you publish and it shows up on the notice board.
       </p>
-      <ul className="mt-10 border-y border-ink/[0.06]">
+      <ul className="mt-10 border-y border-dashed border-ink/20">
         {CATEGORY_ORDER.map((key) => {
           const meta = CATEGORIES[key];
           const Icon = meta.icon;
           return (
-            <li key={key} className="border-b border-ink/[0.06] last:border-b-0">
+            <li key={key} className="border-b border-dashed border-ink/20 last:border-b-0">
               <Link
                 href="/browse"
-                className="group flex min-h-16 items-center gap-4 py-4 outline-none transition hover:bg-ink/[0.03] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ballpoint-500/40 sm:gap-6"
+                className="group flex min-h-16 items-center gap-4 py-4 outline-none transition hover:bg-ink/[0.03] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:gap-6 sm:px-2"
               >
                 <span
                   className={cn(
-                    'grid size-10 shrink-0 place-items-center rounded-xl',
+                    'grid size-10 shrink-0 place-items-center rounded-full',
                     CATEGORY_ACCENT[key].band
                   )}
                 >
                   <Icon className="size-5" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-1 sm:flex sm:items-baseline sm:gap-8">
-                  <h3 className="font-display text-base font-bold tracking-tight sm:w-32 sm:shrink-0">
+                  <h3 className="font-display text-xl font-semibold sm:w-36 sm:shrink-0">
                     {meta.label}
                   </h3>
                   <p className="mt-0.5 text-sm leading-relaxed text-ink/70 sm:mt-0">
@@ -179,9 +180,9 @@ export function HomeCategories() {
 
 export function HomeFeatures() {
   return (
-    <section className="border-y border-ink/[0.06]">
+    <section className="border-y border-dashed border-ink/20">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-        <h2 className="text-pretty font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        <h2 className="text-pretty font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           Why organizers switch.
         </h2>
         <p className="mt-4 max-w-[42ch] text-base leading-relaxed text-ink/70">
@@ -193,10 +194,10 @@ export function HomeFeatures() {
             const Icon = f.icon;
             return (
               <li key={f.title}>
-                <span className="grid size-10 place-items-center rounded-xl bg-ballpoint-50 text-ballpoint-700">
+                <span className="grid size-10 place-items-center rounded-full bg-marker text-ink dark:bg-marker-strong/30">
                   <Icon className="size-5" aria-hidden />
                 </span>
-                <h3 className="mt-4 font-display text-base font-bold tracking-tight">
+                <h3 className="mt-4 font-display text-xl font-semibold">
                   {f.title}
                 </h3>
                 <p className="mt-1.5 max-w-[46ch] text-sm leading-relaxed text-ink/70">
@@ -216,7 +217,7 @@ export function HomeAnonymity() {
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <h2 className="text-pretty font-display text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="text-pretty font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             Anonymous means anonymous.
           </h2>
           <p className="mt-4 max-w-[46ch] text-base leading-relaxed text-ink/70">
@@ -226,16 +227,16 @@ export function HomeAnonymity() {
           </p>
           <Link
             href="/privacy"
-            className="mt-6 inline-flex h-11 items-center gap-1.5 text-base font-semibold text-ballpoint-700 outline-none transition hover:text-ballpoint-600 focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 dark:text-ballpoint-400"
+            className="mt-6 inline-flex h-11 items-center gap-1.5 text-base font-semibold text-ballpoint-700 outline-none transition hover:text-ballpoint-600 focus-visible:ring-2 focus-visible:ring-ring dark:text-ballpoint-400"
           >
             How anonymity works
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
-        <div className="overflow-hidden rounded-2xl border border-ink/10 bg-card text-left">
+        <NoticeSlip tilt={1} fastener="tape" className="overflow-hidden pt-3 text-left">
           <pre className="overflow-x-auto p-6 font-mono text-sm leading-relaxed">
             <code>
-              <span className="text-ink/45">BEFORE INSERT ON responses</span>
+              <span className="text-ink/60">BEFORE INSERT ON responses</span>
               {'\n'}
               <span className="text-ballpoint-600">IF</span>{' '}
               <span className="text-ink">form.anonymous</span>{' '}
@@ -247,10 +248,10 @@ export function HomeAnonymity() {
               <span className="text-ink/45">;</span>
             </code>
           </pre>
-          <p className="border-t border-ink/[0.06] px-6 py-3 font-mono text-sm text-ink/50">
+          <p className="border-t border-dashed border-ink/20 px-6 py-3 font-mono text-sm text-ink/60">
             Enforced by Postgres. The app never receives the names at all.
           </p>
-        </div>
+        </NoticeSlip>
       </div>
     </section>
   );
@@ -258,23 +259,23 @@ export function HomeAnonymity() {
 
 export function HomeFolders() {
   return (
-    <section className="border-y border-ink/[0.06]">
+    <section className="border-y border-dashed border-ink/20">
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-        <h2 className="max-w-2xl text-pretty font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        <h2 className="max-w-2xl text-pretty font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           From blank form to full dashboard in one sitting.
         </h2>
         <div className="relative mt-12">
           <div
-            className="pointer-events-none absolute top-5 right-[16%] left-[16%] z-0 hidden h-px bg-ink/10 sm:block"
+            className="pointer-events-none absolute top-2 right-[10%] left-[10%] z-0 hidden border-t border-dashed border-ink/20 sm:block"
             aria-hidden
           />
           <ol className="relative z-[1] grid gap-10 sm:grid-cols-3 sm:gap-8">
           {STEPS.map((s, i) => (
             <li key={s.title} className="relative">
-              <span className="grid size-10 place-items-center rounded-full border border-ink/10 bg-paper font-display text-sm font-bold text-ballpoint-700">
-                {i + 1}
+              <span className="font-mono text-sm font-semibold tracking-wider text-correction">
+                {String(i + 1).padStart(2, '0')}
               </span>
-              <h3 className="mt-4 font-display text-base font-bold tracking-tight">
+              <h3 className="mt-3 font-display text-xl font-semibold">
                 {s.title}
               </h3>
               <p className="mt-1.5 max-w-[40ch] text-sm leading-relaxed text-ink/70">{s.body}</p>
@@ -290,19 +291,19 @@ export function HomeFolders() {
 export function HomeFaq() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-      <h2 className="max-w-2xl text-pretty font-display text-3xl font-bold tracking-tight sm:text-4xl">
+      <h2 className="max-w-2xl text-pretty font-display text-3xl font-semibold tracking-tight sm:text-4xl">
         Questions organizers actually ask.
       </h2>
       <div className="mt-10 max-w-3xl">
         {FAQ.map((item) => (
           <details
             key={item.question}
-            className="group border-b border-ink/[0.06] first:border-t"
+            className="group border-b border-dashed border-ink/20 first:border-t"
           >
-            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-4 font-display text-base font-semibold tracking-tight outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-4 font-display text-lg font-semibold outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
               {item.question}
               <span
-                className="grid size-10 shrink-0 place-items-center rounded-full text-xl font-normal text-ink/40 transition group-open:rotate-45 group-open:text-ink"
+                className="grid size-10 shrink-0 place-items-center rounded-full text-xl font-normal text-ink/50 transition group-open:rotate-45 group-open:text-ink"
                 aria-hidden
               >
                 +
@@ -320,9 +321,10 @@ export function HomeFaq() {
 
 export function HomeCta() {
   return (
-    <section className="border-t border-ink/[0.06]">
+    <section>
       <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:py-24">
-        <h2 className="max-w-2xl text-pretty font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        <NoticeSlip tilt={-0.6} fastener="pin" className="px-6 pb-10 pt-12 sm:px-12">
+        <h2 className="max-w-2xl text-pretty font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           Your students are filling forms somewhere else.
         </h2>
         <p className="mt-4 max-w-[42ch] text-lg leading-relaxed text-ink/70">
@@ -341,6 +343,7 @@ export function HomeCta() {
             Browse open forms
           </Link>
         </div>
+        </NoticeSlip>
       </div>
     </section>
   );

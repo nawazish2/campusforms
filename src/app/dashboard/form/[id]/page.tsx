@@ -158,7 +158,7 @@ export default function FormResultsPage() {
           <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-warn-bg">
             <TriangleAlert className="size-7 text-warn-tx" aria-hidden />
           </span>
-          <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
+          <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
             Couldn’t load this form
           </h1>
           <p className="mt-2 text-sm text-ink/60">{error}</p>
@@ -178,7 +178,7 @@ export default function FormResultsPage() {
           <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
             <FileQuestion className="size-7 text-ink/40" aria-hidden />
           </span>
-          <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">Form not found</h1>
+          <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">Form not found</h1>
           <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
           <Link
             href="/dashboard"
@@ -250,7 +250,7 @@ export default function FormResultsPage() {
               <StatusBadge status={form.status} />
               {form.anonymous ? <AnonymousBadge /> : null}
             </div>
-            <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               {form.title || 'Untitled form'}
             </h1>
             {form.description ? (
@@ -466,7 +466,7 @@ export default function FormResultsPage() {
                 aria-pressed={tab === t.key}
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  'rounded-full px-4 py-1.5 text-sm font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+                  'rounded-full px-4 py-1.5 text-sm font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   tab === t.key ? 'bg-ink text-paper shadow-sm' : 'text-ink/60 hover:text-ink'
                 )}
               >
@@ -481,7 +481,7 @@ export default function FormResultsPage() {
         {stats.total === 0 ? (
           <div className="mt-5 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-20 text-center">
             <Inbox className="size-10 text-ink/30" aria-hidden />
-            <h2 className="mt-4 font-display text-lg font-bold tracking-tight">
+            <h2 className="mt-4 font-display text-lg font-semibold tracking-tight">
               No responses yet
             </h2>
             <p className="mt-1 max-w-sm text-sm text-ink/50">
@@ -630,7 +630,7 @@ function StatRow({
       >
         {label}
       </dt>
-      <dd className="text-right font-display text-[15px] font-bold tracking-tight tabular-nums">
+      <dd className="text-right font-display text-[15px] font-semibold tracking-tight tabular-nums">
         {value}
       </dd>
     </div>

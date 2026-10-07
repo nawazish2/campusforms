@@ -18,7 +18,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/[0.06] bg-paper/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-dashed border-ink/20 bg-paper/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
@@ -31,10 +31,10 @@ export function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'inline-flex h-10 items-center rounded-lg px-3 text-sm font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+                  'inline-flex h-10 items-center rounded-full px-4 text-sm font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-ring',
                   active
-                    ? 'bg-ink/[0.06] text-ink'
-                    : 'text-ink/70 hover:bg-ink/[0.04] hover:text-ink'
+                    ? 'bg-ink text-paper'
+                    : 'text-ink/70 hover:bg-ink/[0.06] hover:text-ink'
                 )}
               >
                 {item.label}
@@ -45,7 +45,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-1 sm:gap-2">
           <Link
             href="/browse"
-            className="inline-flex h-10 items-center rounded-lg px-3 text-sm font-medium text-ink/70 outline-none transition hover:bg-ink/[0.05] hover:text-ink focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 md:hidden"
+            className="inline-flex h-10 items-center rounded-full px-3 text-sm font-medium text-ink/70 outline-none transition hover:bg-ink/[0.05] hover:text-ink focus-visible:ring-2 focus-visible:ring-ring md:hidden"
           >
             Browse
           </Link>

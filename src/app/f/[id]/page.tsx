@@ -68,7 +68,7 @@ function ClosedPanel({ reason }: { reason: string }) {
         <span className="grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
           <Clock className="size-7 text-ink/40" aria-hidden />
         </span>
-        <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
+        <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
           This form isn’t accepting responses
         </h1>
         <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">{reason}</p>
@@ -154,7 +154,7 @@ export default function FillFormPage() {
             <span className="grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
               <FileQuestion className="size-7 text-ink/40" aria-hidden />
             </span>
-            <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
+            <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
               {error ? 'Couldn’t load this form' : 'Form not found'}
             </h1>
             <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
@@ -314,11 +314,11 @@ export default function FillFormPage() {
               </div>
             </div>
             <div className="animate-stamp mx-auto mt-5 inline-block rounded-lg border-[3px] border-tick px-4 py-1">
-              <p className="font-mono text-xs font-bold uppercase tracking-[0.22em] text-tick">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-tick">
                 Received
               </p>
             </div>
-            <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight">
+            <h1 className="mt-5 font-display text-3xl font-semibold tracking-tight">
               Response submitted
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-ink/60">
@@ -394,7 +394,7 @@ export default function FillFormPage() {
             <span className="grid size-14 place-items-center rounded-2xl bg-tick-soft">
               <CheckCircle2 className="size-7 text-tick" aria-hidden />
             </span>
-            <h1 className="mt-5 font-display text-2xl font-bold tracking-tight">
+            <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
               You’ve already responded
             </h1>
             <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
@@ -457,7 +457,7 @@ export default function FillFormPage() {
           </div>
 
           <div className="p-6 sm:p-8">
-            <h1 className="font-display text-[28px] font-extrabold leading-tight tracking-tight">
+            <h1 className="font-display text-[28px] font-semibold leading-tight tracking-tight">
               {form.title}
             </h1>
             {form.description ? (
@@ -509,7 +509,7 @@ export default function FillFormPage() {
                     setRespondent({ name: '', email: '' });
                     setDraftRestored(null);
                   }}
-                  className="ml-auto font-medium text-ballpoint-800 underline decoration-ballpoint-300 underline-offset-2 transition hover:text-ballpoint-600 outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40 rounded"
+                  className="ml-auto font-medium text-ballpoint-800 underline decoration-ballpoint-300 underline-offset-2 transition hover:text-ballpoint-600 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
                 >
                   Discard
                 </button>

@@ -49,7 +49,7 @@ export default function NewFormPage() {
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
             New form
           </p>
-          <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             What kind of form is this?
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-ink/60">
@@ -82,12 +82,12 @@ export default function NewFormPage() {
           <button
             type="button"
             onClick={() => setForm(blankForm())}
-            className="group flex min-h-44 flex-col rounded-2xl border border-dashed border-ink/20 bg-card/60 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-400 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+            className="group flex min-h-44 flex-col rounded-2xl border border-dashed border-ink/20 bg-card/60 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-400 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="grid size-10 place-items-center rounded-xl bg-ink/[0.05] text-ink/60 transition group-hover:bg-ballpoint-50 group-hover:text-ballpoint-700">
               <Plus className="size-5" aria-hidden />
             </span>
-            <span className="mt-4 font-display text-base font-bold tracking-tight">Blank form</span>
+            <span className="mt-4 font-display text-base font-semibold tracking-tight">Blank form</span>
             <span className="mt-1.5 text-[13px] leading-relaxed text-ink/50">
               Nine question types, no presets — build it your way.
             </span>
@@ -102,7 +102,7 @@ export default function NewFormPage() {
                   setFromTemplate(true);
                   setForm(templateToForm(t));
                 }}
-                className="group flex min-h-44 flex-col rounded-2xl border border-ink/10 bg-card p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+                className="group flex min-h-44 flex-col rounded-2xl border border-ink/10 bg-card p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-center gap-2">
                   <CategoryBadge category={t.category} />
@@ -117,7 +117,7 @@ export default function NewFormPage() {
                     <ArrowRight className="size-4" />
                   </span>
                 </div>
-                <span className="mt-3.5 block font-display text-[16px] font-bold leading-snug tracking-tight group-hover:text-ballpoint-800">
+                <span className="mt-3.5 block font-display text-[16px] font-semibold leading-snug tracking-tight group-hover:text-ballpoint-800">
                   {t.title}
                 </span>
                 <span className="mt-1.5 text-[13px] leading-relaxed text-ink/50">{t.blurb}</span>

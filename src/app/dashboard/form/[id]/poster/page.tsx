@@ -30,7 +30,7 @@ export default function PosterPage() {
   if (!form) {
     return (
       <main className="mx-auto max-w-xl px-4 py-24 text-center">
-        <h1 className="font-display text-2xl font-bold tracking-tight">Form not found</h1>
+        <h1 className="font-display text-2xl font-semibold tracking-tight">Form not found</h1>
         <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
         <Link
           href="/dashboard"
@@ -78,7 +78,7 @@ export default function PosterPage() {
           {CATEGORIES[form.category].label} form
         </span>
 
-        <h1 className="mt-5 font-display text-4xl font-extrabold leading-tight tracking-tight">
+        <h1 className="mt-5 font-display text-4xl font-semibold leading-tight tracking-tight">
           {form.title}
         </h1>
         {form.description ? (
@@ -96,7 +96,7 @@ export default function PosterPage() {
           />
         </div>
 
-        <p className="mt-8 font-display text-2xl font-bold tracking-tight">
+        <p className="mt-8 font-display text-2xl font-semibold tracking-tight">
           Scan to fill — takes ~{estimateFillMinutes(form.questions)} min
         </p>
         <p className="mt-2 break-all font-mono text-[13px] text-ink/50">{shareLink}</p>

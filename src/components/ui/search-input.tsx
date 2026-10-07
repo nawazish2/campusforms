@@ -27,7 +27,7 @@ export function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={label}
         aria-label={label}
-        className="h-10 w-full min-w-0 rounded-full border border-ink/10 bg-card pl-9 pr-10 text-sm shadow-sm outline-none transition placeholder:text-ink/40 focus:border-ballpoint-400 focus:ring-2 focus:ring-ballpoint-500/20"
+        className="h-10 w-full min-w-0 rounded-full border border-ink/10 bg-card pl-9 pr-10 text-sm shadow-sm outline-none transition placeholder:text-ink/40 focus:border-ring focus:ring-2 focus:ring-ring/25"
       />
       {kbd ? (
         <kbd

@@ -349,7 +349,7 @@ export function FormBuilder({
                 value={form.title}
                 onChange={(e) => patch({ title: e.target.value })}
                 placeholder="Form title — e.g. Hostel Maintenance Complaint"
-                className="h-auto border-0 px-0 font-display text-xl font-bold tracking-tight shadow-none sm:text-2xl"
+                className="h-auto border-0 px-0 font-display text-xl font-semibold tracking-tight shadow-none sm:text-2xl"
                 aria-label="Form title"
               />
               <Textarea
@@ -391,7 +391,7 @@ export function FormBuilder({
                             );
                           }}
                           className={cn(
-                            'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+                            'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
                             active ? c.tile : 'bg-ink/[0.05] text-ink/60 hover:bg-ink/[0.08]'
                           )}
                         >
@@ -505,7 +505,7 @@ export function FormBuilder({
                     type="button"
                     onClick={() => addQuestion(t.type)}
                     title={t.hint}
-                    className="flex items-center gap-2 rounded-xl border border-ink/10 bg-card px-3 py-2.5 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ballpoint-400 hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+                    className="flex items-center gap-2 rounded-xl border border-ink/10 bg-card px-3 py-2.5 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ballpoint-400 hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <t.icon className="size-4 shrink-0 text-ballpoint-600" aria-hidden />
                     <span className="truncate">{t.label}</span>
@@ -525,7 +525,7 @@ export function FormBuilder({
                 <Eye className="size-4 text-ink/30" aria-hidden />
               </div>
               <div className="max-h-[560px] overflow-y-auto p-5">
-                <p className="font-display text-lg font-bold tracking-tight">
+                <p className="font-display text-lg font-semibold tracking-tight">
                   {form.title || <span className="text-ink/30">Untitled form</span>}
                 </p>
                 {form.description ? (
@@ -787,7 +787,7 @@ function BuilderSkeleton() {
 function NotFoundPanel() {
   return (
     <div className="mx-auto max-w-xl px-4 py-20 text-center">
-      <h1 className="font-display text-2xl font-bold tracking-tight">Form not found</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight">Form not found</h1>
       <p className="mt-2 text-sm text-ink/60">
         This form was deleted or never existed.
       </p>

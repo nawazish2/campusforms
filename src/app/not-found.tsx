@@ -12,7 +12,7 @@ export default function NotFound() {
         <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.2em] text-ink/40">
           404 — page not found
         </p>
-        <h1 className="mt-3 font-display text-3xl font-extrabold tracking-tight">
+        <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight">
           This page didn’t fill itself in.
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-ink/60">

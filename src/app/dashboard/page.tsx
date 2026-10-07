@@ -265,7 +265,7 @@ export default function DashboardPage() {
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               Your forms
             </h1>
             <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
@@ -387,7 +387,7 @@ export default function DashboardPage() {
                     onClick={() => setStatusFilter(s)}
                     aria-pressed={statusFilter === s}
                     className={cn(
-                      'rounded-full border px-3.5 py-1.5 text-[13px] font-medium capitalize transition outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40',
+                      'rounded-full border px-3.5 py-1.5 text-[13px] font-medium capitalize transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       statusFilter === s
                         ? 'border-ink bg-ink text-paper shadow-sm'
                         : 'border-ink/10 bg-card text-ink/60 hover:border-ink/20 hover:text-ink'
@@ -474,7 +474,7 @@ export default function DashboardPage() {
                                   {f.anonymous ? <AnonymousBadge /> : null}
                                 </div>
                               </td>
-                              <td className="whitespace-nowrap px-4 py-3.5 text-right font-display text-[17px] font-bold tabular-nums">
+                              <td className="whitespace-nowrap px-4 py-3.5 text-right font-display text-[17px] font-semibold tabular-nums">
                                 {f.responseCount}
                               </td>
                               <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-[11px] text-ink/50">
@@ -538,7 +538,7 @@ export default function DashboardPage() {
                             >
                               {f.title || 'Untitled form'}
                             </Link>
-                            <span className="shrink-0 font-display text-lg font-bold tabular-nums">
+                            <span className="shrink-0 font-display text-lg font-semibold tabular-nums">
                               {f.responseCount}
                               <span className="ml-1 align-middle font-sans text-[11px] font-normal text-ink/40">
                                 {pluralize(f.responseCount, 'response').split(' ')[1]}
@@ -589,7 +589,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="mt-4 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-16 text-center">
                   <Inbox className="size-10 text-ink/30" aria-hidden />
-                  <h2 className="mt-4 font-display text-lg font-bold tracking-tight">
+                  <h2 className="mt-4 font-display text-lg font-semibold tracking-tight">
                     {forms.length === 0 ? 'No forms yet' : 'Nothing matches this filter'}
                   </h2>
                   <p className="mt-1 max-w-sm text-sm text-ink/50">

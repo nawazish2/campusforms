@@ -374,7 +374,7 @@ function FileControl({
             type="button"
             disabled={disabled}
             onClick={() => onFileChange(null)}
-            className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-card/90 text-ink/70 shadow-sm ring-1 ring-ink/10 transition hover:text-correction outline-none focus-visible:ring-2 focus-visible:ring-ballpoint-500/40"
+            className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-card/90 text-ink/70 shadow-sm ring-1 ring-ink/10 transition hover:text-correction outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Remove photo"
           >
             <X className="size-4" />

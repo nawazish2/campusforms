@@ -159,7 +159,7 @@ export function QuestionSummaryCard({
       {summary.kind === 'rating' ? (
         <div className="mt-5 flex items-end gap-6">
           <div className="shrink-0">
-            <p className="font-display text-4xl font-extrabold leading-none tracking-tight">
+            <p className="font-display text-4xl font-semibold leading-none tracking-tight">
               {summary.average.toFixed(1)}
               <span className="text-base font-semibold text-ink/40"> / {question.maxRating}</span>
             </p>

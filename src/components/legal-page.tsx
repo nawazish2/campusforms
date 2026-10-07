@@ -25,7 +25,7 @@ export function LegalPage({
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ballpoint-700">
             {eyebrow}
           </p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight">
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight">
             {title}
           </h1>
           <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40">
@@ -44,7 +44,7 @@ export function LegalPage({
 export function Section({ heading, children }: { heading: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="font-display text-lg font-bold tracking-tight">{heading}</h2>
+      <h2 className="font-display text-lg font-semibold tracking-tight">{heading}</h2>
       <div className="mt-2 space-y-3 text-[15px] leading-relaxed text-ink/70">{children}</div>
     </section>
   );
