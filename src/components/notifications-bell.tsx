@@ -83,7 +83,7 @@ export function NotificationsBell() {
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
-          'relative grid size-9 place-items-center rounded-lg text-ink/60 transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          'relative grid size-10 place-items-center rounded-lg sm:size-9 text-ink/60 transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
           open ? 'bg-ink/[0.05] text-ink' : 'hover:bg-ink/[0.05] hover:text-ink'
         )}
       >
@@ -101,7 +101,7 @@ export function NotificationsBell() {
       {open ? (
         <div
           role="menu"
-          className="animate-pop absolute right-0 top-11 z-50 w-80 rounded-lg border border-ink/10 bg-card p-1.5 shadow-lg"
+          className="animate-pop fixed inset-x-4 top-[4.25rem] z-50 rounded-lg border border-ink/10 bg-card p-1.5 shadow-lg sm:absolute sm:inset-x-auto sm:right-0 sm:top-11 sm:w-80"
         >
           <div className="flex items-center justify-between px-3 py-2">
             <p className="text-[13px] font-semibold">Recent responses</p>
@@ -113,7 +113,7 @@ export function NotificationsBell() {
                   markAllSeen(user.id);
                   setSeenOverride(Date.now());
                 }}
-                className="text-[12px] font-medium text-ballpoint-700 transition hover:text-ballpoint-800"
+                className="inline-flex min-h-10 items-center px-1 text-[13px] font-medium text-ballpoint-700 transition hover:text-ballpoint-800"
               >
                 Mark all read
               </button>
@@ -124,7 +124,7 @@ export function NotificationsBell() {
               Responses land here the moment students submit.
             </p>
           ) : (
-            <ul className="max-h-96 overflow-y-auto">
+            <ul className="max-h-[min(24rem,calc(100svh-9rem))] overflow-y-auto">
               {responses.map((r) => {
                 const unseen = new Date(r.submittedAt).getTime() > seen;
                 return (
@@ -133,7 +133,7 @@ export function NotificationsBell() {
                       href={`/dashboard/form/${r.formId}`}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2.5 transition hover:bg-ink/[0.05]',
+                        'flex min-h-12 items-center gap-3 rounded-lg px-3 py-2.5 transition hover:bg-ink/[0.05]',
                         unseen && 'bg-ballpoint-50/60'
                       )}
                     >

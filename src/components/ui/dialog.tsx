@@ -79,7 +79,7 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-center"
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -92,19 +92,19 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
       <div
         ref={panel}
         tabIndex={-1}
-        className="animate-pop relative w-full max-w-md slip p-6 outline-none"
+        className="animate-pop relative max-h-[calc(100svh-2rem)] w-full max-w-md overflow-y-auto slip p-5 outline-none sm:p-6"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-4 top-4 grid size-8 place-items-center rounded-lg text-ink/60 transition hover:bg-ink/[0.05] hover:text-ink"
+          className="absolute right-2 top-2 grid size-10 place-items-center sm:right-4 sm:top-4 sm:size-8 rounded-lg text-ink/60 transition hover:bg-ink/[0.05] hover:text-ink"
         >
           <X className="size-4" />
         </button>
-        <h3 className="font-display text-lg font-semibold tracking-tight">{title}</h3>
+        <h3 className="pr-9 font-display text-lg font-semibold tracking-tight">{title}</h3>
         {description ? <p className="mt-1.5 text-sm leading-relaxed text-ink/60">{description}</p> : null}
-        <div className="mt-5 flex justify-end gap-2.5">{children}</div>
+        <div className="mt-5 flex flex-wrap justify-end gap-2.5 max-sm:flex-col-reverse max-sm:[&>*]:w-full">{children}</div>
       </div>
     </div>,
     document.body

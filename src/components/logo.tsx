@@ -7,7 +7,7 @@ export function Logo({ href = '/', className }: { href?: string; className?: str
     <Link
       href={href}
       className={cn(
-        'group inline-flex items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'group inline-flex min-h-10 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring',
         className
       )}
     >
@@ -18,7 +18,7 @@ export function Logo({ href = '/', className }: { href?: string; className?: str
           className="absolute -right-1 -top-1 size-2.5 rounded-full bg-pin shadow-[0_1px_2px_rgb(60_20_5/0.4)]"
         />
       </span>
-      <span className="font-display text-xl font-semibold text-ink">
+      <span className="font-display text-lg font-semibold min-[400px]:text-xl text-ink">
         Campus<span className="text-ballpoint-600">Forms</span>
       </span>
     </Link>

@@ -102,7 +102,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
         className="absolute inset-0 cursor-default bg-ink/40 backdrop-blur-[2px]"
         onClick={() => setOpen(false)}
       />
-      <div className="absolute inset-x-4 top-[12vh] mx-auto max-w-lg overflow-hidden rounded-lg border border-ink/10 bg-card shadow-xl">
+      <div className="absolute inset-x-4 top-[8vh] mx-auto sm:top-[12vh] max-w-lg overflow-hidden rounded-lg border border-ink/10 bg-card shadow-xl">
         <div className="flex items-center gap-2.5 border-b border-ink/[0.07] px-4">
           <Search className="size-4 shrink-0 text-ink/60" aria-hidden />
           <input
@@ -135,7 +135,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
             ESC
           </kbd>
         </div>
-        <div ref={listRef} className="max-h-[46vh] overflow-y-auto p-2">
+        <div ref={listRef} className="max-h-[50svh] overflow-y-auto p-2 sm:max-h-[46vh]">
           {entries.length === 0 ? (
             <p className="px-3 py-8 text-center text-sm text-ink/60">
               No forms match “{query}”.
@@ -165,7 +165,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
                         e.run(false);
                       }}
                       className={cn(
-                        'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition',
+                        'flex min-h-12 w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition',
                         cursor === i ? 'bg-ink/[0.05]' : 'bg-transparent'
                       )}
                     >

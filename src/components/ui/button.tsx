@@ -17,11 +17,11 @@ const buttonVariants = cva(
         'tick': 'bg-tick-solid text-on-tick shadow-sm hover:brightness-110',
       },
       size: {
-        sm: 'h-8 px-3 text-[13px]',
+        sm: 'h-8 px-3 text-[13px] max-sm:h-10',
         md: 'h-10 px-4',
         lg: 'h-12 px-6 text-base',
-        icon: 'size-9',
-        'icon-sm': 'size-8',
+        icon: 'size-9 max-sm:size-10',
+        'icon-sm': 'size-8 max-sm:size-10',
       },
     },
     defaultVariants: {

@@ -38,7 +38,7 @@ export function StarInput({ value, onChange, max = 5, disabled, describedBy }: S
 
   return (
     <div
-      className="flex items-center gap-0.5"
+      className="flex flex-wrap items-center gap-0.5"
       role="radiogroup"
       aria-label={`Rating out of ${max}`}
       aria-describedby={describedBy}
@@ -57,7 +57,7 @@ export function StarInput({ value, onChange, max = 5, disabled, describedBy }: S
           onMouseEnter={() => setHover(v)}
           onClick={() => onChange(v)}
           className={cn(
-            'rounded-md p-0.5 outline-none transition-transform focus-visible:ring-2 focus-visible:ring-ring',
+            'rounded-md p-[7px] outline-none sm:p-0.5 transition-transform focus-visible:ring-2 focus-visible:ring-ring',
             !disabled && 'hover:scale-110 active:scale-95'
           )}
         >

@@ -234,6 +234,8 @@
 body {
   background-color: var(--color-paper);
   color: var(--color-ink);
+  /* Long titles and pasted URLs wrap instead of widening the page. */
+  overflow-wrap: anywhere;
 }
 body::before {
   content: '';
@@ -787,4 +789,13 @@ body::before {
 .animate-board-b { animation: board-b 6s ease-in-out infinite alternate; }
 @media (prefers-reduced-motion: reduce) {
   .animate-board-a, .animate-board-b { animation: none; }
+}
+
+/* Phones: 16px form controls stop iOS Safari zooming the page on focus. */
+@media (max-width: 639px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }

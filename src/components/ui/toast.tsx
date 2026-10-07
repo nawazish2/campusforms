@@ -32,7 +32,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {toast ? (
         <div
           key={toast.id}
-          className="animate-toast pointer-events-none fixed bottom-6 left-1/2 z-[70] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 sm:w-auto"
+          className="animate-toast pointer-events-none fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 z-[70] w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 sm:w-auto"
           role={toast.tone === 'error' ? 'alert' : 'status'}
           aria-live={toast.tone === 'error' ? 'assertive' : 'polite'}
         >
