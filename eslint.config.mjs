@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Convex generated code:
+    "convex/_generated/**",
     // Worktree clones and their build output:
     ".delta/**",
     // vinext / Cloudflare build output:

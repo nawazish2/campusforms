@@ -7,7 +7,7 @@ import { useAuth } from '@/components/auth-provider';
 import { buttonVariants } from '@/components/ui/button';
 import { avatarColor, cn, initials } from '@/lib/utils';
 
-/** Who's signed in, and the way out. Hidden entirely until Supabase is set up. */
+/** Who's signed in, and the way out. Hidden entirely until Convex is set up. */
 export function AccountMenu() {
   const router = useRouter();
   const { user, ready, configured, signOut } = useAuth();
@@ -44,7 +44,7 @@ export function AccountMenu() {
     );
   }
 
-  const name = (user.user_metadata?.full_name as string | undefined) ?? user.email ?? '';
+  const name = user.name ?? user.email ?? '';
 
   return (
     <div className="relative" ref={wrap}>

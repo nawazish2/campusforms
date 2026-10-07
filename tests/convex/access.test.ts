@@ -75,7 +75,7 @@ describe('owner-only access', () => {
     const { t, other, formId, submit } = await world();
     await submit();
     const [row] = await t.run((ctx) => ctx.db.query('responses').collect());
-    const calls = (as: typeof t) => [
+    const calls = (as: Pick<typeof t, 'mutation'>) => [
       as.mutation(api.forms.update, { id: formId, title: 'Hijacked' }),
       as.mutation(api.forms.setStatus, { id: formId, status: 'closed' }),
       as.mutation(api.forms.setPinned, { id: formId, pinned: true }),

@@ -9,8 +9,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Input, Textarea } from '@/components/ui/input';
 import { useToast } from '@/components/ui/toast';
 import { useAuth } from '@/components/auth-provider';
-import { requestOrganizerAccess } from '@/lib/db/forms';
-import { useDb } from '@/lib/db/hooks';
+import { errorMessage, useRequestOrganizerAccess } from '@/lib/db/actions';
 import { safeNextPath } from '@/lib/utils';
 
 /** Google's mark. Lucide has no brand icons, and a generic key icon here reads as a password field. */
@@ -37,21 +36,11 @@ function GoogleMark() {
   );
 }
 
-function isAllowlistError(error: string | null): boolean {
-  if (!error) return false;
-  const e = error.toLowerCase();
-  return (
-    e.includes('organizer list') ||
-    e.includes('database error saving new user') ||
-    e.includes('insufficient_privilege')
-  );
-}
-
 function LoginCard() {
   const params = useSearchParams();
   const router = useRouter();
   const toast = useToast();
-  const db = useDb();
+  const requestAccess = useRequestOrganizerAccess();
   const { user, ready, configured, signInWithGoogle } = useAuth();
   const [busy, setBusy] = useState(false);
   const [requestOpen, setRequestOpen] = useState(false);
@@ -61,7 +50,10 @@ function LoginCard() {
 
   const next = safeNextPath(params.get('next'));
   const error = params.get('error');
-  const blocked = isAllowlistError(error);
+  // Convex Auth drops an unlisted Google account back here with no error at
+  // all. `via=google` is set by signInWithGoogle, so being signed out after
+  // that redirect means the sign-in was refused (or cancelled at Google).
+  const blocked = params.get('via') === 'google' && ready && !user;
 
   useEffect(() => {
     if (ready && user) router.replace(next);
@@ -79,20 +71,16 @@ function LoginCard() {
           They just open the link you share.
         </p>
 
-        {error ? (
+        {error || blocked ? (
           <div
             role="alert"
             className="mt-6 flex items-start gap-2.5 rounded-lg border border-warn-bd bg-warn-bg px-4 py-3"
           >
             <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn-tx" aria-hidden />
             <p className="text-[13px] leading-relaxed text-warn-tx">
-              {error === 'missing_code'
-                ? 'That sign-in link expired before it was used. Try again.'
-                : error === 'access_denied'
-                  ? 'Sign-in was cancelled.'
-                  : blocked
-                    ? 'This Google account isn’t on the organizer list. Request access below — students never need to sign in.'
-                    : error}
+              {blocked
+                ? 'This Google account isn’t on the organizer list, or sign-in was cancelled. Request access below — students never need to sign in.'
+                : error}
             </p>
           </div>
         ) : null}
@@ -119,10 +107,10 @@ function LoginCard() {
           <div className="mt-7 rounded-lg border border-dashed border-ink/20 bg-paper px-4 py-4">
             <p className="text-[13px] font-semibold">Sign-in isn’t configured yet</p>
             <p className="mt-1 text-[13px] leading-relaxed text-ink/60">
-              Add <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
-              <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{' '}
-              <code className="font-mono text-xs">.env.local</code>, then restart the dev
-              server. See <code className="font-mono text-xs">supabase/README.md</code>.
+              Add <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> to{' '}
+              <code className="font-mono text-xs">.env.local</code> (run{' '}
+              <code className="font-mono text-xs">npx convex dev</code> to create it), then
+              restart the dev server. See the README.
             </p>
           </div>
         )}
@@ -149,13 +137,13 @@ function LoginCard() {
                 if (requesting) return;
                 setRequesting(true);
                 try {
-                  await requestOrganizerAccess(db, requestEmail, requestNote);
+                  await requestAccess(requestEmail, requestNote);
                   toast('Request sent. We’ll email you if a seat opens.');
                   setRequestEmail('');
                   setRequestNote('');
                   setRequestOpen(false);
                 } catch (err) {
-                  toast(err instanceof Error ? err.message : 'That didn’t send. Try again.', 'error');
+                  toast(errorMessage(err, 'That didn’t send. Try again.'), 'error');
                 } finally {
                   setRequesting(false);
                 }

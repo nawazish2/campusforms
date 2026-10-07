@@ -1,58 +1,43 @@
-import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { SUPABASE_KEY, SUPABASE_URL } from '@/lib/db/env';
+import { NextResponse, type NextFetchEvent, type NextRequest } from 'next/server';
+import {
+  convexAuthNextjsMiddleware,
+  createRouteMatcher,
+} from '@convex-dev/auth/nextjs/server';
+import { CONVEX_URL } from '@/lib/db/env';
+
+const isOrganizerRoute = createRouteMatcher(['/dashboard(.*)']);
 
 /**
- * Runs before every request. Two jobs: refresh the Supabase session cookie —
- * server components can't write cookies, so this is the only place it can
- * happen — and keep signed-out visitors out of the organizer dashboard.
- *
- * Named `proxy` in a `proxy.ts` file: Next 16 renamed the `middleware`
- * convention, and the old name now warns on every boot.
+ * Convex Auth's job here is to finish the Google sign-in (it trades the
+ * one-time `code` in the URL for session cookies) and to proxy auth actions
+ * to Convex. On top of that, keep signed-out visitors out of the organizer
+ * dashboard.
  */
-export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
-
-  // Without keys there is no session to refresh and the pages render their
-  // "not connected" state. In production that's never a valid state — missing
-  // keys would mean this middleware waves everyone through to the dashboard —
-  // so it fails loudly there instead of depending on someone remembering.
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error(
-        'NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY are required in production'
-      );
-    }
-    return response;
-  }
-
-  const supabase = createServerClient(
-    SUPABASE_URL,
-    SUPABASE_KEY,
-    {
-      cookies: {
-        getAll: () => request.cookies.getAll(),
-        setAll: (list) => {
-          for (const { name, value } of list) request.cookies.set(name, value);
-          response = NextResponse.next({ request });
-          for (const { name, value, options } of list) response.cookies.set(name, value, options);
-        },
-      },
-    }
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+const withConvexAuth = convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  if (isOrganizerRoute(request) && !(await convexAuth.isAuthenticated())) {
     const login = request.nextUrl.clone();
     login.pathname = '/login';
+    login.search = '';
     login.searchParams.set('next', request.nextUrl.pathname);
     return NextResponse.redirect(login);
   }
+});
 
-  return response;
+/**
+ * Runs before every request. Named `proxy` in a `proxy.ts` file: Next 16
+ * renamed the `middleware` convention, and the old name now warns on every boot.
+ */
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
+  // Without a deployment URL there is no session and the pages render their
+  // "not connected" state. In production that's never valid — it would mean
+  // nobody can sign in — so it fails loudly there.
+  if (!CONVEX_URL) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('NEXT_PUBLIC_CONVEX_URL is required in production');
+    }
+    return NextResponse.next();
+  }
+  return withConvexAuth(request, event);
 }
 
 export const config = {

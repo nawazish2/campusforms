@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import { Fraunces, Geist, Geist_Mono } from 'next/font/google';
 import { ToastProvider } from '@/components/ui/toast';
+import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 import { AuthProvider } from '@/components/auth-provider';
+import { ConvexClientProvider } from '@/components/convex-provider';
+import { isConvexConfigured } from '@/lib/db/env';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
@@ -37,6 +40,24 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Convex Auth keeps its session in cookies the server reads, so the server
+ * provider has to wrap the client ones. Without a deployment URL there is no
+ * session to read and the app shows its "not connected" state.
+ */
+function ConvexSessionProviders({ children }: { children: React.ReactNode }) {
+  const tree = (
+    <ConvexClientProvider>
+      <AuthProvider>{children}</AuthProvider>
+    </ConvexClientProvider>
+  );
+  return isConvexConfigured() ? (
+    <ConvexAuthNextjsServerProvider>{tree}</ConvexAuthNextjsServerProvider>
+  ) : (
+    tree
+  );
+}
+
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html
@@ -53,11 +74,11 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         />
       </head>
       <body className="min-h-full flex flex-col font-sans">
-        <AuthProvider>
+        <ConvexSessionProviders>
           <ThemeProvider>
             <ToastProvider>{children}</ToastProvider>
           </ThemeProvider>
-        </AuthProvider>
+        </ConvexSessionProviders>
       </body>
     </html>
   );
