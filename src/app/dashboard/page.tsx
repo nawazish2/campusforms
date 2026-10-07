@@ -32,7 +32,7 @@ import { SearchInput } from '@/components/ui/search-input';
 import { useToast } from '@/components/ui/toast';
 import { useDashboard, useRequireAuth } from '@/lib/db/hooks';
 import { CATEGORY_ACCENT } from '@/lib/constants';
-import { deleteForm, duplicateForm, setFormPinned, setFormStatus } from '@/lib/db/forms';
+import { errorMessage } from '@/lib/db/actions';
 import { publishBlockers } from '@/lib/validation';
 import type { FormSummary } from '@/lib/db/schema';
 import {
@@ -51,7 +51,7 @@ const CLOSING_SOON_MS = 48 * 3600_000;
 export default function DashboardPage() {
   const router = useRouter();
   const toast = useToast();
-  const { db, user, data, error, configured, loading, signedOut, refresh } = useDashboard();
+  const { actions, user, data, error, configured, loading, signedOut, refresh } = useDashboard();
   useRequireAuth(signedOut);
 
   const [query, setQuery] = useState('');
@@ -87,7 +87,7 @@ export default function DashboardPage() {
       refresh();
       toast(done);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'That didn’t save', 'error');
+      toast(errorMessage(e, 'That didn’t save'), 'error');
     } finally {
       setBusy(false);
     }
@@ -134,13 +134,13 @@ export default function DashboardPage() {
   const duplicate = (f: FormSummary) => {
     if (!user) return;
     setMenuFor(null);
-    mutate(() => duplicateForm(db, user.id, f.id), 'Duplicated as a draft');
+    mutate(() => actions.duplicateForm(f.id), 'Duplicated as a draft');
   };
 
   const togglePin = (f: FormSummary) => {
     setMenuFor(null);
     mutate(
-      () => setFormPinned(db, f.id, !f.pinned),
+      () => actions.setFormPinned(f.id, !f.pinned),
       f.pinned ? 'Unpinned' : 'Pinned to the top of the notice board'
     );
   };
@@ -157,7 +157,7 @@ export default function DashboardPage() {
               toast(problems[0], 'error');
               return;
             }
-            mutate(() => setFormStatus(db, f.id, 'open'), 'Form published — share the link');
+            mutate(() => actions.setFormStatus(f.id, 'open'), 'Form published — share the link');
           }}
         >
           Publish
@@ -172,7 +172,7 @@ export default function DashboardPage() {
           disabled={busy}
           onClick={() =>
             mutate(
-              () => setFormStatus(db, f.id, 'closed'),
+              () => actions.setFormStatus(f.id, 'closed'),
               'Form closed — it no longer accepts responses'
             )
           }
@@ -186,7 +186,7 @@ export default function DashboardPage() {
         size="sm"
         variant="secondary"
         disabled={busy}
-        onClick={() => mutate(() => setFormStatus(db, f.id, 'open'), 'Form reopened')}
+        onClick={() => mutate(() => actions.setFormStatus(f.id, 'open'), 'Form reopened')}
       >
         Reopen
       </Button>
@@ -638,7 +638,7 @@ export default function DashboardPage() {
           onClick={() => {
             const target = deleting;
             setDeleting(null);
-            if (target) mutate(() => deleteForm(db, target.id), 'Form deleted');
+            if (target) mutate(() => actions.deleteForm(target.id), 'Form deleted');
           }}
         >
           <Trash2 />

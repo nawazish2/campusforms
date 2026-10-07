@@ -25,7 +25,7 @@ import { SetupRequired } from '@/components/setup-required';
 import { StatusBadge } from '@/components/status-badge';
 import { useToast } from '@/components/ui/toast';
 import { useEditableForm, useRequireAuth } from '@/lib/db/hooks';
-import { createForm, updateForm } from '@/lib/db/forms';
+import { errorMessage } from '@/lib/db/actions';
 import { toDefinition } from '@/lib/db/schema';
 import {
   clearBuilderDraft,
@@ -65,7 +65,7 @@ export function FormBuilder({
 }) {
   const router = useRouter();
   const toast = useToast();
-  const { db, user, form: existing, configured, loading, signedOut } = useEditableForm(
+  const { actions, user, form: existing, configured, loading, signedOut } = useEditableForm(
     mode === 'edit' ? formId : undefined
   );
   useRequireAuth(signedOut);
@@ -198,12 +198,14 @@ export function FormBuilder({
     };
     setSaving(true);
     try {
-      // Create returns the row the database made, so the redirect uses the
-      // id Postgres assigned rather than one invented in the browser.
-      const saved =
-        mode === 'create'
-          ? await createForm(db, user.id, clean)
-          : await updateForm(db, clean.id, clean);
+      // Create returns the id Convex assigned, so the redirect uses that
+      // rather than the placeholder the browser invented.
+      let saved: FormDefinition = clean;
+      if (mode === 'create') {
+        saved = { ...clean, id: await actions.createForm(clean) };
+      } else {
+        await actions.updateForm(clean.id, clean);
+      }
       setDraft(saved);
       setBaseline(saved);
       if (mode === 'create') clearBuilderDraft();
@@ -219,7 +221,7 @@ export function FormBuilder({
       const justPublished = status === 'open' && existing?.status !== 'open';
       router.push(`/dashboard/form/${saved.id}${justPublished ? '/share' : ''}`);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'Couldn’t save this form', 'error');
+      toast(errorMessage(e, 'Couldn’t save this form'), 'error');
     } finally {
       setSaving(false);
     }

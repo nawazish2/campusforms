@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
-import { getPublicForm } from '@/lib/db/forms';
-import { createClient } from '@/lib/db/server';
-import { demoForm, isDemoFormId } from '@/lib/demo';
+import { getPublicFormOnServer } from '@/lib/db/server';
 
 /**
  * The client page can't export metadata, so the fill form's share card lives
@@ -15,9 +13,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const form = isDemoFormId(id)
-    ? demoForm()
-    : await getPublicForm(await createClient(), id).catch(() => null);
+  const form = await getPublicFormOnServer(id);
   if (!form) return { title: 'Form not found' };
 
   const description =

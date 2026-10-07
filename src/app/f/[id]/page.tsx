@@ -22,14 +22,14 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { CopyLinkButton, WhatsAppShareButton } from '@/components/copy-link-button';
 import { SetupRequired } from '@/components/setup-required';
 import { usePublicForm } from '@/lib/db/hooks';
-import { addResponse, newResponseRef, uploadResponsePhoto } from '@/lib/db/forms';
+import { errorMessage, newResponseRef, useResponseActions } from '@/lib/db/actions';
 import { useToast } from '@/components/ui/toast';
 import { validateFill, type RespondentInput } from '@/lib/validation';
 import { hasSubmitted, markSubmitted } from '@/lib/submissions';
 import { clearDraft, loadDraft, saveDraft } from '@/lib/drafts';
 import { CATEGORIES, CATEGORY_ACCENT } from '@/lib/constants';
 import { DEMO_FORM_ID, demoForm, isDemoFormId } from '@/lib/demo';
-import { preparePhoto, responseFilePath } from '@/lib/photos';
+import { preparePhoto } from '@/lib/photos';
 import {
   cn,
   deadlineInfo,
@@ -78,7 +78,8 @@ export default function FillFormPage() {
   const toast = useToast();
   const isDemo = isDemoFormId(params.id);
   const publicForm = usePublicForm(isDemo ? undefined : params.id);
-  const { db, error, configured, loading } = publicForm;
+  const { error, configured, loading } = publicForm;
+  const { uploadResponsePhoto, addResponse } = useResponseActions();
   const form = isDemo ? demoForm() : publicForm.form ?? null;
   const [submitting, setSubmitting] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<Record<string, File>>({});
@@ -231,12 +232,10 @@ export default function FillFormPage() {
           continue;
         }
         const blob = await preparePhoto(file);
-        const path = responseFilePath(form.id, ref, q.id);
-        await uploadResponsePhoto(db, path, blob);
-        answers[q.id] = path;
+        answers[q.id] = await uploadResponsePhoto(form.id, blob);
       }
 
-      await addResponse(db, {
+      const filedRef = await addResponse({
         formId: form.id,
         respondentName: form.anonymous ? null : respondent.name.trim(),
         respondentEmail: form.anonymous ? null : respondent.email.trim() || null,
@@ -248,10 +247,10 @@ export default function FillFormPage() {
       markSubmitted(form.id);
       clearDraft(form.id);
       setDraftRestored(null);
-      setSubmittedId(ref);
+      setSubmittedId(filedRef);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'That didn’t send. Try again.', 'error');
+      toast(errorMessage(e, 'That didn’t send. Try again.'), 'error');
     } finally {
       setSubmitting(false);
     }

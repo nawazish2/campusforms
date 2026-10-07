@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/site-header';
 import { buttonVariants } from '@/components/ui/button';
 
 /**
- * The organizer pages read and write Supabase, so without credentials there
+ * The organizer pages read and write Convex, so without credentials there
  * is nothing to show. This says so plainly instead of rendering an empty
  * dashboard that looks like lost data.
  */
@@ -21,10 +21,10 @@ export function SetupRequired({ variant = 'organizer' }: { variant?: 'organizer'
           The database isn’t connected yet
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-ink/60">
-          Add <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
-          <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to{' '}
-          <code className="font-mono text-xs">.env.local</code>, run the migrations in{' '}
-          <code className="font-mono text-xs">supabase/</code>, then restart the dev server.
+          Add <code className="font-mono text-xs">NEXT_PUBLIC_CONVEX_URL</code> to{' '}
+          <code className="font-mono text-xs">.env.local</code> (run{' '}
+          <code className="font-mono text-xs">npx convex dev</code> to create it), then restart
+          the dev server.
         </p>
         <Link href="/browse" className={buttonVariants({ variant: 'secondary', className: 'mt-6' })}>
           Browse open forms

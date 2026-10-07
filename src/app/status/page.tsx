@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { FunctionReturnType } from 'convex/server';
 import Link from 'next/link';
 import { EyeOff, FileQuestion, Search } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { CategoryBadge } from '@/components/category-badge';
 import { Button } from '@/components/ui/button';
-import { useDb } from '@/lib/db/hooks';
-import { lookupResponseByRef } from '@/lib/db/forms';
+import { useConvex } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { errorMessage } from '@/lib/db/actions';
 import { RESPONSE_STATUS_META } from '@/lib/constants';
 import { cn, fmtDateTime } from '@/lib/utils';
 import type { ResponseStatus } from '@/lib/types';
 
-type LookupResult = NonNullable<Awaited<ReturnType<typeof lookupResponseByRef>>>;
+type LookupResult = NonNullable<FunctionReturnType<typeof api.responses.lookupByRef>>;
 
 /** REF codes are sixteen hex characters from the confirmation screen. */
 function normalizeRef(raw: string): string {
@@ -21,7 +23,7 @@ function normalizeRef(raw: string): string {
 }
 
 export default function StatusPage() {
-  const db = useDb();
+  const convex = useConvex();
   const [ref, setRef] = useState('');
   const [result, setResult] = useState<LookupResult | null>(null);
   const [lookedUpRef, setLookedUpRef] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export default function StatusPage() {
       setRef(fromUrl);
       void track(fromUrl);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- track reads db/state refs that are stable for the page's life.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- track reads convex/state refs that are stable for the page's life.
   }, []);
 
   async function track(code: string) {
@@ -51,7 +53,7 @@ export default function StatusPage() {
     setNotFound(false);
     setResult(null);
     try {
-      const found = await lookupResponseByRef(db, clean.toLowerCase());
+      const found = await convex.query(api.responses.lookupByRef, { ref: clean.toLowerCase() });
       setLookedUpRef(clean);
       if (found) {
         setResult(found);
@@ -59,13 +61,13 @@ export default function StatusPage() {
         setNotFound(true);
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'That lookup didn’t go through. Try again.');
+      setError(errorMessage(e, 'That lookup didn’t go through. Try again.'));
     } finally {
       setLoading(false);
     }
   }
 
-  const status = result?.response_status as ResponseStatus | undefined;
+  const status = result?.responseStatus as ResponseStatus | undefined;
   const statusMeta = status ? RESPONSE_STATUS_META[status] : null;
 
   return (
@@ -138,14 +140,14 @@ export default function StatusPage() {
         {result && statusMeta ? (
           <div className="animate-pop mx-auto mt-8 max-w-xl slip">
             <div className="flex items-center gap-2 border-b border-ink/10 px-6 py-4 sm:px-8">
-              <CategoryBadge category={result.form_category} />
+              <CategoryBadge category={result.formCategory} />
               <span className="ml-auto font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 REF #{lookedUpRef}
               </span>
             </div>
             <div className="p-6 sm:p-8">
               <p className="font-mono text-[11px] uppercase tracking-wider text-ink/60">
-                {result.form_title}
+                {result.formTitle}
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <span
@@ -158,15 +160,15 @@ export default function StatusPage() {
                   {statusMeta.label}
                 </span>
                 <span className="font-mono text-[11px] text-ink/60">
-                  Submitted {fmtDateTime(result.submitted_at)}
+                  Submitted {fmtDateTime(result.submittedAt)}
                 </span>
               </div>
 
-              {result.public_note ? (
+              {result.publicNote ? (
                 <div className="mt-5 rounded-lg border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
                   <p className="text-sm font-medium text-ballpoint-700">From the organizer</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-ballpoint-900">
-                    {result.public_note}
+                    {result.publicNote}
                   </p>
                 </div>
               ) : null}
@@ -220,7 +222,7 @@ export default function StatusPage() {
 
               <p className="mt-5 flex items-start gap-2.5 rounded-lg border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink/70">
                 <EyeOff className="mt-0.5 size-4 shrink-0 text-ink/60" aria-hidden />
-                {result.is_anonymous
+                {result.isAnonymous
                   ? 'This was an anonymous response. The organizer sees the status above; the answers stay with them, not this page.'
                   : 'The organizer has your answers. This page only shows where they sit in the queue.'}
               </p>

@@ -37,14 +37,7 @@ import { FilterChip } from '@/components/ui/filter-chip';
 import { useToast } from '@/components/ui/toast';
 import { CATEGORY_ACCENT, RESPONSE_STATUS_META } from '@/lib/constants';
 import { useFormResults, useRequireAuth } from '@/lib/db/hooks';
-import {
-  deleteForm,
-  deleteResponse,
-  setFormPinned,
-  setFormStatus,
-  setResponseNote,
-  setResponseStatus,
-} from '@/lib/db/forms';
+import { errorMessage } from '@/lib/db/actions';
 import { downloadResponsesCsv } from '@/lib/csv';
 import { formStats } from '@/lib/analytics';
 import {
@@ -72,7 +65,7 @@ export default function FormResultsPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const toast = useToast();
-  const { db, data, error, configured, loading, signedOut, refresh } = useFormResults(params.id);
+  const { actions, data, error, configured, loading, signedOut, refresh } = useFormResults(params.id);
   useRequireAuth(signedOut);
   const form = data?.form ?? null;
 
@@ -94,7 +87,7 @@ export default function FormResultsPage() {
       refresh();
       toast(done);
     } catch (e) {
-      toast(e instanceof Error ? e.message : 'That didn’t save', 'error');
+      toast(errorMessage(e, 'That didn’t save'), 'error');
     } finally {
       setBusy(false);
     }
@@ -200,7 +193,7 @@ export default function FormResultsPage() {
   const toggleStatus = () => {
     if (form.status === 'open') {
       mutate(
-        () => setFormStatus(db, form.id, 'closed'),
+        () => actions.setFormStatus(form.id, 'closed'),
         'Form closed — it no longer accepts responses'
       );
       return;
@@ -213,7 +206,7 @@ export default function FormResultsPage() {
       }
     }
     mutate(
-      () => setFormStatus(db, form.id, 'open'),
+      () => actions.setFormStatus(form.id, 'open'),
       form.status === 'draft' ? 'Form published — share the link' : 'Form reopened'
     );
   };
@@ -265,7 +258,7 @@ export default function FormResultsPage() {
               disabled={busy}
               onClick={() =>
                 mutate(
-                  () => setFormPinned(db, form.id, !form.pinned),
+                  () => actions.setFormPinned(form.id, !form.pinned),
                   form.pinned ? 'Unpinned' : 'Pinned to the top of the notice board'
                 )
               }
@@ -533,10 +526,10 @@ export default function FormResultsPage() {
                     response={r}
                     form={form}
                     onStatusChange={(status) =>
-                      mutate(() => setResponseStatus(db, r.id, status), 'Response updated')
+                      mutate(() => actions.setResponseStatus(r.id, status), 'Response updated')
                     }
                     onNoteChange={(note) =>
-                      mutate(() => setResponseNote(db, r.id, note), 'Note saved — the student can see it on /status')
+                      mutate(() => actions.setResponseNote(r.id, note), 'Note saved — the student can see it on /status')
                     }
                     onDelete={() => setConfirmDeleteResponse(r)}
                   />
@@ -561,11 +554,11 @@ export default function FormResultsPage() {
           onClick={async () => {
             setConfirmDelete(false);
             try {
-              await deleteForm(db, form.id);
+              await actions.deleteForm(form.id);
               toast('Form deleted');
               router.push('/dashboard');
             } catch (e) {
-              toast(e instanceof Error ? e.message : 'Couldn’t delete this form', 'error');
+              toast(errorMessage(e, 'Couldn’t delete this form'), 'error');
             }
           }}
         >
@@ -590,7 +583,7 @@ export default function FormResultsPage() {
           onClick={() => {
             const target = confirmDeleteResponse;
             setConfirmDeleteResponse(null);
-            if (target) mutate(() => deleteResponse(db, target.id), 'Response deleted');
+            if (target) mutate(() => actions.deleteResponse(target.id), 'Response deleted');
           }}
         >
           <Trash2 />
@@ -742,7 +735,7 @@ function ResponseCard({
           <div key={q.id} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
             <dt className="text-[13px] leading-snug text-ink/60">{q.title}</dt>
             <dd className="min-w-0 text-sm">
-              <Answer answer={response.answers[q.id]} question={q} />
+              <Answer answer={response.answers[q.id]} question={q} responseId={response.id} />
             </dd>
           </div>
         ))}
@@ -757,7 +750,15 @@ const STATUS_TINT: Record<ResponseStatus, string> = {
   done: RESPONSE_STATUS_META.done.chip,
 };
 
-function Answer({ answer, question }: { answer: AnswerValue | undefined; question: Question }) {
+function Answer({
+  answer,
+  question,
+  responseId,
+}: {
+  answer: AnswerValue | undefined;
+  question: Question;
+  responseId: string;
+}) {
   if (answer === undefined || answer === '' || (Array.isArray(answer) && answer.length === 0)) {
     return <span className="text-ink/30">—</span>;
   }
@@ -772,7 +773,7 @@ function Answer({ answer, question }: { answer: AnswerValue | undefined; questio
     );
   }
   if (question.type === 'file' && typeof answer === 'string') {
-    return <PhotoAnswer path={answer} />;
+    return <PhotoAnswer responseId={responseId} questionId={question.id} />;
   }
   if (Array.isArray(answer)) {
     return <span className="font-medium text-ink/80">{answer.join(' · ')}</span>;

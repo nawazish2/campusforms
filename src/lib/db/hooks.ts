@@ -1,33 +1,26 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
 import { useAuth } from '@/components/auth-provider';
-import { createClient, isSupabaseConfigured } from './client';
-import * as api from './forms';
+import { isDemoFormId } from '@/lib/demo';
+import { isConvexConfigured } from './env';
+import { useOrganizerActions } from './actions';
 import type { FormSummary } from './schema';
 import type { FormResponse } from '@/lib/types';
 
 /**
- * Read hooks for the organizer pages. They deliberately mirror what the
- * Zustand store used to hand back — a value plus a "still loading" flag — so
- * the pages keep their existing shape. Writes go straight to `./forms` and
- * then call `refresh`, rather than mutating any local cache: at a few hundred
- * rows a refetch is cheaper than keeping a cache honest.
+ * Read hooks for the pages. Each is a live Convex query: when any write lands
+ * (from this tab, another tab or a student's submission) the value updates
+ * with no refetch. `refresh` stays on the return values as a no-op so pages
+ * written for the polling version keep working.
  */
 
-/** One Supabase client per component tree that asks for it. */
-export function useDb() {
-  return useMemo(() => createClient(), []);
-}
+export { isConvexConfigured };
 
-export { isSupabaseConfigured };
-
-/** Bumping this re-runs a hook's fetch. */
-function useRefreshKey() {
-  const [key, setKey] = useState(0);
-  return [key, useCallback(() => setKey((k) => k + 1), [])] as const;
-}
+const noop = () => {};
 
 export interface DashboardData {
   forms: FormSummary[];
@@ -36,50 +29,40 @@ export interface DashboardData {
 }
 
 export function useDashboard() {
-  const db = useDb();
+  const actions = useOrganizerActions();
   const { user, ready, configured } = useAuth();
-  const [key, refresh] = useRefreshKey();
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const live = ready && user ? {} : 'skip';
+  // Midnight today, captured once per mount: a changing argument would
+  // re-subscribe the query on every render.
+  const startOfToday = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  }, []);
 
-  useEffect(() => {
-    if (!ready || !user) return;
-    let alive = true;
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
+  const forms = useQuery(api.forms.listMine, live);
+  const recent = useQuery(api.responses.listRecent, live);
+  const todayCount = useQuery(api.responses.countSince, ready && user ? { since: startOfToday } : 'skip');
 
-    (async () => {
-      try {
-        const [forms, recent, todayCount] = await Promise.all([
-          api.listMyForms(db, user.id),
-          api.listRecentResponses(db),
-          api.countResponsesSince(db, startOfToday.toISOString()),
-        ]);
-        if (alive) {
-          setData({ forms, recent, todayCount });
-          setError(null);
-        }
-      } catch (e) {
-        if (alive) setError(e instanceof Error ? e.message : 'Could not load your forms');
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [db, user, ready, key]);
+  const data = useMemo<DashboardData | null>(
+    () =>
+      forms !== undefined && recent !== undefined && todayCount !== undefined
+        ? { forms, recent, todayCount }
+        : null,
+    [forms, recent, todayCount]
+  );
 
   return {
-    db,
+    actions,
     user,
     data,
-    error,
+    error: null as string | null,
     configured,
     // Signed out counts as still loading: without it the page would render
     // its empty state ("No forms yet") to someone who simply isn't logged in.
     loading: !ready || !user || data === null,
     signedOut: ready && configured && !user,
-    refresh,
+    refresh: noop,
   };
 }
 
@@ -90,75 +73,44 @@ export interface FormResults {
 
 /** A single form and every response to it — the results page. */
 export function useFormResults(id: string | undefined) {
-  const db = useDb();
+  const actions = useOrganizerActions();
   const { user, ready, configured } = useAuth();
-  const [key, refresh] = useRefreshKey();
-  const [data, setData] = useState<FormResults | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const enabled = ready && user && id;
 
-  useEffect(() => {
-    if (!ready || !user || !id) return;
-    let alive = true;
+  const form = useQuery(api.forms.getOwned, enabled ? { id } : 'skip');
+  // No form means nothing to fetch responses for, and the page renders its
+  // "not found" panel.
+  const responses = useQuery(api.responses.listForForm, enabled && form ? { formId: id } : 'skip');
 
-    (async () => {
-      try {
-        const form = await api.getOwnedForm(db, id, user.id);
-        // No form means nothing to fetch responses for, and the page renders
-        // its "not found" panel.
-        const responses = form ? await api.listResponses(db, id) : [];
-        if (alive) {
-          setData({ form, responses });
-          setError(null);
-        }
-      } catch (e) {
-        if (alive) setError(e instanceof Error ? e.message : 'Could not load this form');
-      }
-    })();
-
-    return () => {
-      alive = false;
-    };
-  }, [db, user, ready, id, key]);
+  const data = useMemo<FormResults | null>(() => {
+    if (form === undefined) return null;
+    if (form === null) return { form: null, responses: [] };
+    return responses === undefined ? null : { form, responses };
+  }, [form, responses]);
 
   return {
-    db,
+    actions,
     user,
     data,
-    error,
+    error: null as string | null,
     configured,
     loading: !ready || !user || data === null,
     signedOut: ready && configured && !user,
-    refresh,
+    refresh: noop,
   };
 }
 
 /** The organizer's own form — what the builder and poster need in edit mode. */
 export function useEditableForm(id: string | undefined) {
-  const db = useDb();
+  const actions = useOrganizerActions();
   const { user, ready, configured } = useAuth();
-  const [form, setForm] = useState<FormSummary | null | undefined>(undefined);
-
-  useEffect(() => {
-    if (!ready || !user || !id) return;
-    let alive = true;
-    (async () => {
-      try {
-        const found = await api.getOwnedForm(db, id, user.id);
-        if (alive) setForm(found);
-      } catch {
-        if (alive) setForm(null);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [db, user, ready, id]);
+  const form = useQuery(api.forms.getOwned, ready && user && id ? { id } : 'skip');
 
   // `undefined` means still loading; `null` means it isn't there. With no id
   // the caller is creating a form, so there is nothing to wait for — without
   // this the builder would sit on its skeleton forever.
   return {
-    db,
+    actions,
     user,
     form: id ? form : null,
     configured,
@@ -177,70 +129,35 @@ export function useRequireAuth(signedOut: boolean) {
 }
 
 /**
- * The public pages read without a session — RLS lets anyone select a form —
- * so these deliberately don't wait on `useAuth`. A signed-out visitor is the
- * normal case here, not a state to redirect out of.
+ * The public pages read without a session — anyone may read a form — so these
+ * deliberately don't wait on `useAuth`. A signed-out visitor is the normal
+ * case here, not a state to redirect out of.
  */
 export function useOpenForms() {
-  const db = useDb();
-  const configured = isSupabaseConfigured();
-  const [forms, setForms] = useState<FormSummary[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!configured) return;
-    let alive = true;
-    (async () => {
-      try {
-        const rows = await api.listOpenForms(db);
-        if (alive) setForms(rows);
-      } catch (e) {
-        if (alive) setError(e instanceof Error ? e.message : 'Could not load the notice board');
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [db, configured]);
-
+  const configured = isConvexConfigured();
+  const forms = useQuery(api.forms.listOpen, configured ? {} : 'skip');
   return {
     forms: forms ?? [],
-    error,
+    error: null as string | null,
     configured,
-    loading: configured && forms === null && error === null,
+    loading: configured && forms === undefined,
   };
 }
 
-/** One form by id, with its response count. `null` means it isn't there. */
+/**
+ * One form by id, with its response count. `null` means it isn't there. The
+ * demo form lives in the client and must never reach Convex.
+ */
 export function usePublicForm(id: string | undefined) {
-  const db = useDb();
-  const configured = isSupabaseConfigured();
-  const [form, setForm] = useState<FormSummary | null | undefined>(undefined);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!configured || !id) {
-      return;
-    }
-    let alive = true;
-    (async () => {
-      try {
-        const found = await api.getPublicForm(db, id);
-        if (alive) setForm(found);
-      } catch (e) {
-        if (alive) setError(e instanceof Error ? e.message : 'Could not load this form');
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [db, configured, id]);
-
+  const configured = isConvexConfigured();
+  const form = useQuery(
+    api.forms.get,
+    configured && id && !isDemoFormId(id) ? { id } : 'skip'
+  );
   return {
-    db,
     form,
-    error,
+    error: null as string | null,
     configured,
-    loading: Boolean(id) && configured && form === undefined && error === null,
+    loading: Boolean(id) && configured && form === undefined,
   };
 }

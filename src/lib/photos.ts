@@ -5,10 +5,6 @@ export const PHOTO_MAX_EDGE = 1600;
 
 const PHOTO_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
-export function responseFilePath(formId: string, ref: string, questionId: string): string {
-  return `${formId}/${ref}/${questionId}`;
-}
-
 /**
  * Re-encodes a student photo as JPEG, scaled down, so EXIF (and GPS) never
  * land in storage. Anonymous forms especially shouldn't keep a phone's

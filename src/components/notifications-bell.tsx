@@ -1,11 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 import Link from 'next/link';
 import { Bell } from 'lucide-react';
 import { useAuth } from '@/components/auth-provider';
-import { listMyForms, listRecentResponses } from '@/lib/db/forms';
-import { useDb } from '@/lib/db/hooks';
 import { avatarColor, cn, initials, timeAgo } from '@/lib/utils';
 import type { FormResponse } from '@/lib/types';
 
@@ -42,34 +42,16 @@ function markAllSeen(userId: string): void {
  */
 export function NotificationsBell() {
   const { user, ready, configured } = useAuth();
-  const db = useDb();
   const [open, setOpen] = useState(false);
-  const [responses, setResponses] = useState<FormResponse[]>([]);
-  const [titles, setTitles] = useState<Map<string, string>>(new Map());
   const [seenOverride, setSeenOverride] = useState<number | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
 
-  const load = useCallback(async () => {
-    if (!user) return;
-    try {
-      const [recent, forms] = await Promise.all([
-        listRecentResponses(db, 15),
-        listMyForms(db, user.id),
-      ]);
-      setResponses(recent);
-      setTitles(new Map(forms.map((f) => [f.id, f.title])));
-    } catch {
-      // The bell is a nicety — a failed poll just leaves it quiet.
-    }
-  }, [db, user]);
-
-  useEffect(() => {
-    if (!user) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- load() sets state from the fetch result, not synchronously; the rule can't see past the await.
-    void load();
-    const t = setInterval(() => void load(), 60_000);
-    return () => clearInterval(t);
-  }, [user, load]);
+  // Live queries: a new response shows up without the old 60-second poll.
+  const live = ready && user ? {} : 'skip';
+  const recent = useQuery(api.responses.listRecent, ready && user ? { limit: 15 } : 'skip');
+  const forms = useQuery(api.forms.listMine, live);
+  const responses: FormResponse[] = useMemo(() => recent ?? [], [recent]);
+  const titles = useMemo(() => new Map((forms ?? []).map((f) => [f.id, f.title])), [forms]);
 
   useEffect(() => {
     if (!open) return;

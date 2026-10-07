@@ -1,23 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useDb } from '@/lib/db/hooks';
-import { signedPhotoUrl } from '@/lib/db/forms';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 
-/** Organizer-only: a signed URL for a photo stored against a response. */
-export function PhotoAnswer({ path }: { path: string }) {
-  const db = useDb();
-  const [url, setUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    signedPhotoUrl(db, path).then((signed) => {
-      if (alive) setUrl(signed);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [db, path]);
+/** Organizer-only: a URL for a photo stored against a response. */
+export function PhotoAnswer({ responseId, questionId }: { responseId: string; questionId: string }) {
+  const url = useQuery(api.responses.photoUrl, { responseId, questionId });
 
   if (!url) {
     return <span className="text-ink/60">Photo</span>;
