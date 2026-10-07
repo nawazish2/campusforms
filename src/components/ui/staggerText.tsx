@@ -31,6 +31,8 @@ const TextAnimation = ({
   delay?: number;
   divideBy?: "word" | "letter";
 }) => {
+  const reduce = useReducedMotion();
+
   if (typeof children !== "string") {
     if (typeof children === "number" || typeof children === "boolean") {
       children = String(children);
@@ -40,7 +42,6 @@ const TextAnimation = ({
     }
   }
 
-  const reduce = useReducedMotion();
   const text = children as string;
   const parts =
     divideBy === "letter" ? text.split("") : text.split(" ");

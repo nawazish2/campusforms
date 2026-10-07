@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Worktree clones and their build output:
+    ".delta/**",
+    // vinext / Cloudflare build output:
+    "dist/**",
+    ".vinext/**",
+    ".cloudflare/**",
   ]),
 ]);
 

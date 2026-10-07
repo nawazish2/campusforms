@@ -24,13 +24,10 @@ export function StatsCounter({
   const reduce = useReducedMotion();
   const motionValue = useMotionValue(0);
   const springValue = useSpring(motionValue, { stiffness: 90, damping: 18 });
-  const [displayValue, setDisplayValue] = useState(reduce ? value : 0);
+  const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
-    if (reduce) {
-      setDisplayValue(value);
-      return;
-    }
+    if (reduce) return;
     motionValue.set(value);
   }, [value, motionValue, reduce]);
 
@@ -44,7 +41,7 @@ export function StatsCounter({
   return (
     <span ref={ref} className={cn("tabular-nums", className)}>
       {prefix}
-      {displayValue.toFixed(decimals)}
+      {(reduce ? value : displayValue).toFixed(decimals)}
       {suffix}
     </span>
   );
