@@ -14,7 +14,7 @@ nobody can find the form, the mess feedback isn't really anonymous, and the
 person who has to act on the results is reading raw rows.
 
 CampusForms keeps the one-link workflow and fixes those three things — a public
-notice board of open forms, anonymity enforced in the database rather than in
+notice board of open forms, anonymity enforced on the server rather than in
 the interface, and a results view the hostel office can read in a morning.
 
 ## What it does
@@ -36,22 +36,22 @@ board can be filtered by the thing a student is actually looking for.
 
 ## Anonymity that means something
 
-Any form can be marked anonymous. When it is, a database trigger clears the
-name and email as the row is written — not at display time, not in the query
-that renders the organizer's screen. By the time the response exists, the
-identifying fields are already null. The organizer never receives them, and
+Any form can be marked anonymous. When it is, the one function that writes a
+response — `responses.submit` — stores `null` for the name and email. Not at
+display time, not in the query that renders the organizer's screen: the
+identifying fields are never written. The organizer never receives them, and
 neither does anything downstream, including CSV export.
 
 The schema supports that claim rather than working around it:
 
-- **No `submitted_by` column and no IP column.** They were never added, so
-  there is nothing to leak, subpoena or accidentally join against.
+- **No `submittedBy` field and no IP field.** They were never added, so there
+  is nothing to leak, subpoena or accidentally join against.
 - **A student can't read their own response back.** The confirmation screen
   shows a reference number instead, generated client-side before the write.
   `/status` looks that code up and returns queue status only — never answers.
-- **Forms carry a trigger-maintained `response_count`,** which is how a public
-  page can say "37 responses" while nobody but the organizer can read a single
-  one.
+- **Forms carry a `responseCount`,** written only by submit and delete, which
+  is how a public page can say "37 responses" while nobody but the organizer
+  can read a single one.
 
 Anonymity that only exists in the UI isn't anonymity. The limits of this claim
 are stated below, and on `/privacy` for students.
@@ -59,65 +59,117 @@ are stated below, and on `/privacy` for students.
 ## How it's built
 
 Next.js 16 App Router with Turbopack, React 19, Tailwind v4, TypeScript, and
-Supabase for auth, Postgres and row level security.
+Convex for the database, functions, file storage and (through Convex Auth)
+Google sign-in.
 
 ```
+convex/         the backend: schema, functions, auth, the rules
+  schema.ts     the data model — edit this to change it
+  rules.ts      deadline, answer types, size: pure functions
+  forms.ts, responses.ts, organizerRequests.ts, admin.ts, seed.ts, auth.ts
 src/
   app/          routes — /, /browse, /f/[id], /login, /dashboard/*, /privacy, /terms
   components/   UI, including the form builder and the results summaries
   lib/
-    db/         the only code that talks to Supabase
+    db/         hooks (live queries) and actions (mutations) over Convex
     validation  answer + draft rules, shared by the builder and the fill page
     analytics   response summaries
-  proxy.ts      session refresh and the /dashboard guard
-supabase/
-  migrations/   schema, policies and triggers, in eight ordered files
+  proxy.ts      finishes the Google sign-in and guards /dashboard
+tests/convex/   the backend rules, run in-process with convex-test
 ```
 
-### Row level security is the whole authorization model
+### The functions are the whole authorization model
 
-There is no ORM and no API layer. The browser talks to Postgres through
-supabase-js, which means a policy here is not a second line of defence behind
-some server that already checked — it is the only line. `src/lib/db/` is the
-only place that issues a query, so the surface that has to be right stays small
-enough to read in one sitting.
+There is no ORM and no API layer of our own. The browser can only call Convex
+functions, and every function checks who is asking: a public query takes no
+identity, an owner function compares the signed-in user to the form's
+`ownerId`. A rule here is not a second line of defence behind some server that
+already checked — it is the only line. `convex/` is the only place that reads
+or writes data, so the surface that has to be right stays small enough to read
+in one sitting.
 
-The policies are short enough to state in prose. Anyone may read any form, in
-any status: `/f/[id]` needs closed and draft forms to exist in order to explain
-why they aren't accepting responses, and nothing in a form definition is
-confidential. Anyone may insert a response to an open form. Only the owner may
+The rules are short enough to state in prose. Anyone may read any form, in any
+status: `/f/[id]` needs closed and draft forms to exist in order to explain why
+they aren't accepting responses, and nothing in a form definition is
+confidential. Anyone may submit a response to an open form. Only the owner may
 read, triage or delete responses, or touch the form itself.
 
-### Rules that protect data live in the database
+### Rules that protect data live on the server
 
-The publishable key is in the page source of every form. Anything enforced only
-in the browser is therefore enforced nowhere — anyone willing to POST to the
-REST endpoint directly skips it entirely, and that takes about a minute to
-work out.
+The deployment URL is in the page source of every form. Anything enforced only
+in the browser is therefore enforced nowhere — anyone willing to call the
+function directly skips it entirely, and that takes about a minute to work out.
 
 So the deadline, a per-form flood limit, and the shape *and types* of
-`answers` are all triggers. `validateFill` still runs in the browser, but its job is to give a
-student a good error message, not to keep bad rows out.
+`answers` are all checked inside `responses.submit`. `validateFill` still runs
+in the browser, but its job is to give a student a good error message, not to
+keep bad rows out.
 
 ### Two schema choices that look odd and aren't
 
-**`questions` and `answers` are `jsonb`.** Nothing ever queries a question on
-its own — the builder rewrites the whole array per edit, and every summary
-iterates it in JS. So a form saves as one upsert, and question ids, which
-answers are keyed by, stay stable for free.
+**`questions` is an array on the form and `answers` is an object on the
+response.** Nothing ever queries a question on its own — the builder rewrites
+the whole array per edit, and every summary iterates it in JS. So a form saves
+as one write, and question ids, which answers are keyed by, stay stable for
+free.
 
-**`deadline` is `text`, not `timestamptz`.** It holds two shapes with different
+**`deadline` is a string, not a timestamp.** It holds two shapes with different
 meanings: `2026-09-25` is the end of that local day, `2026-09-25T18:00` is a
-local wall clock. A timestamp column collapses that distinction, and neither
-shape carries a timezone to convert from in the first place.
+local wall clock. A timestamp collapses that distinction, and neither shape
+carries a timezone to convert from in the first place.
+
+### Running it locally
+
+```bash
+npm install
+npx convex dev     # first run creates a local deployment and writes .env.local
+npm run dev        # in a second terminal
+```
+
+`npx convex dev` also watches `convex/`, pushes changes and keeps
+`convex/_generated/` current. Without a Convex account it runs a local backend
+(data in `.convex/`). Set the sign-in variables once on that deployment — see
+`.env.local.example` for the full list:
+
+```bash
+npx convex env set SITE_URL http://localhost:3000
+npx convex env set AUTH_GOOGLE_ID <client id>
+npx convex env set AUTH_GOOGLE_SECRET <client secret>
+# JWT_PRIVATE_KEY and JWKS: generate once, see "Manual Setup" in the Convex Auth docs
+```
+
+Sample data, so `/browse` has something on it:
+
+```bash
+npx convex run seed:dev
+```
+
+**Adding an organizer.** Sign-in is allowlisted, and the allowlist is only
+writable from the CLI or the Convex dashboard:
+
+```bash
+npx convex run admin:allowOrganizer '{"email":"warden@univ.edu"}'
+```
+
+Requests from `/login` land in the `organizerRequests` table; read them with
+`npx convex data organizerRequests`.
+
+**Changing the schema.** Edit `convex/schema.ts`; `npx convex dev` pushes it.
+An optional field (`v.optional(...)`) needs no migration — old documents simply
+don't have it. A new required field needs a backfill first, so add it as
+optional, backfill, then tighten it.
+
+**Tests.** `npm test` runs the pure `src/lib` tests and the backend rules in
+`tests/convex/` (anonymity, deadline, flood limit, every answer type,
+ownership). They run against an in-memory Convex, no deployment needed.
 
 ## Roadmap
 
 What's next, roughly in the order the campus would feel it.
 
 - **Email digests** — a nightly "3 new complaints, 2 urgent" to organizers.
-  Needs a service-role Supabase key, an email provider (e.g. Resend) and a
-  Vercel Cron route; none of that exists yet.
+  Needs an email provider (e.g. Resend) and a scheduled Convex function;
+  none of that exists yet.
 - **AI assist** — draft a form from one sentence ("room change requests"),
   weekly "top themes from 214 responses" summaries, auto-triage of complaint
   urgency. Needs an LLM API key.
@@ -138,8 +190,18 @@ know where they stop.
   and no submitter id, on purpose, so there is nothing else to count. It stops
   a script; it wouldn't stop thirty phones.
 - **Sign-in is allowlisted.** Organizer accounts are added by hand to
-  `allowed_organizers`. Anyone can request access from `/login`; the inbox is
-  `organizer_requests`, read from the SQL editor, same as the allowlist.
+  `allowedOrganizers` (`admin:allowOrganizer`). Anyone can request access from
+  `/login`; the inbox is the `organizerRequests` table, read from the CLI or
+  the Convex dashboard, same as the allowlist. Removing someone from the
+  allowlist stops new sign-ins; a session they already hold lasts until it
+  expires.
+- **A refused sign-in is a redirect, not a message.** Convex Auth sends an
+  unlisted Google account back to `/login` without saying why, so the page
+  explains the likely cause ("not on the organizer list, or cancelled").
+- **Photos upload before the response is filed.** A student who uploads and then
+  fails validation leaves an unattached file in storage until it is cleaned up.
+- **Every page renders on request.** Convex Auth reads its session from
+  cookies on the server, so no route is prerendered as static.
 
 ---
 

@@ -1,8 +1,7 @@
 # Architecture
 
-How CampusForms is put together and why. For what the product does, see
-[README.md](README.md). For the database setup, see
-[supabase/README.md](supabase/README.md).
+How CampusForms is put together and why. For what the product does and how to
+run it, see [README.md](README.md).
 
 ## System overview
 
@@ -10,27 +9,27 @@ How CampusForms is put together and why. For what the product does, see
                  ┌──────────────────────────────────────────────┐
   Organizer ───▶ │  Next.js 16 app (App Router, React 19)       │
   (Google SSO)   │                                              │
-                 │  proxy.ts        session refresh, /dashboard │
+                 │  proxy.ts        finishes sign-in, /dashboard│
   Student ─────▶ │                  guard                       │
-  (no account)   │  server code     auth callback, OG metadata  │
-                 │                  and share images            │
+  (no account)   │  server code     OG metadata, share images   │
                  │  client pages    everything else             │
                  └───────────────┬──────────────────────────────┘
-                                 │ supabase-js, publishable key
-                                 │ + user session cookie (if any)
+                                 │ Convex client (WebSocket)
+                                 │ + auth token (if signed in)
                  ┌───────────────▼──────────────────────────────┐
-                 │  Supabase                                    │
-                 │  Auth      Google OAuth, organizer allowlist │
-                 │  Postgres  forms, responses, RLS, triggers   │
-                 │  Storage   response-files bucket (photos)    │
+                 │  Convex                                      │
+                 │  Functions  queries + mutations: every rule  │
+                 │  Database   forms, responses, allowlist      │
+                 │  Auth       Convex Auth, Google OAuth        │
+                 │  Storage    response photos                  │
                  └──────────────────────────────────────────────┘
 ```
 
-There is no backend of our own: no API routes for data, no ORM, no service
-role key. The browser queries Postgres directly through supabase-js, and
-**row level security plus triggers are the entire authorization and
-validation layer**. Anything enforced only in the browser is treated as
-not enforced, because the publishable key is in every page's source.
+There is no data API of our own and no ORM. The browser can only call Convex
+functions, so **the functions are the entire authorization and validation
+layer**: each one decides who is asking and what they may do. Anything enforced
+only in the browser is treated as not enforced, because the deployment URL is
+in every page's source.
 
 ## Stack
 
@@ -39,13 +38,26 @@ not enforced, because the publishable key is in every page's source.
 | Framework | Next.js 16 App Router (Turbopack), React 19, TypeScript |
 | Styling | Tailwind v4, small hand-written UI kit in `src/components/ui/` |
 | Animation | framer-motion |
-| Data / auth / files | Supabase (`@supabase/ssr`, `@supabase/supabase-js`) |
-| Tests | Vitest (unit tests for `src/lib`) |
+| Data / auth / files | Convex (`convex`, `@convex-dev/auth` with the Google provider) |
+| Tests | Vitest: unit tests for `src/lib`, `convex-test` for the backend rules |
 | Hosting | Vercel (production). A Cloudflare Workers build via vinext lives on the `cloudflare-workers` branch |
 
 ## Directory map
 
 ```
+convex/
+  schema.ts                tables, indexes, validators — the data model
+  rules.ts                 deadline, answer types, size, ref: pure functions
+  lib.ts                   ownership checks, doc → UI shape mappers
+  forms.ts                 form queries and owner mutations
+  responses.ts             submit, triage, lookupByRef, photos
+  organizerRequests.ts     public "request access" insert
+  admin.ts                 internal: allowOrganizer / removeOrganizer
+  organizers.ts            the allowlist check used at sign-in
+  auth.ts, auth.config.ts, http.ts   Convex Auth wiring
+  users.ts                 `me`, behind useAuth()
+  seed.ts                  internal: seed:dev sample data
+  _generated/              written by `npx convex dev`; committed
 src/
   proxy.ts                 Next 16's renamed middleware
   app/
@@ -55,7 +67,6 @@ src/
                            + opengraph-image.tsx for link previews
     status/                look up a response by its REF code
     login/                 Google sign-in, organizer access requests
-    auth/callback/route.ts OAuth code → session cookie
     dashboard/             organizer area (guarded by proxy.ts)
       new/                 create form (blank or from template)
       form/[id]/           results, triage, CSV export
@@ -66,17 +77,17 @@ src/
     form-builder.tsx       editor for the questions array
     form-renderer.tsx      renders a form for filling
     question-summary.tsx   per-question result summaries
-    auth-provider.tsx      React context holding the Supabase session
+    convex-provider.tsx    Convex client + Convex Auth provider
+    auth-provider.tsx      useAuth(): user, ready, signInWithGoogle, signOut
     ui/                    buttons, dialogs, inputs, etc.
     landing/               landing page sections
   lib/
-    db/                    the only code that talks to Supabase
-      env.ts               reads NEXT_PUBLIC_SUPABASE_* once
-      client.ts            browser client
-      server.ts            server client (cookies())
-      schema.ts            hand-written Database type + row ↔ model mappers
-      forms.ts             every query, RPC and storage call
-      hooks.ts             React read hooks for pages
+    db/
+      env.ts               reads NEXT_PUBLIC_CONVEX_URL once
+      hooks.ts             live-query hooks for pages
+      actions.ts           mutation hooks, newResponseRef, errorMessage
+      server.ts            fetchQuery for metadata and share images
+      schema.ts            FormSummary type
     types.ts               domain types (FormDefinition, Question, …)
     validation.ts          fill + builder validation (UX only)
     analytics.ts           response summaries
@@ -86,102 +97,129 @@ src/
     submissions.ts         localStorage "already submitted" marker
     photos.ts              client-side resize + EXIF strip before upload
     demo.ts                in-memory sample form for /browse and /f/demo
-supabase/
-  migrations/              schema, RLS, triggers, RPCs, storage policies
+tests/convex/              backend rules, run with convex-test
 ```
 
 ## Rendering model
 
-Almost every page is a client component (`'use client'`). Data is fetched in
-the browser through hooks in `src/lib/db/hooks.ts`, using the signed-in
-user's session, so RLS sees the real user.
+Almost every page is a client component (`'use client'`). Data comes through
+`useQuery` hooks in `src/lib/db/hooks.ts`, so every list and count is live: a
+student's submission appears on the organizer's results page without a refetch.
+The few `refresh()` functions pages still call are no-ops kept so those pages
+didn't have to change.
 
 Server code is limited to three places:
 
-1. **`src/proxy.ts`** runs on every non-static request. It refreshes the
-   Supabase session cookie (server components can't write cookies) and
+1. **`src/proxy.ts`** runs on every non-static request. `convexAuthNextjsMiddleware`
+   finishes the Google sign-in (it trades the one-time `code` in the URL for
+   session cookies) and proxies auth actions to Convex. On top of that it
    redirects signed-out visitors from `/dashboard/*` to `/login?next=…`. In
-   production it throws if Supabase env vars are missing, so a bad deploy
+   production it throws if `NEXT_PUBLIC_CONVEX_URL` is missing, so a bad deploy
    can't leave the dashboard unguarded.
-2. **`src/app/auth/callback/route.ts`** exchanges the OAuth code for a
-   session. `next` is passed through `safeNextPath` to prevent open
-   redirects. The organizer allowlist rejects unknown accounts at this step.
-3. **`src/app/f/[id]/layout.tsx` and `opengraph-image.tsx`** read the public
-   form on the server to produce titles and share cards for WhatsApp/Slack
+2. **`ConvexAuthNextjsServerProvider`** in the root layout reads the session
+   cookies so the first render already knows who is signed in. Because it reads
+   cookies, no route is prerendered as static.
+3. **`src/app/f/[id]/layout.tsx` and `opengraph-image.tsx`** call `fetchQuery`
+   to read the public form for titles and share cards for WhatsApp/Slack
    previews.
 
-Writes never go through the server. Pages call functions in
-`src/lib/db/forms.ts` and then call the hook's `refresh()` to refetch. There
-is no client cache; at a few hundred rows a refetch is cheaper than keeping a
-cache correct.
+Writes never go through Next.js. Pages call mutations from
+`src/lib/db/actions.ts` directly against Convex.
 
 ## Data layer
 
 ### Boundary rule
 
-`src/lib/db/` is the only directory that imports Supabase. Pages and
-components get a client from `useDb()` and pass it to functions in
-`forms.ts`. This keeps every query in one file that can be reviewed against
-the RLS policies.
+`convex/` is the only code that reads or writes data. Convex's validators check
+the arguments' shape; the functions check identity and the business rules. The
+queries return the UI's shapes already (`_id` → `id`, `_creationTime` → ISO
+`createdAt`, and the owner id never leaves the server), so there is no row
+mapper on the client.
 
-`schema.ts` is the single place where snake_case rows become camelCase
-domain objects (`toForm`, `toSummary`, `toResponse`). The `Database` type is
-hand-written next to the migrations rather than generated.
+User-visible failures are thrown as `ConvexError` with the sentence as data.
+A plain `Error` would be redacted to "Server Error" on a cloud deployment;
+`errorMessage()` in `actions.ts` reads either kind.
 
 ### Tables
 
-| Table | Purpose | Key columns |
+| Table | Purpose | Key fields |
 |---|---|---|
-| `forms` | One row per form | `owner_id`, `status` (`draft`/`open`/`closed`), `category`, `anonymous`, `deadline` (text), `questions` (jsonb), `pinned`, `max_responses`, `response_count` |
-| `responses` | One row per submission | `form_id`, `ref` (16-hex, unique), `respondent_name`, `respondent_email`, `answers` (jsonb, keyed by question id), `status` (`new`/`in-progress`/`done`), `public_note` |
-| `allowed_organizers` | Emails allowed to sign up | read from SQL editor only |
-| `organizer_requests` | Access requests from `/login` | insert-only for the public |
+| `forms` | One document per form | `ownerId`, `status` (`draft`/`open`/`closed`), `category`, `anonymous`, `deadline` (string), `questions` (array), `pinned`, `maxResponses`, `responseCount` |
+| `responses` | One document per submission | `formId`, `ref` (16-hex, unique), `respondentName`, `respondentEmail`, `answers` (object keyed by question id), `status` (`new`/`in-progress`/`done`), `publicNote` |
+| `allowedOrganizers` | Emails allowed to sign in | written only by `admin:*` |
+| `organizerRequests` | Access requests from `/login` | insert-only for the public |
+| `users`, `authAccounts`, `authSessions`, … | Convex Auth's tables | `authTables` in `schema.ts` |
 
-Storage: the `response-files` bucket holds photo answers at
-`{form_id}/{ref}/{question_id}`.
+Submission time is the document's `_creationTime`; there is no separate column.
+Photos live in Convex file storage; a `file` answer stores the storage id.
 
-### Why `questions` and `answers` are jsonb
+Adding an optional field to `schema.ts` needs no migration.
+
+### Why `questions` and `answers` are nested values
 
 Nothing queries a single question. The builder rewrites the whole array on
-each save and every summary iterates it in JS, so a form saves as one upsert
-and question ids stay stable.
+each save and every summary iterates it in JS, so a form saves as one write and
+question ids stay stable.
 
-### Why `deadline` is text
+### Why `deadline` is a string
 
 It stores two different things: `2026-09-25` (end of that local day) and
 `2026-09-25T18:00` (a local wall-clock time). Neither has a timezone. A
-`timestamptz` would lose the difference.
+timestamp would lose the difference.
 
-## Authorization (RLS)
+## Authorization
 
-| Action | Who |
-|---|---|
-| Read any form, any status | Anyone (closed/draft forms must render an explanation) |
-| Create / update / delete a form | Its owner |
-| Insert a response | Anyone, if the form is open |
-| Read / delete a response | The form's owner |
-| Update a response | The form's owner, and only `status` / `public_note` |
-| Upload a photo | Anyone, to an open form, at a well-formed path |
-| Read / delete a photo | The form's owner (via signed URLs) |
-| Look up a response by REF | Anyone, via `lookup_response_by_ref` RPC — returns status, form title and public note, never answers |
-| Sign up as organizer | Only emails in `allowed_organizers` (trigger on `auth.users`) |
+| Action | Who | Function |
+|---|---|---|
+| Read any form, any status | Anyone (closed/draft forms must render an explanation) | `forms.get` |
+| List open forms | Anyone | `forms.listOpen` |
+| Create / update / delete / pin / publish / duplicate a form | Its owner | `forms.*` |
+| Submit a response | Anyone, if the form is open | `responses.submit` |
+| List / triage / delete responses | The form's owner | `responses.listForForm`, `setStatus`, `setNote`, `remove` |
+| Edit a response | The form's owner, and only `status` / `publicNote` | `setStatus`, `setNote` |
+| Get an upload URL | Anyone, for an open form | `responses.generateUploadUrl` |
+| View a photo | The owner of the response's form | `responses.photoUrl` |
+| Look up a response by REF | Anyone — returns status, form title, category, time, anonymity flag and public note, never answers | `responses.lookupByRef` |
+| Sign in as organizer | Only emails in `allowedOrganizers` | `afterUserCreatedOrUpdated` in `auth.ts` |
+| Edit the allowlist | Nobody through the API; CLI or dashboard only | `admin:*` (internal) |
 
-## Database triggers
+Owner queries return `null` or `[]` for a signed-out caller or someone else's
+form, so a page renders "not found" instead of crashing. Owner mutations throw.
 
-Rules that protect data live in Postgres so a direct REST call can't skip
-them. `validation.ts` repeats some of them in the browser only to show good
-error messages.
+## What `responses.submit` enforces
 
-| Trigger | Does |
-|---|---|
-| `responses_strip_identity` | Nulls `respondent_name` and `respondent_email` when the form is anonymous |
-| `responses_count_ins` / `_del` | Maintains `forms.response_count` so public pages can show counts without reading responses |
-| `responses_guard` | Rejects late submissions (deadline, with a timezone grace window), more than 30 per form per minute, payloads over 20 KB, unknown question ids, missing required answers, over-capacity forms |
-| answer type validation | Ratings in range, choices from the options, email/date shapes |
-| `responses_update_status_only` | Owners can change triage fields, not answers |
-| `forms_protect_invariants` | `response_count` is immutable from clients; `anonymous` is locked after the first response |
-| `enforce_organizer_allowlist_on_signup` | Blocks sign-up for emails not in `allowed_organizers` |
-| `organizer_requests_guard` | Normalizes and validates the email, caps the note at 500 chars, allows at most 10 requests per 10 minutes overall |
+One mutation does all of this, in order, in one transaction. `validation.ts`
+repeats some of it in the browser only to show good error messages.
+
+1. The form exists (a malformed id is "does not exist", not a thrown error) and
+   is `open`.
+2. The ref is 16 lowercase hex (uppercase is lowercased).
+3. The deadline: `2026-09-25` ends with that day, `2026-09-25T18:00` is a wall
+   clock, both read as UTC and given a 14-hour grace so the server only rejects
+   once the deadline has passed in every timezone.
+4. The `maxResponses` cap.
+5. The flood limit: at most 30 responses per form per minute.
+6. `answers` is an object, at most 20,000 bytes serialized.
+7. Every key is a question id of this form.
+8. Required questions are answered (blank string, empty array and null count
+   as unanswered).
+9. Each answer matches its type: rating is an integer from 1 to `maxRating`,
+   number is numeric, single-choice and dropdown are one of the options,
+   multi-choice is an array of options, email and date have their shapes, other
+   types (including unknown ones) are strings.
+10. Each `file` answer is a real storage id of a JPEG, PNG or WebP of at most
+    5 MB.
+11. The ref is not already used.
+12. Insert with status `new` and an empty note; name and email become `null` on
+    an anonymous form; then `responseCount` goes up by one.
+
+Other invariants: `responseCount` is written only by submit and delete;
+`anonymous` can't change after the first response; deleting a form deletes its
+responses and photos in batches; deleting a response deletes its photos.
+
+Organizer requests: email lowercased, trimmed, valid and at most 200 characters;
+note at most 500; one request per email; at most 10 requests per 10 minutes
+overall.
 
 ## Key flows
 
@@ -189,81 +227,99 @@ error messages.
 
 ```
 /f/[id] (client)
-  ├─ usePublicForm(id)          read form (public policy)
+  ├─ usePublicForm(id)          live query: forms.get
   ├─ validateFill()             browser-side errors only
   ├─ ref = newResponseRef()     16 hex chars, crypto.getRandomValues
   ├─ for each photo answer:
   │    preparePhoto()           resize to 1600px, re-encode (drops EXIF)
-  │    uploadResponsePhoto()    response-files/{form}/{ref}/{question}
-  ├─ addResponse({ ..., ref })  INSERT into responses
-  │    └─ DB: guard → type check → strip identity → count++
+  │    generateUploadUrl()      then POST the blob; the answer is the storage id
+  ├─ responses.submit(...)      every rule above, one transaction
   ├─ markSubmitted(formId)      localStorage hint, not enforcement
   └─ show REF on success screen
 ```
 
-The response `id` and `ref` are generated in the browser because the
-student cannot `SELECT` their own row. On a unique-`ref` collision the insert
-retries once with a new ref (unless photos were already uploaded under it).
+The `ref` is generated in the browser because the student cannot read their own
+response back. On a ref collision the call retries once with a new ref.
+
+The demo form (`/f/demo`) is handled entirely in the client (`isDemoFormId`)
+and never reaches Convex.
 
 ### Student checks status
 
-`/status` → `lookup_response_by_ref(ref)` (security-definer RPC) → form
-title, triage status, submission time, organizer's public note. No answers.
+`/status` → `responses.lookupByRef(ref)` → form title, triage status,
+submission time, the organizer's public note. No answers.
 
 ### Organizer signs in
 
 ```
-/login → supabase.auth.signInWithOAuth(google)
-       → Google → /auth/callback?code=…
-       → exchangeCodeForSession (allowlist trigger may reject)
-       → redirect to safeNextPath(next)
+/login → signIn('google', { redirectTo: /login?next=…&via=google })
+       → Google → Convex's /api/auth/callback/google
+       → afterUserCreatedOrUpdated checks allowedOrganizers
+         (a throw rolls the sign-in back: no user, no session)
+       → redirect to /login with a one-time code  (success)
+         or with no code                           (refused or cancelled)
+       → proxy.ts exchanges the code for cookies, the page redirects to next
 ```
 
-`AuthProvider` subscribes to auth changes on the client; `proxy.ts` keeps
-the cookie fresh on each request.
+Convex Auth drops a refused sign-in back at `redirectTo` with no error. The
+login page uses `via=google` to know a sign-in was attempted, and shows the
+"not on the organizer list, or cancelled" message when the user is still signed
+out afterwards.
 
 ### Organizer builds and reviews
 
 - **Create / edit**: `form-builder.tsx` edits a `FormDefinition` in memory,
-  autosaves a draft to localStorage (`drafts.ts`), and writes the whole row
-  with `createForm` / `updateForm`.
-- **Results**: `useFormResults(id)` loads the form and its responses.
+  autosaves a draft to localStorage (`drafts.ts`), and saves the whole form
+  with `forms.create` / `forms.update`.
+- **Results**: `useFormResults(id)` subscribes to the form and its responses.
   `analytics.ts` builds summaries, `question-summary.tsx` renders them,
-  `csv.ts` exports. Triage updates go through `setResponseStatus` /
-  `setResponseNote`. Photos are shown with short-lived signed URLs.
+  `csv.ts` exports. Triage goes through `setResponseStatus` /
+  `setResponseNote`. Photos are shown from URLs that `responses.photoUrl`
+  returns only to the owner.
 
 ## Anonymity guarantees and limits
 
-- Enforced at write time by a trigger, not in the UI. The organizer, CSV
-  export and anything downstream never receive the name or email.
-- There is no `submitted_by` or IP column.
+- Enforced when the response is written, in `responses.submit`, not in the UI.
+  The organizer, CSV export and anything downstream never receive the name or
+  email.
+- There is no `submittedBy` or IP field.
 - `anonymous` can't be switched off after the first response.
 - Limits: submission time and order still exist; photos can identify people
   even without EXIF; the flood limit is per form, not per person.
 
 ## Configuration
 
-| Variable | Used by |
-|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | `src/lib/db/env.ts` |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (or legacy `NEXT_PUBLIC_SUPABASE_ANON_KEY`) | `src/lib/db/env.ts` |
+| Variable | Where | Used by |
+|---|---|---|
+| `NEXT_PUBLIC_CONVEX_URL` | Next.js environment | `src/lib/db/env.ts`, `proxy.ts`, the Convex client |
+| `CONVEX_DEPLOYMENT` | `.env.local`, written by `npx convex dev` | the Convex CLI |
+| `SITE_URL` | Convex deployment env | where Convex Auth sends the browser after sign-in |
+| `JWT_PRIVATE_KEY`, `JWKS` | Convex deployment env | Convex Auth token signing |
+| `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET` | Convex deployment env | the Google provider |
 
-They must be literal `process.env.NEXT_PUBLIC_…` lookups so Next inlines them
-at build time. Without them, development pages render a "not connected"
-state (`setup-required.tsx`) and production refuses to serve.
+`NEXT_PUBLIC_CONVEX_URL` must be a literal `process.env.NEXT_PUBLIC_…` lookup so
+Next inlines it at build time. Without it, development pages render a "not
+connected" state (`setup-required.tsx`) and production refuses to serve.
+
+Convex deployment variables are set with `npx convex env set` (or the
+dashboard), not in `.env.local`.
 
 ## Deployment
 
-- **Vercel** (production, `main`): `next build`. Supabase's GitHub
-  integration applies `supabase/migrations/` to the project.
+- **Vercel** (production, `main`): `next build`, with `NEXT_PUBLIC_CONVEX_URL`
+  pointing at the production Convex deployment. Backend changes ship with
+  `npx convex deploy`.
 - **Cloudflare Workers** (`cloudflare-workers` branch): `vinext` builds the
   same app with Vite (`vite.config.ts`, `cloudflare.config.ts`) and deploys
-  with `npm run deploy:vinext`.
+  with `npm run deploy:vinext`. Not re-checked since the move to Convex.
 
 ## Testing
 
-`npm test` runs Vitest over the pure modules in `src/lib`
-(`validation`, `analytics`, `drafts`, `demo`, `utils`). Database rules are
-checked by hand after applying migrations; see the checklist in
-[supabase/README.md](supabase/README.md). End-to-end tests are on the
-roadmap.
+`npm test` runs Vitest in two projects. `app` covers the pure modules in
+`src/lib` (`validation`, `analytics`, `drafts`, `demo`, `utils`). `convex`
+(`tests/convex/`) runs the real backend functions in-process with `convex-test`
+under the edge runtime: anonymity, deadline, closed and draft forms, the cap,
+the flood limit, every answer type, ref format and uniqueness, count
+bookkeeping, the anonymity lock, owner-only access, `lookupByRef`, organizer
+requests and the allowlist check. The Google OAuth round trip itself isn't
+testable that way. End-to-end tests are on the roadmap.

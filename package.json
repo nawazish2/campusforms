@@ -17,8 +17,6 @@
   "dependencies": {
     "@auth/core": "^0.41.3",
     "@convex-dev/auth": "^0.0.96",
-    "@supabase/ssr": "^0.12.6",
-    "@supabase/supabase-js": "^2.115.0",
     "@vinext/cloudflare": "^1.0.0",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",

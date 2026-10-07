@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Learned Workspace Facts
 
-- CampusForms is Next.js 16 + Supabase (auth, Postgres, RLS), not Convex. There is no ORM or API layer; `src/lib/db/` is the only code that talks to Supabase, and RLS is the whole authorization model.
-- Organizers sign in with Google and must be allowlisted in `allowed_organizers`; students have no accounts and submit through public form links.
-- Anonymity is enforced in the database: triggers strip name/email on anonymous forms, and there is no `submitted_by` or IP column. Public `/status` REF lookup returns queue status only — never answers; only the form owner can read responses.
+- CampusForms is Next.js 16 + Convex (Convex Auth with Google, Convex database and file storage). There is no ORM or API layer of our own; `convex/` is the only code that reads or writes data, and every function checks identity and the business rules itself.
+- Organizers sign in with Google and must be on the `allowedOrganizers` allowlist (`npx convex run admin:allowOrganizer '{"email":"..."}'`); students have no accounts and submit through public form links.
+- Anonymity is enforced in `convex/responses.ts` `submit`: it stores null name/email on anonymous forms, and there is no submittedBy or IP field. Public `/status` REF lookup returns queue status only — never answers; only the form owner can read responses.
 - Production is https://campusforms.vercel.app.

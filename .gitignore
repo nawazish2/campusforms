@@ -41,8 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Supabase CLI scratch
-supabase/.temp/
 /dist/
 
 # Convex local deployment data

@@ -75,8 +75,7 @@ export default function PrivacyPage() {
 
       <Section heading="Where the data lives">
         <p>
-          In a Supabase-hosted Postgres database in the Mumbai (ap-south-1)
-          region, and on Vercel, which serves the site. Google handles organizer
+          In a Convex-hosted database, and on Vercel, which serves the site. Google handles organizer
           sign-in; we receive only your name, email and picture from it.
         </p>
       </Section>
