@@ -42,7 +42,7 @@ export default function SharePage() {
           <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-ballpoint-700"
+            className="mt-6 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-ballpoint-700"
           >
             <ArrowLeft className="size-4" aria-hidden />
             Back to your forms
@@ -86,14 +86,14 @@ export default function SharePage() {
             : 'It is saved as a draft, so students who open the link will see that it isn’t accepting responses. Publish it from the results page.'}
         </p>
 
-        <section className="mt-7 slip p-5 sm:p-6">
+        <section className="mt-7 slip p-4 sm:p-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
             Step 1 · Send the link
           </p>
           <p className="mt-3 break-all rounded-md border border-ink/10 bg-paper px-3.5 py-3 font-mono text-[14px]">
             {shareLink}
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2 [&>*]:max-sm:w-full">
             <CopyLinkButton link={shareLink} label="Copy link" variant="primary" />
             <WhatsAppShareButton title={form.title} url={shareLink} />
             <a
@@ -128,7 +128,7 @@ export default function SharePage() {
               Students scan it with their phone camera. Put it on a slide, a
               notice board or the mess door.
             </p>
-            <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
+            <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start [&>*]:max-sm:w-full">
               <button
                 type="button"
                 onClick={downloadQr}
@@ -150,7 +150,7 @@ export default function SharePage() {
 
         <Link
           href={`/dashboard/form/${form.id}`}
-          className={cn(buttonVariants({ variant: 'ghost' }), 'mt-6')}
+          className={cn(buttonVariants({ variant: 'ghost' }), 'mt-6 max-sm:h-auto max-sm:min-h-10 max-sm:whitespace-normal')}
         >
           Step 3 · Watch responses come in
           <ArrowRight />

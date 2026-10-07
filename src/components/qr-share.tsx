@@ -37,7 +37,7 @@ export function QrShare({ link }: { link: string }) {
       <button
         type="button"
         onClick={download}
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-ink/60 transition hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+        className="inline-flex min-h-10 items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-ink/60 transition hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
       >
         <Download className="size-3" aria-hidden />
         PNG

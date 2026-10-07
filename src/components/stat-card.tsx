@@ -67,8 +67,8 @@ export function StatCard({
     <div
       className={
         accent
-          ? 'rounded-lg bg-accent-solid p-5 text-on-accent shadow-md transition-shadow hover:shadow-lg'
-          : 'slip p-5 transition-shadow hover:shadow-md'
+          ? 'rounded-lg bg-accent-solid p-4 text-on-accent sm:p-5 shadow-md transition-shadow hover:shadow-lg'
+          : 'slip p-4 transition-shadow hover:shadow-md sm:p-5'
       }
     >
       <div className="flex items-center justify-between gap-3">

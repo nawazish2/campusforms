@@ -198,7 +198,7 @@ export default function DashboardPage() {
       <Link
         href={`/dashboard/form/${f.id}`}
         onClick={() => setMenuFor(null)}
-        className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
+        className="flex items-center gap-2.5 rounded-lg px-3 py-2 max-sm:min-h-11 text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
       >
         <BarChart3 className="size-4 text-ink/60" aria-hidden />
         Results
@@ -206,7 +206,7 @@ export default function DashboardPage() {
       <Link
         href={`/dashboard/form/${f.id}/edit`}
         onClick={() => setMenuFor(null)}
-        className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
+        className="flex items-center gap-2.5 rounded-lg px-3 py-2 max-sm:min-h-11 text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
       >
         <Pencil className="size-4 text-ink/60" aria-hidden />
         Edit
@@ -217,7 +217,7 @@ export default function DashboardPage() {
           setMenuFor(null);
           copyLink(f.id);
         }}
-        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
+        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 max-sm:min-h-11 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
       >
         <Link2 className="size-4 text-ink/60" aria-hidden />
         Copy link
@@ -226,7 +226,7 @@ export default function DashboardPage() {
         type="button"
         disabled={busy}
         onClick={() => duplicate(f)}
-        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink disabled:opacity-50"
+        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 max-sm:min-h-11 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink disabled:opacity-50"
       >
         <Copy className="size-4 text-ink/60" aria-hidden />
         Duplicate
@@ -235,7 +235,7 @@ export default function DashboardPage() {
         type="button"
         disabled={busy}
         onClick={() => togglePin(f)}
-        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink disabled:opacity-50"
+        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 max-sm:min-h-11 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink disabled:opacity-50"
       >
         <Pin className="size-4 text-ink/60" aria-hidden />
         {f.pinned ? 'Unpin' : 'Pin to board'}
@@ -247,7 +247,7 @@ export default function DashboardPage() {
           setMenuFor(null);
           setDeleting(f);
         }}
-        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-correction transition hover:bg-correction-soft"
+        className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 max-sm:min-h-11 text-left text-[13px] font-medium text-correction transition hover:bg-correction-soft"
       >
         <Trash2 className="size-4" aria-hidden />
         Delete
@@ -309,12 +309,12 @@ export default function DashboardPage() {
                   className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-ink/[0.03] px-3.5 py-2.5 text-[13px]"
                 >
                   <Pencil className="size-4 shrink-0 text-ink/60" aria-hidden />
-                  <span className="min-w-0 flex-1 truncate font-medium">
+                  <span className="min-w-0 flex-1 basis-40 font-medium">
                     “{f.title || 'Untitled form'}” is still a draft
                   </span>
                   <Link
                     href={`/dashboard/form/${f.id}/edit`}
-                    className="font-semibold text-ballpoint-600 transition hover:text-ballpoint-700 dark:text-ballpoint-500 dark:hover:text-ballpoint-600"
+                    className="inline-flex min-h-10 items-center font-semibold text-ballpoint-600 transition hover:text-ballpoint-700 dark:text-ballpoint-500 dark:hover:text-ballpoint-600"
                   >
                     Finish & publish →
                   </Link>
@@ -328,12 +328,12 @@ export default function DashboardPage() {
                     className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-ink/[0.03] px-3.5 py-2.5 text-[13px]"
                   >
                     <Clock className="size-4 shrink-0 text-warn-tx" aria-hidden />
-                    <span className="min-w-0 flex-1 truncate font-medium">
+                    <span className="min-w-0 flex-1 basis-40 font-medium">
                       “{f.title || 'Untitled form'}” {dl.label?.toLowerCase() ?? 'closes soon'}
                     </span>
                     <Link
                       href={`/dashboard/form/${f.id}`}
-                      className="font-semibold text-ballpoint-600 transition hover:text-ballpoint-700 dark:text-ballpoint-500 dark:hover:text-ballpoint-600"
+                      className="inline-flex min-h-10 items-center font-semibold text-ballpoint-600 transition hover:text-ballpoint-700 dark:text-ballpoint-500 dark:hover:text-ballpoint-600"
                     >
                       Review responses →
                     </Link>
@@ -379,7 +379,7 @@ export default function DashboardPage() {
                 inputRef={searchRef}
                 kbd="/"
               />
-              <div className="flex flex-wrap items-center gap-1.5">
+              <div className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
                 {(['all', 'open', 'draft', 'closed'] as const).map((s) => (
                   <button
                     key={s}
@@ -387,7 +387,7 @@ export default function DashboardPage() {
                     onClick={() => setStatusFilter(s)}
                     aria-pressed={statusFilter === s}
                     className={cn(
-                      'rounded-full border px-3.5 py-1.5 text-[13px] font-medium capitalize transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      'shrink-0 rounded-full border px-3.5 py-1.5 text-[13px] font-medium capitalize transition max-sm:min-h-10 outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       statusFilter === s
                         ? 'border-ink bg-ink text-paper shadow-sm'
                         : 'border-ink/10 bg-card text-ink/60 hover:border-ink/20 hover:text-ink'
@@ -534,7 +534,7 @@ export default function DashboardPage() {
                           <div className="flex items-start justify-between gap-3">
                             <Link
                               href={`/dashboard/form/${f.id}`}
-                              className="min-w-0 flex-1 truncate text-[15px] font-semibold tracking-tight"
+                              className="line-clamp-2 min-w-0 flex-1 text-[15px] font-semibold tracking-tight"
                             >
                               {f.title || 'Untitled form'}
                             </Link>

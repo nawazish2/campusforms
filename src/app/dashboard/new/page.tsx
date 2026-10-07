@@ -39,7 +39,7 @@ export default function NewFormPage() {
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
+          className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Your forms
@@ -60,7 +60,7 @@ export default function NewFormPage() {
         </div>
 
         {/* Category filter */}
-        <div className="mt-7 flex flex-wrap items-center gap-1.5">
+        <div className="-mx-4 mt-7 flex items-center gap-1.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
           <FilterChip active={category === 'all'} onClick={() => setCategory('all')}>
             All
           </FilterChip>
@@ -82,7 +82,7 @@ export default function NewFormPage() {
           <button
             type="button"
             onClick={() => setForm(blankForm())}
-            className="group flex min-h-44 flex-col rounded-lg border border-dashed border-ink/20 bg-card/60 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-400 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group flex min-h-36 sm:min-h-44 flex-col rounded-lg border border-dashed border-ink/20 bg-card/60 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-400 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="grid size-10 place-items-center rounded-lg bg-ink/[0.05] text-ink/60 transition group-hover:bg-ballpoint-50 group-hover:text-ballpoint-700">
               <Plus className="size-5" aria-hidden />
@@ -102,7 +102,7 @@ export default function NewFormPage() {
                   setFromTemplate(true);
                   setForm(templateToForm(t));
                 }}
-                className="group flex min-h-44 flex-col slip p-5 text-left transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group flex min-h-36 sm:min-h-44 flex-col slip p-5 text-left transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-center gap-2">
                   <CategoryBadge category={t.category} />

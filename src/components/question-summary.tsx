@@ -41,7 +41,7 @@ function ResultRow({
       <div className="flex items-baseline justify-between gap-4 px-2.5 py-2">
         <span
           className={cn(
-            'min-w-0 truncate text-[13px]',
+            'min-w-0 text-[13px] sm:truncate',
             pct > 0 ? 'font-medium text-ink/80' : 'text-ink/60'
           )}
         >
@@ -77,7 +77,7 @@ function Histogram({
   const columns = [...distribution].sort((a, b) => a.value - b.value);
 
   return (
-    <div className="min-w-0 max-w-[280px] flex-1">
+    <div className="min-w-0 max-w-[280px] flex-1 basis-48">
       <div className="flex h-24 items-end gap-1.5">
         {columns.map((d, i) => (
           <div key={d.value} className="flex h-full flex-1 flex-col justify-end">
@@ -145,19 +145,19 @@ export function QuestionSummaryCard({
     summary.bars.filter((b) => b.count === topChoice).length === 1;
 
   return (
-    <section className="slip p-5 sm:p-6">
-      <div className="flex items-baseline gap-2.5">
+    <section className="slip p-4 sm:p-6">
+      <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
         <span className="font-mono text-xs font-medium text-ink/60">Q{index + 1}</span>
-        <h3 className="text-sm font-semibold text-ink">
+        <h3 className="min-w-0 flex-1 basis-40 text-sm font-semibold text-ink">
           {question.title || <span className="text-ink/60">Untitled question</span>}
         </h3>
-        <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink/30">
+        <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink/50">
           {meta.label}
         </span>
       </div>
 
       {summary.kind === 'rating' ? (
-        <div className="mt-5 flex items-end gap-6">
+        <div className="mt-5 flex flex-wrap items-end gap-x-6 gap-y-5">
           <div className="shrink-0">
             <p className="font-display text-4xl font-semibold leading-none tracking-tight">
               {summary.average.toFixed(1)}

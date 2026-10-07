@@ -218,7 +218,7 @@ export default function FormResultsPage() {
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
+          className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Your forms
@@ -247,7 +247,7 @@ export default function FormResultsPage() {
               </p>
             ) : null}
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center [&>*]:max-sm:w-full">
             <Button
               variant="secondary"
               disabled={busy}
@@ -359,7 +359,7 @@ export default function FormResultsPage() {
               <QrShare link={shareLink} />
               <Link
                 href={`/dashboard/form/${form.id}/poster`}
-                className="font-mono text-[11px] uppercase tracking-wider text-ink/60 transition hover:text-ballpoint-700"
+                className="inline-flex min-h-10 items-center font-mono text-[11px] uppercase tracking-wider text-ink/60 transition hover:text-ballpoint-700"
               >
                 Print poster
               </Link>
@@ -437,7 +437,7 @@ export default function FormResultsPage() {
 
         {/* Tabs */}
         <div className="mt-8 flex items-center justify-between gap-4">
-          <div className="inline-flex rounded-full border border-ink/10 bg-card p-1 shadow-sm">
+          <div className="flex w-full rounded-full sm:inline-flex sm:w-auto border border-ink/10 bg-card p-1 shadow-sm">
             {(
               [
                 { key: 'summary', label: 'Summary', short: 'Summary' },
@@ -454,7 +454,7 @@ export default function FormResultsPage() {
                 aria-pressed={tab === t.key}
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  'rounded-full px-4 py-1.5 text-sm font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'min-h-10 flex-1 rounded-full px-4 py-1.5 text-sm font-medium transition outline-none sm:min-h-0 sm:flex-none focus-visible:ring-2 focus-visible:ring-ring',
                   tab === t.key ? 'bg-ink text-paper shadow-sm' : 'text-ink/60 hover:text-ink'
                 )}
               >
@@ -489,7 +489,7 @@ export default function FormResultsPage() {
           <div className="mt-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <SearchInput value={query} onChange={setQuery} label="Search responses" />
-              <div className="flex flex-wrap gap-2">
+              <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
                 <FilterChip active={statusFilter === 'all'} onClick={() => setStatusFilter('all')}>
                   All {formResponses.length}
                 </FilterChip>
@@ -661,7 +661,7 @@ function ResponseCard({
   const [noteDraft, setNoteDraft] = useState<string | null>(null);
   const note = noteDraft ?? response.publicNote ?? '';
   return (
-    <article className="slip p-5 sm:p-6">
+    <article className="slip p-4 sm:p-6">
       <header className="flex items-center gap-3">
         <span
           className={cn(
@@ -686,7 +686,7 @@ function ResponseCard({
       <div className="mt-3 flex items-center gap-2">
         <Select
           aria-label="Response status"
-          className={cn('h-8 w-36 text-[13px]', STATUS_TINT[status])}
+          className={cn('h-10 w-40 text-[13px] sm:h-8 sm:w-36', STATUS_TINT[status])}
           value={status}
           onChange={(e) => onStatusChange(e.target.value as ResponseStatus)}
         >

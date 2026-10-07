@@ -34,7 +34,7 @@ export default function PosterPage() {
         <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
         <Link
           href="/dashboard"
-          className={cn('mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-ballpoint-700')}
+          className={cn('mt-6 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-ballpoint-700')}
         >
           <ArrowLeft className="size-4" aria-hidden />
           Back to dashboard
@@ -49,12 +49,12 @@ export default function PosterPage() {
   const Icon = CATEGORIES[form.category].icon;
 
   return (
-    <div className="min-h-svh bg-paper py-10 print:bg-white print:py-0">
+    <div className="min-h-svh bg-paper px-4 py-6 sm:py-10 print:bg-white print:px-0 print:py-0">
       {/* Screen-only toolbar */}
-      <div className="mx-auto mb-6 flex max-w-[640px] items-center justify-between print:hidden">
+      <div className="mx-auto mb-4 flex max-w-[640px] flex-wrap items-center justify-between gap-2 sm:mb-6 print:hidden">
         <Link
           href={`/dashboard/form/${form.id}`}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
+          className="inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Back to results
@@ -66,7 +66,7 @@ export default function PosterPage() {
       </div>
 
       {/* The sheet */}
-      <div className="mx-auto flex max-w-[640px] flex-col items-center slip px-10 py-12 text-center print:max-w-none print:rounded-none print:border-0 print:shadow-none">
+      <div className="mx-auto flex max-w-[640px] flex-col items-center slip px-5 py-8 text-center sm:px-10 sm:py-12 print:max-w-none print:rounded-none print:border-0 print:shadow-none">
         <Logo />
         <span
           className={cn(
@@ -78,17 +78,18 @@ export default function PosterPage() {
           {CATEGORIES[form.category].label} form
         </span>
 
-        <h1 className="mt-5 font-display text-4xl font-semibold leading-tight tracking-tight">
+        <h1 className="mt-5 font-display text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
           {form.title}
         </h1>
         {form.description ? (
           <p className="mt-4 text-[15px] leading-relaxed text-ink/60">{form.description}</p>
         ) : null}
 
-        <div className="mt-10 rounded-lg border-2 border-ink/10 bg-white p-5">
+        <div className="mt-8 w-full max-w-[304px] rounded-lg border-2 border-ink/10 bg-white p-4 sm:mt-10 sm:p-5">
           <QRCodeCanvas
             value={shareLink}
             size={264}
+            style={{ width: '100%', height: 'auto' }}
             marginSize={1}
             fgColor="#181b25"
             bgColor="#ffffff"
@@ -96,7 +97,7 @@ export default function PosterPage() {
           />
         </div>
 
-        <p className="mt-8 font-display text-2xl font-semibold tracking-tight">
+        <p className="mt-8 font-display text-xl font-semibold tracking-tight sm:text-2xl">
           Scan to fill — takes ~{estimateFillMinutes(form.questions)} min
         </p>
         <p className="mt-2 break-all font-mono text-[13px] text-ink/60">{shareLink}</p>

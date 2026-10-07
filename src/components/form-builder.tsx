@@ -233,7 +233,7 @@ export function FormBuilder({
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
         {/* Builder toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             {dirty ? (
               <Button
                 variant="ghost"
@@ -269,7 +269,7 @@ export function FormBuilder({
               </span>
             ) : null}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:items-center [&>*]:max-sm:w-full">
             {mode === 'create' || form.status === 'draft' ? (
               <>
                 <Button variant="secondary" disabled={busy} onClick={() => save('draft')}>
@@ -314,7 +314,7 @@ export function FormBuilder({
               <span className="font-medium">{timeAgo(savedBuilderDraft.savedAt)}</span>.
               Resume it, or start over from the template you picked.
             </span>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto [&>*]:max-sm:flex-1">
               <Button
                 variant="secondary"
                 size="sm"
@@ -343,7 +343,7 @@ export function FormBuilder({
           <div className="min-w-0 space-y-5">
             {/* Form meta */}
             <section
-              className="rounded-lg border border-ink/10 bg-card p-5 shadow-sm sm:p-6"
+              className="rounded-lg border border-ink/10 bg-card p-4 shadow-sm sm:p-6"
             >
               <Input
                 value={form.title}
@@ -391,7 +391,7 @@ export function FormBuilder({
                             );
                           }}
                           className={cn(
-                            'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium transition outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                            'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[13px] font-medium transition outline-none max-sm:min-h-10 focus-visible:ring-2 focus-visible:ring-ring',
                             active ? c.tile : 'bg-ink/[0.05] text-ink/60 hover:bg-ink/[0.08]'
                           )}
                         >
@@ -505,7 +505,7 @@ export function FormBuilder({
                     type="button"
                     onClick={() => addQuestion(t.type)}
                     title={t.hint}
-                    className="flex items-center gap-2 slip px-3 py-2.5 text-[13px] font-medium text-ink/70 transition hover:border-ballpoint-400 hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex min-h-11 items-center gap-2 slip px-3 py-2.5 text-[13px] font-medium text-ink/70 transition hover:border-ballpoint-400 hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <t.icon className="size-4 shrink-0 text-ballpoint-600" aria-hidden />
                     <span className="truncate">{t.label}</span>
@@ -524,7 +524,7 @@ export function FormBuilder({
                 </p>
                 <Eye className="size-4 text-ink/30" aria-hidden />
               </div>
-              <div className="max-h-[560px] overflow-y-auto p-5">
+              <div className="max-h-[560px] overflow-y-auto p-4 sm:p-5">
                 <p className="font-display text-lg font-semibold tracking-tight">
                   {form.title || <span className="text-ink/30">Untitled form</span>}
                 </p>
@@ -625,14 +625,15 @@ function QuestionEditor({
   };
 
   return (
-    <section className="slip p-5 transition-colors focus-within:border-ballpoint-300">
+    <section className="slip p-4 transition-colors focus-within:border-ballpoint-300 sm:p-5">
       <div className="flex items-center gap-2">
         <span className="font-mono text-xs font-semibold text-ink/60">Q{index + 1}</span>
         <Select
           value={q.type}
           onChange={(e) => changeType(e.target.value as QuestionType)}
           aria-label="Question type"
-          className="h-8 w-32 text-[13px] sm:w-40"
+          wrapperClassName="min-w-0 flex-1 sm:w-40 sm:flex-none"
+          className="h-10 text-[13px] sm:h-8"
         >
           {QUESTION_TYPES.map((t) => (
             <option key={t.type} value={t.type}>
@@ -681,7 +682,7 @@ function QuestionEditor({
         value={q.description ?? ''}
         onChange={(e) => onPatch({ description: e.target.value })}
         placeholder="Optional hint, shown under the question"
-        className="mt-2 h-9 text-[13px]"
+        className="mt-2 h-10 text-[13px] sm:h-9"
         aria-label="Question hint"
       />
 
@@ -706,7 +707,7 @@ function QuestionEditor({
                     })
                   }
                   placeholder={`Option ${i + 1}`}
-                  className="h-9"
+                  className="h-10 sm:h-9"
                   aria-label={`Option ${i + 1}`}
                 />
                 <Button
@@ -747,7 +748,7 @@ function QuestionEditor({
             value={String(q.maxRating)}
             onChange={(e) => onPatch({ maxRating: Number(e.target.value) })}
             aria-label="Rating scale"
-            className="h-9 w-32"
+            className="h-10 w-32 sm:h-9"
           >
             {[3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
               <option key={n} value={n}>

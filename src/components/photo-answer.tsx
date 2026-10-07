@@ -12,7 +12,7 @@ export function PhotoAnswer({ responseId, questionId }: { responseId: string; qu
   }
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className="block max-w-xs">
+    <a href={url} target="_blank" rel="noopener noreferrer" className="block w-fit max-w-full sm:max-w-xs">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}

@@ -42,11 +42,11 @@ export function ActivityChart({ responses }: { responses: FormResponse[] }) {
         <p className="font-mono text-[11px] text-ink/60">{pluralize(total, 'response')}</p>
       </div>
 
-      <div className="mt-5 flex h-28 items-end gap-1.5">
+      <div className="mt-5 flex h-28 items-end gap-1 sm:gap-1.5">
         {days.map((d) => (
           <div
             key={d.key}
-            className="group flex h-full flex-1 flex-col items-center justify-end gap-1.5"
+            className="group flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-1.5"
             title={`${d.full} — ${pluralize(d.count, 'response')}`}
           >
             {d.count > 0 ? (
@@ -72,7 +72,7 @@ export function ActivityChart({ responses }: { responses: FormResponse[] }) {
           </div>
         ))}
       </div>
-      <div className="mt-2 flex gap-1.5">
+      <div className="mt-2 flex gap-1 sm:gap-1.5">
         {days.map((d) => (
           <span
             key={d.key}
