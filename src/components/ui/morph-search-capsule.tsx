@@ -70,16 +70,16 @@ export function MorphSearchCapsule({
 
   const theme = {
     capsule: isDark
-      ? 'bg-[#1a1b24] border-white/12 text-white'
-      : 'bg-white border-ink/10 text-ink',
+      ? 'bg-card border-ink/15 text-ink'
+      : 'bg-card border-ink/10 text-ink',
     shadow: isDark
       ? '0 14px 34px -6px rgba(0,0,0,0.65), 0 4px 14px rgba(0,0,0,0.35)'
-      : '0 12px 30px -6px rgba(20,22,32,0.10), 0 4px 12px rgba(20,22,32,0.04)',
+      : '0 12px 30px -6px rgba(60,40,10,0.14), 0 4px 12px rgba(60,40,10,0.06)',
     innerGlow: isDark
       ? 'inset 0 1px 1px 0 rgba(255,255,255,0.18), inset 0 -1px 1px 0 rgba(0,0,0,0.4)'
-      : 'inset 0 1px 1.5px 0 rgba(255,255,255,1), inset 0 -1px 1px 0 rgba(0,0,0,0.04)',
-    iconColor: isDark ? '#FFFFFF' : '#14151c',
-    rippleColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(61,95,232,0.12)',
+      : 'inset 0 1px 1.5px 0 rgba(255,253,248,1), inset 0 -1px 1px 0 rgba(0,0,0,0.04)',
+    iconColor: isDark ? '#efe8db' : '#1d1a16',
+    rippleColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(47,84,214,0.12)',
     inputColor: isDark ? 'text-white' : 'text-ink',
     placeholderColor: isDark ? 'placeholder:text-white/40' : 'placeholder:text-ink/40',
   };

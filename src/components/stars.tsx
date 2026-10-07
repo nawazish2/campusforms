@@ -72,7 +72,7 @@ export function StarInput({ value, onChange, max = 5, disabled, describedBy }: S
         </button>
       ))}
       {active > 0 ? (
-        <span className="ml-2 font-mono text-xs text-ink/50">
+        <span className="ml-2 font-mono text-xs text-ink/60">
           {active}/{max}
         </span>
       ) : null}

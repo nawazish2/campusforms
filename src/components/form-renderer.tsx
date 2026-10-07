@@ -56,7 +56,7 @@ export function FormRenderer({
   return (
     <div className="space-y-6">
       {form.anonymous ? (
-        <div className="flex items-start gap-2.5 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
+        <div className="flex items-start gap-2.5 rounded-md border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
           <EyeOff className="mt-0.5 size-4 shrink-0 text-ballpoint-600" aria-hidden />
           <p className="text-sm leading-relaxed text-ballpoint-900">
             This form is <strong className="font-semibold">anonymous</strong> —
@@ -95,7 +95,7 @@ export function FormRenderer({
             }
           >
             <label htmlFor="__respondent-email" className="mb-1.5 block text-[13px] font-medium text-ink/80">
-              Email <span className="text-ink/40">(optional)</span>
+              Email <span className="text-ink/60">(optional)</span>
             </label>
             <Input
               id="__respondent-email"
@@ -126,21 +126,21 @@ export function FormRenderer({
           <div
             key={q.id}
             data-error={err ? 'true' : undefined}
-            className="border-t border-ink/[0.06] pt-6 first:border-t-0 first:pt-0"
+            className="border-t border-dashed border-ink/20 pt-6 first:border-t-0 first:pt-0"
           >
             <div className="flex items-baseline gap-2.5">
-              <span className="font-mono text-xs font-medium text-ink/40">
+              <span className="w-7 shrink-0 font-mono text-xs font-medium text-ink/60">
                 Q{i + 1}
               </span>
-              <p className="text-sm font-semibold text-ink">
-                {q.title || <span className="text-ink/40">Untitled question</span>}
+              <p className="text-[15px] font-semibold text-ink">
+                {q.title || <span className="text-ink/60">Untitled question</span>}
                 {q.required ? <span className="ml-0.5 text-correction">*</span> : null}
               </p>
             </div>
             {q.description ? (
               <p
                 id={`${q.id}-hint`}
-                className="mt-1 text-[13px] leading-relaxed text-ink/50 sm:pl-[38px]"
+                className="mt-1 text-[13px] leading-relaxed text-ink/65 sm:pl-[38px]"
               >
                 {q.description}
               </p>
@@ -367,7 +367,7 @@ function FileControl({
   return (
     <div>
       {preview ? (
-        <div className="relative inline-block overflow-hidden rounded-xl border border-ink/10 bg-paper">
+        <div className="relative inline-block overflow-hidden rounded-md border border-ink/10 bg-paper">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={preview} alt="" className="max-h-56 max-w-full object-contain" />
           <button
@@ -379,21 +379,21 @@ function FileControl({
           >
             <X className="size-4" />
           </button>
-          <p className="max-w-[16rem] truncate px-3 py-2 font-mono text-[11px] text-ink/50">{file?.name}</p>
+          <p className="max-w-[16rem] truncate px-3 py-2 font-mono text-[11px] text-ink/60">{file?.name}</p>
         </div>
       ) : (
         <label
           className={cn(
-            'flex cursor-pointer flex-col items-center gap-2 rounded-xl border border-dashed px-4 py-8 text-center transition',
+            'flex cursor-pointer flex-col items-center gap-2 rounded-md border border-dashed px-4 py-8 text-center transition',
             invalid
               ? 'border-correction/40 bg-correction-soft/40'
               : 'border-ink/20 bg-paper hover:border-ballpoint-400',
             disabled && 'pointer-events-none opacity-60'
           )}
         >
-          <ImagePlus className="size-6 text-ink/40" aria-hidden />
+          <ImagePlus className="size-6 text-ink/60" aria-hidden />
           <span className="text-sm font-medium text-ink/70">Add a photo</span>
-          <span className="font-mono text-[11px] uppercase tracking-wider text-ink/40">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-ink/60">
             JPEG, PNG or WebP · up to 5 MB
           </span>
           <input
@@ -435,10 +435,10 @@ function ChoiceCard({
   return (
     <label
       className={cn(
-        'group flex cursor-pointer items-center gap-3 rounded-xl border px-3.5 py-2.5 text-sm transition',
+        'group flex cursor-pointer items-center gap-3 rounded-md border px-3.5 py-2.5 text-sm transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring',
         checked
           ? 'border-ballpoint-500 bg-ballpoint-50 ring-1 ring-ballpoint-500'
-          : 'border-ink/10 bg-card hover:border-ink/20 hover:bg-ink/[0.05]',
+          : 'border-input bg-card hover:border-ink/40 hover:bg-ink/[0.04]',
         disabled && 'pointer-events-none cursor-default'
       )}
     >
@@ -457,16 +457,16 @@ function ChoiceCard({
           multi ? 'rounded-[6px]' : 'rounded-full',
           checked
             ? multi
-              ? 'border-accent-solid bg-accent-solid'
-              : 'border-accent-solid'
-            : 'border-ink/20 bg-card group-hover:border-ink/40'
+              ? 'border-ballpoint-600 bg-ballpoint-600'
+              : 'border-ballpoint-600'
+            : 'border-ink/30 bg-card group-hover:border-ink/40'
         )}
       >
         {checked ? (
           multi ? (
-            <Check className="size-3 text-on-accent" strokeWidth={3.5} />
+            <Check className="size-3 text-card" strokeWidth={3.5} />
           ) : (
-            <span className="size-2.5 rounded-full bg-accent-solid" />
+            <span className="size-2.5 rounded-full bg-ballpoint-600" />
           )
         ) : null}
       </span>

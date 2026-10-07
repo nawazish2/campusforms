@@ -161,7 +161,7 @@ export function HomeCategories() {
                   <p className="mt-0.5 text-sm leading-relaxed text-ink/70 sm:mt-0">
                     {meta.examples}
                     {meta.anonymousDefault ? (
-                      <span className="text-ink/45">, anonymous</span>
+                      <span className="text-ink/60">, anonymous</span>
                     ) : null}
                   </p>
                 </div>
@@ -245,7 +245,7 @@ export function HomeAnonymity() {
               <span className="text-ink">  name := NULL; email := NULL;</span>
               {'\n'}
               <span className="text-ballpoint-600">END IF</span>
-              <span className="text-ink/45">;</span>
+              <span className="text-ink/60">;</span>
             </code>
           </pre>
           <p className="border-t border-dashed border-ink/20 px-6 py-3 font-mono text-sm text-ink/60">
@@ -303,7 +303,7 @@ export function HomeFaq() {
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-4 font-display text-lg font-semibold outline-none marker:content-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
               {item.question}
               <span
-                className="grid size-10 shrink-0 place-items-center rounded-full text-xl font-normal text-ink/50 transition group-open:rotate-45 group-open:text-ink"
+                className="grid size-10 shrink-0 place-items-center rounded-full text-xl font-normal text-ink/60 transition group-open:rotate-45 group-open:text-ink"
                 aria-hidden
               >
                 +

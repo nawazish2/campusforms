@@ -41,7 +41,7 @@ function Board() {
         <NoticeSlip tilt={-2.5} fastener="pin" className="p-5 pt-6">
           <div className="flex items-center justify-between gap-2">
             <CategoryBadge category="mess" />
-            <span className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-ink/55">
+            <span className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-ink/60">
               <EyeOff className="size-3" aria-hidden />
               Anonymous
             </span>
@@ -51,7 +51,7 @@ function Board() {
           </h3>
           <div className="mt-3 flex items-center justify-between gap-3">
             <Stars value={4} />
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink/55">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink/60">
               ~1 min
             </span>
           </div>
@@ -62,7 +62,7 @@ function Board() {
         <NoticeSlip tilt={1.8} fastener="tape" className="p-5 pt-7">
           <div className="flex items-center justify-between gap-2">
             <CategoryBadge category="hostel" />
-            <span className="font-mono text-[11px] uppercase tracking-wider text-ink/55">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-ink/60">
               Room B-214
             </span>
           </div>
@@ -79,7 +79,7 @@ function Board() {
         <NoticeSlip tilt={-1} fastener="pin" className="p-5 pt-6">
           <div className="flex items-center justify-between gap-2">
             <CategoryBadge category="event" />
-            <span className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-ink/55">
+            <span className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider text-ink/60">
               <Users className="size-3" aria-hidden />
               42 going
             </span>

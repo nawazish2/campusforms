@@ -29,7 +29,7 @@ export function SiteFooter() {
             </p>
           </div>
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">Product</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60">Product</p>
             <ul className="mt-3 space-y-2 text-sm">
               {productLinks.map((l) => (
                 <li key={l.label}>
@@ -41,7 +41,7 @@ export function SiteFooter() {
             </ul>
           </div>
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/55">Popular uses</p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink/60">Popular uses</p>
             <ul className="mt-3 space-y-2 text-sm">
               {categoryLinks.map((l) => (
                 <li key={l.label}>

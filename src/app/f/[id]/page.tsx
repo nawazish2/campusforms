@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
+import { ReceivedStamp } from '@/components/received-stamp';
 import { FormRenderer } from '@/components/form-renderer';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { CopyLinkButton, WhatsAppShareButton } from '@/components/copy-link-button';
@@ -44,34 +45,22 @@ function PageSkeleton() {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10" aria-hidden>
       <div className="skeleton h-4 w-28 rounded" />
-      <div className="skeleton mt-6 h-64 rounded-3xl" />
+      <div className="skeleton mt-6 h-64 rounded-md" />
     </main>
   );
 }
 
-/* Scatter vectors for the success confetti, one entry per particle. */
-const CONFETTI = [
-  { c: 'bg-ballpoint-500', tx: '-72px', ty: '-44px', rot: '-160deg' },
-  { c: 'bg-amber-400', tx: '58px', ty: '-58px', rot: '140deg' },
-  { c: 'bg-tick', tx: '84px', ty: '-10px', rot: '200deg' },
-  { c: 'bg-marker-strong', tx: '-88px', ty: '-16px', rot: '-210deg' },
-  { c: 'bg-violet-400', tx: '-42px', ty: '52px', rot: '150deg' },
-  { c: 'bg-emerald-400', tx: '48px', ty: '56px', rot: '-130deg' },
-  { c: 'bg-ballpoint-300', tx: '10px', ty: '-86px', rot: '90deg' },
-  { c: 'bg-rose-400', tx: '-10px', ty: '80px', rot: '-90deg' },
-] as const;
-
 function ClosedPanel({ reason }: { reason: string }) {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-      <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
-        <span className="grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
-          <Clock className="size-7 text-ink/40" aria-hidden />
+      <div className="slip slip-pin grid place-items-center px-6 pb-16 pt-20 text-center">
+        <span className="grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
+          <Clock className="size-7 text-ink/60" aria-hidden />
         </span>
-        <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
+        <h1 className="mt-5 font-display text-3xl font-semibold">
           This form isn’t accepting responses
         </h1>
-        <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">{reason}</p>
+        <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/70">{reason}</p>
         <Link
           href="/browse"
           className={buttonVariants({ variant: 'secondary', className: 'mt-6' })}
@@ -150,14 +139,14 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-          <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
-            <span className="grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
-              <FileQuestion className="size-7 text-ink/40" aria-hidden />
+          <div className="slip slip-pin grid place-items-center px-6 pb-16 pt-20 text-center">
+            <span className="grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
+              <FileQuestion className="size-7 text-ink/60" aria-hidden />
             </span>
-            <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
+            <h1 className="mt-5 font-display text-3xl font-semibold">
               {error ? 'Couldn’t load this form' : 'Form not found'}
             </h1>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
+            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/70">
               {error ??
                 'This form doesn’t exist anymore, or the link was mistyped. Check the notice board for what’s open.'}
             </p>
@@ -273,55 +262,12 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-14">
-          <div className="rounded-3xl border border-ink/10 bg-card px-6 py-14 text-center shadow-sm sm:px-12">
-            <div className="relative mx-auto size-20">
-              <svg viewBox="0 0 100 100" className="size-20 text-tick" role="img" aria-label="Submitted">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="46"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  className="draw-ring"
-                  transform="rotate(-90 50 50)"
-                />
-                <path
-                  d="M31 52 L45 65 L70 38"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="draw-check"
-                />
-              </svg>
-              <div aria-hidden className="pointer-events-none absolute inset-0">
-                {CONFETTI.map((p, i) => (
-                  <span
-                    key={i}
-                    className={cn('confetti-particle absolute left-1/2 top-1/2 size-2 rounded-[2px]', p.c)}
-                    style={
-                      {
-                        '--tx': p.tx,
-                        '--ty': p.ty,
-                        '--rot': p.rot,
-                      } as React.CSSProperties
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="animate-stamp mx-auto mt-5 inline-block rounded-lg border-[3px] border-tick px-4 py-1">
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.22em] text-tick">
-                Received
-              </p>
-            </div>
-            <h1 className="mt-5 font-display text-3xl font-semibold tracking-tight">
+          <div className="slip slip-pin px-6 pb-14 pt-16 text-center sm:px-12">
+            <ReceivedStamp />
+            <h1 className="mt-6 font-display text-4xl font-semibold">
               Response submitted
             </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink/60">
+            <p className="mt-3 text-sm leading-relaxed text-ink/70">
               {isDemo
                 ? 'That’s how a real submission feels. This sample stayed on your device — a hostel office never sees it.'
                 : form.anonymous
@@ -329,8 +275,8 @@ export default function FillFormPage() {
                   : `Thanks, ${respondent.name.trim().split(/\s+/)[0]} — the organizer can see your name on this one.`}
             </p>
             {isDemo ? null : (
-              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/40">
-                REF #{submittedId.toUpperCase()} · {form.title}
+              <p className="mt-1 font-mono text-[11px] uppercase tracking-wider text-ink/60">
+                REF #{(submittedId.toUpperCase().match(/.{1,4}/g) ?? []).join(' ')} · {form.title}
               </p>
             )}
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -374,7 +320,7 @@ export default function FillFormPage() {
               )}
             </div>
             {isDemo ? null : (
-              <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/40">
+              <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 Save your REF code — it’s how you check back on this response.
               </p>
             )}
@@ -390,14 +336,14 @@ export default function FillFormPage() {
       <div className="flex min-h-svh flex-col">
         <SiteHeader />
         <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10">
-          <div className="grid place-items-center rounded-3xl border border-ink/10 bg-card px-6 py-16 text-center shadow-sm">
-            <span className="grid size-14 place-items-center rounded-2xl bg-tick-soft">
+          <div className="slip slip-pin grid place-items-center px-6 pb-16 pt-20 text-center">
+            <span className="grid size-14 place-items-center rounded-lg bg-tick-soft">
               <CheckCircle2 className="size-7 text-tick" aria-hidden />
             </span>
-            <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
+            <h1 className="mt-5 font-display text-3xl font-semibold">
               You’ve already responded
             </h1>
-            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/60">
+            <p className="mt-2 max-w-sm text-sm leading-relaxed text-ink/70">
               This browser submitted “{form.title}” once already. Fill it in
               again only if the organizer asked you to.
             </p>
@@ -424,22 +370,22 @@ export default function FillFormPage() {
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:py-12">
         <Link
           href="/browse"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/50 transition hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           All open forms
         </Link>
 
-        <div className="mt-4 overflow-hidden rounded-3xl border border-ink/10 bg-card shadow-sm">
+        <div className="slip slip-pin mt-6">
           {/* Category band — tints the form by what it's for */}
           <div
-            className={cn('flex items-center gap-2 px-6 py-3.5 sm:px-8', CATEGORY_ACCENT[form.category].band)}
+            className={cn('flex items-center gap-2 rounded-t-[5px] px-6 pb-3 pt-5 sm:px-8', CATEGORY_ACCENT[form.category].band)}
           >
             {(() => {
               const Icon = CATEGORIES[form.category].icon;
               return <Icon className="size-4" aria-hidden />;
             })()}
-            <span className="text-[13px] font-semibold">
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider">
               {CATEGORIES[form.category].label} form
             </span>
             <span className="ml-auto flex items-center gap-1.5">
@@ -457,19 +403,19 @@ export default function FillFormPage() {
           </div>
 
           <div className="p-6 sm:p-8">
-            <h1 className="font-display text-[28px] font-semibold leading-tight tracking-tight">
+            <h1 className="font-display text-4xl font-semibold leading-tight">
               {form.title}
             </h1>
             {form.description ? (
-              <p className="mt-2.5 text-[15px] leading-relaxed text-ink/60">{form.description}</p>
+              <p className="mt-2.5 text-[15px] leading-relaxed text-ink/70">{form.description}</p>
             ) : null}
             {isDemo ? (
-              <p className="mt-4 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm leading-relaxed text-ballpoint-900">
+              <p className="mt-4 rounded-lg border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm leading-relaxed text-ballpoint-900">
                 This is a sample. Submitting it doesn’t go to a hostel office —
                 try it to see how a real form feels.
               </p>
             ) : null}
-            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-ink/[0.06] pb-4 font-mono text-[11px] text-ink/50">
+            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-dashed border-ink/20 pb-4 font-mono text-[11px] uppercase tracking-wide text-ink/60">
               {isDemo ? null : (
                 <span className="inline-flex items-center gap-1.5">
                   <Users className="size-3.5" aria-hidden />
@@ -486,7 +432,7 @@ export default function FillFormPage() {
                 <span
                   className={`inline-flex items-center gap-1.5 ${
                     dl.label.startsWith('Closes today')
-                      ? 'font-semibold text-warn-tx'
+                      ? 'font-bold text-correction'
                       : ''
                   }`}
                 >
@@ -497,7 +443,7 @@ export default function FillFormPage() {
             </div>
 
             {draftRestored ? (
-              <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-3.5 py-2.5 text-[13px] text-ballpoint-900">
+              <div className="mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-ballpoint-200 bg-ballpoint-50 px-3.5 py-2.5 text-[13px] text-ballpoint-900">
                 <span>
                   Draft restored <span className="text-ballpoint-700">· saved {timeAgo(draftRestored)}</span>
                 </span>
@@ -539,7 +485,7 @@ export default function FillFormPage() {
               return (
                 <div className="mb-6">
                   <div
-                    className="flex items-center justify-between font-mono text-[11px] text-ink/50"
+                    className="flex items-center justify-between font-mono text-[11px] text-ink/60"
                     role="status"
                   >
                     <span>
@@ -604,17 +550,17 @@ export default function FillFormPage() {
               />
             </div>
 
-            <div className="mt-8 border-t border-ink/[0.06] pt-6">
+            <div className="mt-8 border-t border-dashed border-ink/20 pt-6">
               <Button
                 size="lg"
-                className={cn('w-full sm:w-auto', CATEGORY_ACCENT[form.category].button)}
+                className="w-full sm:w-auto"
                 onClick={handleSubmit}
                 disabled={submitting}
               >
                 <Send />
                 {submitting ? 'Sending…' : 'Submit response'}
               </Button>
-              <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-ink/40">
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 {isDemo
                   ? 'Sample — nothing leaves this browser'
                   : form.anonymous
