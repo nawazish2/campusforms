@@ -119,7 +119,7 @@ export function NotificationsBell() {
       {open ? (
         <div
           role="menu"
-          className="animate-pop absolute right-0 top-11 z-50 w-80 rounded-2xl border border-ink/10 bg-card p-1.5 shadow-lg"
+          className="animate-pop absolute right-0 top-11 z-50 w-80 rounded-lg border border-ink/10 bg-card p-1.5 shadow-lg"
         >
           <div className="flex items-center justify-between px-3 py-2">
             <p className="text-[13px] font-semibold">Recent responses</p>
@@ -138,7 +138,7 @@ export function NotificationsBell() {
             ) : null}
           </div>
           {responses.length === 0 ? (
-            <p className="px-3 pb-3 pt-1 text-[13px] leading-relaxed text-ink/50">
+            <p className="px-3 pb-3 pt-1 text-[13px] leading-relaxed text-ink/60">
               Responses land here the moment students submit.
             </p>
           ) : (
@@ -151,7 +151,7 @@ export function NotificationsBell() {
                       href={`/dashboard/form/${r.formId}`}
                       onClick={() => setOpen(false)}
                       className={cn(
-                        'flex items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-ink/[0.05]',
+                        'flex items-center gap-3 rounded-lg px-3 py-2.5 transition hover:bg-ink/[0.05]',
                         unseen && 'bg-ballpoint-50/60'
                       )}
                     >
@@ -168,11 +168,11 @@ export function NotificationsBell() {
                         <span className="block truncate text-[13px] font-medium">
                           {r.respondentName ?? 'Anonymous student'}
                         </span>
-                        <span className="block truncate text-xs text-ink/50">
+                        <span className="block truncate text-xs text-ink/60">
                           {titles.get(r.formId) ?? 'A form'}
                         </span>
                       </span>
-                      <span className="shrink-0 font-mono text-[10px] text-ink/40">
+                      <span className="shrink-0 font-mono text-[10px] text-ink/60">
                         {timeAgo(r.submittedAt)}
                       </span>
                     </Link>

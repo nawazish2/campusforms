@@ -39,7 +39,7 @@ export default function NewFormPage() {
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/50 transition hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Your forms
@@ -82,13 +82,13 @@ export default function NewFormPage() {
           <button
             type="button"
             onClick={() => setForm(blankForm())}
-            className="group flex min-h-44 flex-col rounded-2xl border border-dashed border-ink/20 bg-card/60 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-400 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group flex min-h-44 flex-col rounded-lg border border-dashed border-ink/20 bg-card/60 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-400 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <span className="grid size-10 place-items-center rounded-xl bg-ink/[0.05] text-ink/60 transition group-hover:bg-ballpoint-50 group-hover:text-ballpoint-700">
+            <span className="grid size-10 place-items-center rounded-lg bg-ink/[0.05] text-ink/60 transition group-hover:bg-ballpoint-50 group-hover:text-ballpoint-700">
               <Plus className="size-5" aria-hidden />
             </span>
             <span className="mt-4 font-display text-base font-semibold tracking-tight">Blank form</span>
-            <span className="mt-1.5 text-[13px] leading-relaxed text-ink/50">
+            <span className="mt-1.5 text-[13px] leading-relaxed text-ink/60">
               Nine question types, no presets — build it your way.
             </span>
           </button>
@@ -102,7 +102,7 @@ export default function NewFormPage() {
                   setFromTemplate(true);
                   setForm(templateToForm(t));
                 }}
-                className="group flex min-h-44 flex-col rounded-2xl border border-ink/10 bg-card p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group flex min-h-44 flex-col slip p-5 text-left transition-all hover:-translate-y-1 hover:border-ballpoint-300 hover:shadow-md outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-center gap-2">
                   <CategoryBadge category={t.category} />
@@ -120,8 +120,8 @@ export default function NewFormPage() {
                 <span className="mt-3.5 block font-display text-[16px] font-semibold leading-snug tracking-tight group-hover:text-ballpoint-800">
                   {t.title}
                 </span>
-                <span className="mt-1.5 text-[13px] leading-relaxed text-ink/50">{t.blurb}</span>
-                <span className="mt-auto pt-3 font-mono text-[11px] text-ink/40">
+                <span className="mt-1.5 text-[13px] leading-relaxed text-ink/60">{t.blurb}</span>
+                <span className="mt-auto pt-3 font-mono text-[11px] text-ink/60">
                   {t.questions.length} questions
                 </span>
               </button>

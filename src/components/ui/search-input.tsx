@@ -18,7 +18,7 @@ export function SearchInput({
   return (
     <div className="relative w-full min-w-0 sm:max-w-xs">
       <Search
-        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink/40"
+        className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink/60"
         aria-hidden
       />
       <input
@@ -32,7 +32,7 @@ export function SearchInput({
       {kbd ? (
         <kbd
           aria-hidden
-          className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-ink/10 bg-ink/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-ink/50 sm:block"
+          className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-ink/10 bg-ink/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-ink/60 sm:block"
         >
           {kbd}
         </kbd>

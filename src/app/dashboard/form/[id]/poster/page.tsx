@@ -22,7 +22,7 @@ export default function PosterPage() {
   if (loading) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-16" aria-hidden>
-        <div className="skeleton mx-auto h-[720px] w-full max-w-[640px] rounded-3xl" />
+        <div className="skeleton mx-auto h-[720px] w-full max-w-[640px] rounded-lg" />
       </main>
     );
   }
@@ -54,7 +54,7 @@ export default function PosterPage() {
       <div className="mx-auto mb-6 flex max-w-[640px] items-center justify-between print:hidden">
         <Link
           href={`/dashboard/form/${form.id}`}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/50 transition hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Back to results
@@ -66,7 +66,7 @@ export default function PosterPage() {
       </div>
 
       {/* The sheet */}
-      <div className="mx-auto flex max-w-[640px] flex-col items-center rounded-3xl border border-ink/10 bg-card px-10 py-12 text-center shadow-sm print:max-w-none print:rounded-none print:border-0 print:shadow-none">
+      <div className="mx-auto flex max-w-[640px] flex-col items-center slip px-10 py-12 text-center print:max-w-none print:rounded-none print:border-0 print:shadow-none">
         <Logo />
         <span
           className={cn(
@@ -85,7 +85,7 @@ export default function PosterPage() {
           <p className="mt-4 text-[15px] leading-relaxed text-ink/60">{form.description}</p>
         ) : null}
 
-        <div className="mt-10 rounded-3xl border-2 border-ink/10 bg-white p-5">
+        <div className="mt-10 rounded-lg border-2 border-ink/10 bg-white p-5">
           <QRCodeCanvas
             value={shareLink}
             size={264}
@@ -99,9 +99,9 @@ export default function PosterPage() {
         <p className="mt-8 font-display text-2xl font-semibold tracking-tight">
           Scan to fill — takes ~{estimateFillMinutes(form.questions)} min
         </p>
-        <p className="mt-2 break-all font-mono text-[13px] text-ink/50">{shareLink}</p>
+        <p className="mt-2 break-all font-mono text-[13px] text-ink/60">{shareLink}</p>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 font-mono text-[12px] text-ink/50">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 font-mono text-[12px] text-ink/60">
           <span>No sign-in needed</span>
           {form.anonymous ? (
             <span className="rounded-full border border-ballpoint-300 bg-ballpoint-50 px-3 py-1 font-semibold text-ballpoint-800">
@@ -120,7 +120,7 @@ export default function PosterPage() {
           ) : null}
         </div>
 
-        <div className="mt-12 border-t border-ink/[0.06] pt-6 text-xs text-ink/40">
+        <div className="mt-12 border-t border-ink/10 pt-6 text-xs text-ink/60">
           Run on CampusForms — every campus form, one link.
         </div>
       </div>

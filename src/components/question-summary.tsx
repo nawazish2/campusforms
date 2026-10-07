@@ -42,7 +42,7 @@ function ResultRow({
         <span
           className={cn(
             'min-w-0 truncate text-[13px]',
-            pct > 0 ? 'font-medium text-ink/80' : 'text-ink/40'
+            pct > 0 ? 'font-medium text-ink/80' : 'text-ink/60'
           )}
         >
           {label}
@@ -106,7 +106,7 @@ function Histogram({
         {columns.map((d) => (
           <span
             key={d.value}
-            className="flex-1 text-center font-mono text-[11px] text-ink/50"
+            className="flex-1 text-center font-mono text-[11px] text-ink/60"
           >
             {d.value}★
           </span>
@@ -145,11 +145,11 @@ export function QuestionSummaryCard({
     summary.bars.filter((b) => b.count === topChoice).length === 1;
 
   return (
-    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:p-6">
+    <section className="slip p-5 sm:p-6">
       <div className="flex items-baseline gap-2.5">
-        <span className="font-mono text-xs font-medium text-ink/40">Q{index + 1}</span>
+        <span className="font-mono text-xs font-medium text-ink/60">Q{index + 1}</span>
         <h3 className="text-sm font-semibold text-ink">
-          {question.title || <span className="text-ink/40">Untitled question</span>}
+          {question.title || <span className="text-ink/60">Untitled question</span>}
         </h3>
         <span className="ml-auto shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink/30">
           {meta.label}
@@ -161,10 +161,10 @@ export function QuestionSummaryCard({
           <div className="shrink-0">
             <p className="font-display text-4xl font-semibold leading-none tracking-tight">
               {summary.average.toFixed(1)}
-              <span className="text-base font-semibold text-ink/40"> / {question.maxRating}</span>
+              <span className="text-base font-semibold text-ink/60"> / {question.maxRating}</span>
             </p>
             <Stars value={summary.average} max={question.maxRating} className="mt-2.5" />
-            <p className="mt-1.5 text-xs text-ink/50">
+            <p className="mt-1.5 text-xs text-ink/60">
               {pluralize(summary.count, 'rating')}
             </p>
           </div>
@@ -189,7 +189,7 @@ export function QuestionSummaryCard({
 
       {summary.kind === 'text' ? (
         summary.count === 0 ? (
-          <p className="mt-5 text-sm text-ink/40">No answers yet.</p>
+          <p className="mt-5 text-sm text-ink/60">No answers yet.</p>
         ) : (
           <div className="mt-5 max-h-72 space-y-4 overflow-y-auto pr-1">
             {summary.answers.map((a, i) => (
@@ -197,7 +197,7 @@ export function QuestionSummaryCard({
                 <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/80">
                   {a.value}
                 </p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink/40">
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-ink/60">
                   {a.respondent ?? 'Anonymous'} · {timeAgo(a.submittedAt)}
                 </p>
               </blockquote>

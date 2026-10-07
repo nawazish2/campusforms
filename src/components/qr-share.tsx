@@ -23,7 +23,7 @@ export function QrShare({ link }: { link: string }) {
 
   return (
     <div className="flex shrink-0 flex-col items-center gap-2 self-center sm:self-start">
-      <div className="rounded-xl bg-white p-3 shadow-sm ring-1 ring-ink/10">
+      <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-ink/10">
         <QRCodeCanvas
           id="form-qr"
           value={link}
@@ -37,7 +37,7 @@ export function QrShare({ link }: { link: string }) {
       <button
         type="button"
         onClick={download}
-        className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-ink/50 transition hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+        className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-ink/60 transition hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
       >
         <Download className="size-3" aria-hidden />
         PNG

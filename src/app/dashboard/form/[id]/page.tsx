@@ -143,8 +143,8 @@ export default function FormResultsPage() {
       <div className="min-h-svh">
         <DashboardHeader />
         <div className="mx-auto max-w-6xl space-y-4 px-4 py-8 sm:px-6" aria-hidden>
-          <div className="skeleton h-28 rounded-2xl" />
-          <div className="skeleton h-40 rounded-2xl" />
+          <div className="skeleton h-28 rounded-lg" />
+          <div className="skeleton h-40 rounded-lg" />
         </div>
       </div>
     );
@@ -155,7 +155,7 @@ export default function FormResultsPage() {
       <div className="min-h-svh">
         <DashboardHeader />
         <div className="mx-auto max-w-xl px-4 py-20 text-center">
-          <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-warn-bg">
+          <span className="mx-auto grid size-14 place-items-center rounded-lg bg-warn-bg">
             <TriangleAlert className="size-7 text-warn-tx" aria-hidden />
           </span>
           <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
@@ -175,8 +175,8 @@ export default function FormResultsPage() {
       <div className="min-h-svh">
         <DashboardHeader />
         <div className="mx-auto max-w-xl px-4 py-20 text-center">
-          <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
-            <FileQuestion className="size-7 text-ink/40" aria-hidden />
+          <span className="mx-auto grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
+            <FileQuestion className="size-7 text-ink/60" aria-hidden />
           </span>
           <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">Form not found</h1>
           <p className="mt-2 text-sm text-ink/60">It may have been deleted.</p>
@@ -225,7 +225,7 @@ export default function FormResultsPage() {
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:py-10">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/50 transition hover:text-ink"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-ink/60 transition hover:text-ink"
         >
           <ArrowLeft className="size-4" aria-hidden />
           Your forms
@@ -310,7 +310,7 @@ export default function FormResultsPage() {
               <FileSpreadsheet />
               Export CSV
               {filtered ? (
-                <span className="font-mono text-[11px] text-ink/50">
+                <span className="font-mono text-[11px] text-ink/60">
                   {visibleResponses.length}
                 </span>
               ) : null}
@@ -352,9 +352,9 @@ export default function FormResultsPage() {
 
         {/* Share + stats */}
         <div className="mt-6 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
-          <div className="flex flex-col gap-5 rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:flex-row">
+          <div className="flex flex-col gap-5 slip p-5 sm:flex-row">
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
                 Share link
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -362,7 +362,7 @@ export default function FormResultsPage() {
                 <CopyLinkButton link={shareLink} label="Copy" />
                 <WhatsAppShareButton title={form.title} url={shareLink} />
               </div>
-              <p className="mt-3 text-[13px] leading-relaxed text-ink/50">
+              <p className="mt-3 text-[13px] leading-relaxed text-ink/60">
                 Drop it in the hostel group, pin it to the notice board, or
                 print the QR — students don’t need an account.
               </p>
@@ -371,13 +371,13 @@ export default function FormResultsPage() {
               <QrShare link={shareLink} />
               <Link
                 href={`/dashboard/form/${form.id}/poster`}
-                className="font-mono text-[11px] uppercase tracking-wider text-ink/50 transition hover:text-ballpoint-700"
+                className="font-mono text-[11px] uppercase tracking-wider text-ink/60 transition hover:text-ballpoint-700"
               >
                 Print poster
               </Link>
             </div>
           </div>
-          <dl className="flex h-full flex-col justify-between rounded-2xl bg-accent-solid px-5 py-1 text-on-accent shadow-md">
+          <dl className="flex h-full flex-col justify-between rounded-lg bg-accent-solid px-5 py-1 text-on-accent shadow-md">
             <StatRow
               label="Responses"
               value={
@@ -403,7 +403,7 @@ export default function FormResultsPage() {
 
         {/* Morning brief — one line that says whether triage is keeping up. */}
         {stats.total > 0 ? (
-          <div className="animate-fade-up mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-ink/10 bg-card px-4 py-3 shadow-sm sm:px-5">
+          <div className="animate-fade-up mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 slip px-4 py-3 sm:px-5">
             {statusCounts.new > 0 ? (
               <>
                 <span className="relative grid size-8 shrink-0 place-items-center rounded-full bg-warn-bg">
@@ -416,7 +416,7 @@ export default function FormResultsPage() {
                   <strong className="font-semibold">
                     {pluralize(statusCounts.new, 'response')} waiting
                   </strong>
-                  <span className="text-ink/55">
+                  <span className="text-ink/60">
                     {oldestNewAt ? ` · oldest sitting ${timeAgo(oldestNewAt)}` : ''}
                   </span>
                 </p>
@@ -440,7 +440,7 @@ export default function FormResultsPage() {
                 </span>
                 <p className="text-[13.5px]">
                   <strong className="font-semibold">All caught up</strong>
-                  <span className="text-ink/55"> — every response is triaged.</span>
+                  <span className="text-ink/60"> — every response is triaged.</span>
                 </p>
               </>
             )}
@@ -479,12 +479,12 @@ export default function FormResultsPage() {
 
         {/* Tab content */}
         {stats.total === 0 ? (
-          <div className="mt-5 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-20 text-center">
+          <div className="mt-5 grid place-items-center rounded-lg border border-dashed border-ink/20 bg-card/60 px-6 py-20 text-center">
             <Inbox className="size-10 text-ink/30" aria-hidden />
             <h2 className="mt-4 font-display text-lg font-semibold tracking-tight">
               No responses yet
             </h2>
-            <p className="mt-1 max-w-sm text-sm text-ink/50">
+            <p className="mt-1 max-w-sm text-sm text-ink/60">
               Share the link above — responses show up here the moment
               students submit.
             </p>
@@ -518,10 +518,10 @@ export default function FormResultsPage() {
             </div>
 
             {visibleResponses.length === 0 ? (
-              <div className="mt-5 rounded-2xl border border-dashed border-ink/20 px-6 py-14 text-center">
+              <div className="mt-5 rounded-lg border border-dashed border-ink/20 px-6 py-14 text-center">
                 <Search className="mx-auto size-6 text-ink/30" aria-hidden />
                 <p className="mt-3 text-sm font-medium">No responses match</p>
-                <p className="mt-1 text-sm text-ink/50">
+                <p className="mt-1 text-sm text-ink/60">
                   Try a different search, or clear the status filter.
                 </p>
               </div>
@@ -619,13 +619,13 @@ function StatRow({
     <div
       className={cn(
         'flex items-baseline justify-between gap-3 border-b py-3 last:border-0',
-        accent ? 'border-on-accent/15' : 'border-ink/[0.06]'
+        accent ? 'border-on-accent/15' : 'border-ink/10'
       )}
     >
       <dt
         className={cn(
           'font-mono text-[11px] uppercase tracking-wider',
-          accent ? 'text-on-accent/70' : 'text-ink/50'
+          accent ? 'text-on-accent/70' : 'text-ink/60'
         )}
       >
         {label}
@@ -645,7 +645,7 @@ function Notice({ tone, children }: { tone: 'ballpoint' | 'amber'; children: Rea
   return (
     <div
       className={cn(
-        'mt-4 rounded-xl border px-4 py-3 text-sm leading-relaxed',
+        'mt-4 rounded-lg border px-4 py-3 text-sm leading-relaxed',
         tone === 'ballpoint'
           ? 'border-ballpoint-200 bg-ballpoint-50 text-ballpoint-900'
           : 'border-warn-bd bg-warn-bg text-warn-tx'
@@ -673,7 +673,7 @@ function ResponseCard({
   const [noteDraft, setNoteDraft] = useState<string | null>(null);
   const note = noteDraft ?? response.publicNote ?? '';
   return (
-    <article className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:p-6">
+    <article className="slip p-5 sm:p-6">
       <header className="flex items-center gap-3">
         <span
           className={cn(
@@ -688,7 +688,7 @@ function ResponseCard({
           <p className="truncate text-sm font-semibold">
             {response.respondentName ?? 'Anonymous student'}
           </p>
-          <p className="font-mono text-[11px] text-ink/40">{fmtDateTime(response.submittedAt)}</p>
+          <p className="font-mono text-[11px] text-ink/60">{fmtDateTime(response.submittedAt)}</p>
         </div>
         <span className="ml-auto hidden shrink-0 font-mono text-[10px] uppercase tracking-wider text-ink/30 sm:inline">
           #{response.ref.toUpperCase()}
@@ -711,7 +711,7 @@ function ResponseCard({
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto text-ink/50 hover:bg-correction-soft hover:text-correction"
+          className="ml-auto text-ink/60 hover:bg-correction-soft hover:text-correction"
           onClick={onDelete}
         >
           <Trash2 />
@@ -720,7 +720,7 @@ function ResponseCard({
       </div>
 
       <label className="mt-3 block">
-        <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-ink/40">
+        <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-ink/60">
           Note the student sees on /status
         </span>
         <Textarea
@@ -737,10 +737,10 @@ function ResponseCard({
         />
       </label>
 
-      <dl className="mt-4 divide-y divide-ink/[0.06] border-t border-ink/[0.06]">
+      <dl className="mt-4 divide-y divide-ink/[0.06] border-t border-ink/10">
         {form.questions.map((q) => (
           <div key={q.id} className="grid gap-1 py-3 sm:grid-cols-[220px_1fr] sm:gap-4">
-            <dt className="text-[13px] leading-snug text-ink/50">{q.title}</dt>
+            <dt className="text-[13px] leading-snug text-ink/60">{q.title}</dt>
             <dd className="min-w-0 text-sm">
               <Answer answer={response.answers[q.id]} question={q} />
             </dd>
@@ -765,7 +765,7 @@ function Answer({ answer, question }: { answer: AnswerValue | undefined; questio
     return (
       <span className="flex items-center gap-2">
         <Stars value={answer} max={question.maxRating} />
-        <span className="font-mono text-xs text-ink/50">
+        <span className="font-mono text-xs text-ink/60">
           {answer}/{question.maxRating}
         </span>
       </span>

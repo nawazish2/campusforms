@@ -28,7 +28,7 @@ export function LegalPage({
           <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight">
             {title}
           </h1>
-          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/40">
+          <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
             Last updated {updated}
           </p>
         </div>

@@ -9,7 +9,7 @@ export default function NotFound() {
         <div className="mx-auto w-fit">
           <Logo />
         </div>
-        <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.2em] text-ink/40">
+        <p className="mt-10 font-mono text-[11px] uppercase tracking-[0.2em] text-ink/60">
           404 — page not found
         </p>
         <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight">

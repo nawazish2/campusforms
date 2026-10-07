@@ -34,12 +34,12 @@ export function ActivityChart({ responses }: { responses: FormResponse[] }) {
   const total = days.reduce((sum, d) => sum + d.count, 0);
 
   return (
-    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm sm:p-6">
+    <section className="slip p-5 sm:p-6">
       <div className="flex items-baseline justify-between">
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
           Last 14 days
         </p>
-        <p className="font-mono text-[11px] text-ink/50">{pluralize(total, 'response')}</p>
+        <p className="font-mono text-[11px] text-ink/60">{pluralize(total, 'response')}</p>
       </div>
 
       <div className="mt-5 flex h-28 items-end gap-1.5">
@@ -50,7 +50,7 @@ export function ActivityChart({ responses }: { responses: FormResponse[] }) {
             title={`${d.full} — ${pluralize(d.count, 'response')}`}
           >
             {d.count > 0 ? (
-              <span className="font-mono text-[10px] text-ink/40 opacity-0 transition group-hover:opacity-100">
+              <span className="font-mono text-[10px] text-ink/60 opacity-0 transition group-hover:opacity-100">
                 {d.count}
               </span>
             ) : null}
@@ -78,7 +78,7 @@ export function ActivityChart({ responses }: { responses: FormResponse[] }) {
             key={d.key}
             className={cn(
               'flex-1 text-center font-mono text-[10px]',
-              d.isToday ? 'font-bold text-ballpoint-700' : 'text-ink/40'
+              d.isToday ? 'font-bold text-ballpoint-700' : 'text-ink/60'
             )}
           >
             {d.letter}

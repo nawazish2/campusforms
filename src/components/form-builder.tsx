@@ -248,7 +248,7 @@ export function FormBuilder({
                 <ArrowLeft />
               </Link>
             )}
-            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+            <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
               {mode === 'create' ? 'New form' : 'Edit form'}
               {form.questions.length > 0 ? (
                 <span className="text-ink/35">
@@ -304,7 +304,7 @@ export function FormBuilder({
         </div>
 
         {savedBuilderDraft ? (
-          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm text-ballpoint-900">
+          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-ballpoint-200 bg-ballpoint-50 px-4 py-3 text-sm text-ballpoint-900">
             <span>
               You have an unsaved draft from{' '}
               <span className="font-medium">{timeAgo(savedBuilderDraft.savedAt)}</span>.
@@ -340,7 +340,7 @@ export function FormBuilder({
             {/* Form meta */}
             <section
               className={cn(
-                'rounded-2xl border border-l-4 bg-card p-5 shadow-sm sm:p-6',
+                'rounded-lg border border-l-4 bg-card p-5 shadow-sm sm:p-6',
                 'border-ink/10',
                 CATEGORY_ACCENT[form.category].stripe
               )}
@@ -360,7 +360,7 @@ export function FormBuilder({
                 className="mt-2 border-0 px-0 shadow-none"
                 aria-label="Form description"
               />
-              <div className="mt-4 grid gap-3 border-t border-ink/[0.06] pt-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-3 border-t border-ink/10 pt-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1.5 block text-[13px] font-medium text-ink/70">
                     Category
@@ -401,13 +401,13 @@ export function FormBuilder({
                       );
                     })}
                   </div>
-                  <p className="mt-1.5 text-xs leading-relaxed text-ink/50">
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink/60">
                     {CATEGORIES[form.category].examples}
                   </p>
                 </div>
                 <div>
                   <label htmlFor="fb-deadline" className="mb-1.5 block text-[13px] font-medium text-ink/70">
-                    Deadline <span className="text-ink/40">(optional)</span>
+                    Deadline <span className="text-ink/60">(optional)</span>
                   </label>
                   <Input
                     id="fb-deadline"
@@ -426,7 +426,7 @@ export function FormBuilder({
                 </div>
                 <div>
                   <label htmlFor="fb-cap" className="mb-1.5 block text-[13px] font-medium text-ink/70">
-                    Max responses <span className="text-ink/40">(optional)</span>
+                    Max responses <span className="text-ink/60">(optional)</span>
                   </label>
                   <Input
                     id="fb-cap"
@@ -446,15 +446,15 @@ export function FormBuilder({
                       patch({ maxResponses: Number.isFinite(n) ? n : null });
                     }}
                   />
-                  <p className="mt-1.5 text-xs leading-relaxed text-ink/50">
+                  <p className="mt-1.5 text-xs leading-relaxed text-ink/60">
                     Event signups close automatically when this many land.
                   </p>
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between gap-4 rounded-xl bg-paper px-4 py-3">
+              <div className="mt-3 flex items-center justify-between gap-4 rounded-lg bg-paper px-4 py-3">
                 <div>
                   <p className="text-[13px] font-semibold text-ink">Anonymous responses</p>
-                  <p className="mt-0.5 text-xs text-ink/50">
+                  <p className="mt-0.5 text-xs text-ink/60">
                     {anonymityLocked
                       ? 'Locked after the first response — changing it would mix named and unnamed rows.'
                       : 'Names and emails won’t be stored. Best for mess & library feedback.'}
@@ -471,10 +471,10 @@ export function FormBuilder({
 
             {/* Questions */}
             {form.questions.length === 0 ? (
-              <div className="grid place-items-center rounded-2xl border border-dashed border-ink/20 bg-card/60 px-6 py-12 text-center">
+              <div className="grid place-items-center rounded-lg border border-dashed border-ink/20 bg-card/60 px-6 py-12 text-center">
                 <FileQuestion className="size-8 text-ink/30" aria-hidden />
                 <p className="mt-3 text-sm font-medium text-ink/60">No questions yet</p>
-                <p className="mt-1 max-w-xs text-[13px] text-ink/50">
+                <p className="mt-1 max-w-xs text-[13px] text-ink/60">
                   Pick a question type below — short text for room numbers, a
                   rating for urgency, single choice for tracks.
                 </p>
@@ -494,8 +494,8 @@ export function FormBuilder({
             )}
 
             {/* Add-question palette */}
-            <section className="rounded-2xl border border-dashed border-ink/20 bg-card/60 p-4 sm:p-5">
-              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+            <section className="rounded-lg border border-dashed border-ink/20 bg-card/60 p-4 sm:p-5">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
                 Add a question
               </p>
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -505,7 +505,7 @@ export function FormBuilder({
                     type="button"
                     onClick={() => addQuestion(t.type)}
                     title={t.hint}
-                    className="flex items-center gap-2 rounded-xl border border-ink/10 bg-card px-3 py-2.5 text-[13px] font-medium text-ink/70 shadow-sm transition hover:border-ballpoint-400 hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex items-center gap-2 slip px-3 py-2.5 text-[13px] font-medium text-ink/70 transition hover:border-ballpoint-400 hover:text-ballpoint-700 outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <t.icon className="size-4 shrink-0 text-ballpoint-600" aria-hidden />
                     <span className="truncate">{t.label}</span>
@@ -517,9 +517,9 @@ export function FormBuilder({
 
           {/* Live preview */}
           <aside className="lg:sticky lg:top-24">
-            <div className="overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-sm">
-              <div className="flex items-center justify-between border-b border-ink/[0.06] px-5 py-3">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+            <div className="overflow-hidden slip">
+              <div className="flex items-center justify-between border-b border-ink/10 px-5 py-3">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
                   Live preview
                 </p>
                 <Eye className="size-4 text-ink/30" aria-hidden />
@@ -531,9 +531,9 @@ export function FormBuilder({
                 {form.description ? (
                   <p className="mt-1.5 text-[13px] leading-relaxed text-ink/60">{form.description}</p>
                 ) : null}
-                <div className="mt-5 border-t border-ink/[0.06] pt-5">
+                <div className="mt-5 border-t border-ink/10 pt-5">
                   {form.questions.length === 0 ? (
-                    <p className="text-sm text-ink/40">
+                    <p className="text-sm text-ink/60">
                       Questions you add will appear here, exactly as students
                       will see them.
                     </p>
@@ -542,7 +542,7 @@ export function FormBuilder({
                   )}
                 </div>
               </div>
-              <p className="border-t border-ink/[0.06] bg-paper px-5 py-3 text-xs text-ink/50">
+              <p className="border-t border-ink/10 bg-paper px-5 py-3 text-xs text-ink/60">
                 Students see exactly this. Submissions are disabled in preview.
               </p>
             </div>
@@ -625,9 +625,9 @@ function QuestionEditor({
   };
 
   return (
-    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm transition-colors focus-within:border-ballpoint-300">
+    <section className="slip p-5 transition-colors focus-within:border-ballpoint-300">
       <div className="flex items-center gap-2">
-        <span className="font-mono text-xs font-semibold text-ink/40">Q{index + 1}</span>
+        <span className="font-mono text-xs font-semibold text-ink/60">Q{index + 1}</span>
         <Select
           value={q.type}
           onChange={(e) => changeType(e.target.value as QuestionType)}
@@ -686,8 +686,8 @@ function QuestionEditor({
       />
 
       {QUESTION_TYPE_MAP[q.type].hasOptions ? (
-        <div className="mt-3 rounded-xl bg-paper p-3.5">
-          <p className="font-mono text-[11px] uppercase tracking-wider text-ink/40">Options</p>
+        <div className="mt-3 rounded-lg bg-paper p-3.5">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-ink/60">Options</p>
           <div className="mt-2 space-y-1.5">
             {q.options.map((opt, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -734,15 +734,15 @@ function QuestionEditor({
       ) : null}
 
       {q.type === 'file' ? (
-        <p className="mt-3 rounded-xl bg-paper px-3.5 py-3 text-[13px] leading-relaxed text-ink/60">
+        <p className="mt-3 rounded-lg bg-paper px-3.5 py-3 text-[13px] leading-relaxed text-ink/60">
           Students attach a JPEG, PNG or WebP, up to 5 MB. On anonymous forms the
           photo is re-encoded so location data doesn’t travel with it.
         </p>
       ) : null}
 
       {q.type === 'rating' ? (
-        <div className="mt-3 flex items-center gap-3 rounded-xl bg-paper p-3.5">
-          <p className="font-mono text-[11px] uppercase tracking-wider text-ink/40">Scale</p>
+        <div className="mt-3 flex items-center gap-3 rounded-lg bg-paper p-3.5">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-ink/60">Scale</p>
           <Select
             value={String(q.maxRating)}
             onChange={(e) => onPatch({ maxRating: Number(e.target.value) })}
@@ -758,10 +758,10 @@ function QuestionEditor({
         </div>
       ) : null}
 
-      <div className="mt-3.5 flex items-center gap-2.5 border-t border-ink/[0.06] pt-3.5">
+      <div className="mt-3.5 flex items-center gap-2.5 border-t border-ink/10 pt-3.5">
         <Switch checked={q.required} onCheckedChange={(v) => onPatch({ required: v })} aria-label="Required" />
         <span className="text-[13px] font-medium text-ink/60">
-          Required <span className="font-normal text-ink/40">— students can’t submit without it</span>
+          Required <span className="font-normal text-ink/60">— students can’t submit without it</span>
         </span>
       </div>
     </section>
@@ -774,11 +774,11 @@ function BuilderSkeleton() {
       <DashboardHeader />
       <div className="mx-auto grid max-w-6xl items-start gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_400px]" aria-hidden>
         <div className="space-y-5">
-          <div className="skeleton h-56 rounded-2xl" />
-          <div className="skeleton h-40 rounded-2xl" />
-          <div className="skeleton h-28 rounded-2xl" />
+          <div className="skeleton h-56 rounded-lg" />
+          <div className="skeleton h-40 rounded-lg" />
+          <div className="skeleton h-28 rounded-lg" />
         </div>
-        <div className="skeleton hidden h-96 rounded-2xl lg:block" />
+        <div className="skeleton hidden h-96 rounded-lg lg:block" />
       </div>
     </div>
   );

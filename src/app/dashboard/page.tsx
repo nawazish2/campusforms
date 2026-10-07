@@ -200,7 +200,7 @@ export default function DashboardPage() {
         onClick={() => setMenuFor(null)}
         className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
       >
-        <BarChart3 className="size-4 text-ink/40" aria-hidden />
+        <BarChart3 className="size-4 text-ink/60" aria-hidden />
         Results
       </Link>
       <Link
@@ -208,7 +208,7 @@ export default function DashboardPage() {
         onClick={() => setMenuFor(null)}
         className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
       >
-        <Pencil className="size-4 text-ink/40" aria-hidden />
+        <Pencil className="size-4 text-ink/60" aria-hidden />
         Edit
       </Link>
       <button
@@ -219,7 +219,7 @@ export default function DashboardPage() {
         }}
         className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink"
       >
-        <Link2 className="size-4 text-ink/40" aria-hidden />
+        <Link2 className="size-4 text-ink/60" aria-hidden />
         Copy link
       </button>
       <button
@@ -228,7 +228,7 @@ export default function DashboardPage() {
         onClick={() => duplicate(f)}
         className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink disabled:opacity-50"
       >
-        <Copy className="size-4 text-ink/40" aria-hidden />
+        <Copy className="size-4 text-ink/60" aria-hidden />
         Duplicate
       </button>
       <button
@@ -237,7 +237,7 @@ export default function DashboardPage() {
         onClick={() => togglePin(f)}
         className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-ink/75 transition hover:bg-ink/[0.05] hover:text-ink disabled:opacity-50"
       >
-        <Pin className="size-4 text-ink/40" aria-hidden />
+        <Pin className="size-4 text-ink/60" aria-hidden />
         {f.pinned ? 'Unpin' : 'Pin to board'}
       </button>
       <div className="mx-3 my-1.5 border-t border-ink/[0.07]" aria-hidden />
@@ -268,7 +268,7 @@ export default function DashboardPage() {
             <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               Your forms
             </h1>
-            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
               {pluralize(forms.length, 'form')} · {pluralize(totalResponses, 'response')} collected
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function DashboardPage() {
         {error ? (
           <div
             role="alert"
-            className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn-bd bg-warn-bg px-4 py-3"
+            className="mt-6 flex items-start gap-2.5 rounded-lg border border-warn-bd bg-warn-bg px-4 py-3"
           >
             <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn-tx" aria-hidden />
             <div className="text-[13px] leading-relaxed text-warn-tx">
@@ -294,7 +294,7 @@ export default function DashboardPage() {
         {!loading && attentionCount > 0 ? (
           <section
             aria-label="Needs your attention"
-            className="animate-fade-up mt-6 rounded-2xl border border-ink/10 bg-card p-4 shadow-sm sm:p-5"
+            className="animate-fade-up mt-6 slip p-4 sm:p-5"
           >
             <p className="text-sm font-semibold tracking-tight">
               Needs your attention
@@ -306,9 +306,9 @@ export default function DashboardPage() {
               {drafts.slice(0, 3).map((f) => (
                 <li
                   key={f.id}
-                  className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-ink/[0.03] px-3.5 py-2.5 text-[13px]"
+                  className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-ink/[0.03] px-3.5 py-2.5 text-[13px]"
                 >
-                  <Pencil className="size-4 shrink-0 text-ink/40" aria-hidden />
+                  <Pencil className="size-4 shrink-0 text-ink/60" aria-hidden />
                   <span className="min-w-0 flex-1 truncate font-medium">
                     “{f.title || 'Untitled form'}” is still a draft
                   </span>
@@ -325,7 +325,7 @@ export default function DashboardPage() {
                 return (
                   <li
                     key={f.id}
-                    className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-ink/[0.03] px-3.5 py-2.5 text-[13px]"
+                    className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-ink/[0.03] px-3.5 py-2.5 text-[13px]"
                   >
                     <Clock className="size-4 shrink-0 text-warn-tx" aria-hidden />
                     <span className="min-w-0 flex-1 truncate font-medium">
@@ -399,7 +399,7 @@ export default function DashboardPage() {
               </div>
             </div>
             {query.trim() !== '' || statusFilter !== 'all' ? (
-              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink/40">
+              <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink/60">
                 Showing {pluralize(filtered.length, 'form')}
               </p>
             ) : null}
@@ -409,25 +409,25 @@ export default function DashboardPage() {
               filtered.length > 0 ? (
                 <>
                   {/* Desktop: the table is the interface. */}
-                  <div className="mt-4 hidden overflow-visible rounded-2xl border border-ink/10 bg-card shadow-sm md:block">
+                  <div className="mt-4 hidden overflow-visible slip md:block">
                     <table className="w-full border-separate border-spacing-0 text-left">
                       <thead>
                         <tr>
                           <th
                             scope="col"
-                            className="border-b border-ink/[0.07] px-5 py-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45"
+                            className="border-b border-ink/[0.07] px-5 py-3 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink/60"
                           >
                             Form
                           </th>
                           <th
                             scope="col"
-                            className="w-28 border-b border-ink/[0.07] px-4 py-3 text-right font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45"
+                            className="w-28 border-b border-ink/[0.07] px-4 py-3 text-right font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink/60"
                           >
                             Responses
                           </th>
                           <th
                             scope="col"
-                            className="w-36 border-b border-ink/[0.07] px-4 py-3 text-right font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink/45"
+                            className="w-36 border-b border-ink/[0.07] px-4 py-3 text-right font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ink/60"
                           >
                             Closes
                           </th>
@@ -446,7 +446,7 @@ export default function DashboardPage() {
                           return (
                             <tr
                               key={f.id}
-                              className="animate-fade-up group border-t border-ink/[0.06] transition first:border-t-0 hover:bg-ink/[0.02] has-[.menu-open]:bg-ink/[0.02]"
+                              className="animate-fade-up group border-t border-ink/10 transition first:border-t-0 hover:bg-ink/[0.02] has-[.menu-open]:bg-ink/[0.02]"
                               style={{ animationDelay: `${Math.min(i * 35, 210)}ms` }}
                             >
                               <td className="max-w-0 px-5 py-3.5">
@@ -477,7 +477,7 @@ export default function DashboardPage() {
                               <td className="whitespace-nowrap px-4 py-3.5 text-right font-display text-[17px] font-semibold tabular-nums">
                                 {f.responseCount}
                               </td>
-                              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-[11px] text-ink/50">
+                              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-[11px] text-ink/60">
                                 {dl.label ?? '—'}
                               </td>
                               <td className="whitespace-nowrap px-4 py-3.5">
@@ -506,7 +506,7 @@ export default function DashboardPage() {
                                           className="fixed inset-0 z-10 cursor-default"
                                           onClick={() => setMenuFor(null)}
                                         />
-                                        <div className="absolute right-0 z-20 mt-1 w-48 rounded-xl border border-ink/10 bg-card p-1.5 shadow-lg">
+                                        <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-ink/10 bg-card p-1.5 shadow-lg">
                                           {menuItems(f)}
                                         </div>
                                       </>
@@ -528,7 +528,7 @@ export default function DashboardPage() {
                       return (
                         <article
                           key={f.id}
-                          className="animate-fade-up rounded-2xl border border-ink/10 bg-card p-4 shadow-sm"
+                          className="animate-fade-up slip p-4"
                           style={{ animationDelay: `${Math.min(i * 35, 210)}ms` }}
                         >
                           <div className="flex items-start justify-between gap-3">
@@ -540,7 +540,7 @@ export default function DashboardPage() {
                             </Link>
                             <span className="shrink-0 font-display text-lg font-semibold tabular-nums">
                               {f.responseCount}
-                              <span className="ml-1 align-middle font-sans text-[11px] font-normal text-ink/40">
+                              <span className="ml-1 align-middle font-sans text-[11px] font-normal text-ink/60">
                                 {pluralize(f.responseCount, 'response').split(' ')[1]}
                               </span>
                             </span>
@@ -550,12 +550,12 @@ export default function DashboardPage() {
                             <StatusBadge status={f.status} />
                             {f.anonymous ? <AnonymousBadge /> : null}
                             {dl.label ? (
-                              <span className="font-mono text-[11px] text-ink/50">
+                              <span className="font-mono text-[11px] text-ink/60">
                                 {dl.label}
                               </span>
                             ) : null}
                           </div>
-                          <div className="mt-3 flex items-center justify-between border-t border-ink/[0.06] pt-3">
+                          <div className="mt-3 flex items-center justify-between border-t border-ink/10 pt-3">
                             {statusAction(f)}
                             <div className="relative">
                               <Button
@@ -574,7 +574,7 @@ export default function DashboardPage() {
                                     className="fixed inset-0 z-10 cursor-default"
                                     onClick={() => setMenuFor(null)}
                                   />
-                                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-xl border border-ink/10 bg-card p-1.5 shadow-lg">
+                                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-ink/10 bg-card p-1.5 shadow-lg">
                                     {menuItems(f)}
                                   </div>
                                 </>
@@ -587,12 +587,12 @@ export default function DashboardPage() {
                   </div>
                 </>
               ) : (
-                <div className="mt-4 grid place-items-center rounded-3xl border border-dashed border-ink/20 bg-card/60 px-6 py-16 text-center">
+                <div className="mt-4 grid place-items-center rounded-lg border border-dashed border-ink/20 bg-card/60 px-6 py-16 text-center">
                   <Inbox className="size-10 text-ink/30" aria-hidden />
                   <h2 className="mt-4 font-display text-lg font-semibold tracking-tight">
                     {forms.length === 0 ? 'No forms yet' : 'Nothing matches this filter'}
                   </h2>
-                  <p className="mt-1 max-w-sm text-sm text-ink/50">
+                  <p className="mt-1 max-w-sm text-sm text-ink/60">
                     {forms.length === 0
                       ? 'Create your first form — a complaint form for the hostel, or a signup for your next event.'
                       : 'Try a different status or clear the search.'}
@@ -608,7 +608,7 @@ export default function DashboardPage() {
             ) : (
               <div className="mt-4 space-y-2" aria-hidden>
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="skeleton h-16 rounded-xl" />
+                  <div key={i} className="skeleton h-16 rounded-lg" />
                 ))}
               </div>
             )}
@@ -659,12 +659,12 @@ function RecentActivity({
   const formById = useMemo(() => new Map(forms.map((f) => [f.id, f])), [forms]);
 
   return (
-    <section className="rounded-2xl border border-ink/10 bg-card p-5 shadow-sm">
-      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/50">
+    <section className="slip p-5">
+      <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink/60">
         Recent activity
       </p>
       {recent.length === 0 ? (
-        <p className="mt-4 text-[13px] leading-relaxed text-ink/50">
+        <p className="mt-4 text-[13px] leading-relaxed text-ink/60">
           Responses land here the moment students submit.
         </p>
       ) : (
@@ -686,12 +686,12 @@ function RecentActivity({
                 </p>
                 <Link
                   href={`/dashboard/form/${r.formId}`}
-                  className="block truncate text-xs text-ink/50 transition hover:text-ballpoint-700 dark:hover:text-ballpoint-600"
+                  className="block truncate text-xs text-ink/60 transition hover:text-ballpoint-700 dark:hover:text-ballpoint-600"
                 >
                   {formById.get(r.formId)?.title ?? 'Deleted form'}
                 </Link>
               </div>
-              <span className="shrink-0 font-mono text-[10px] text-ink/40">
+              <span className="shrink-0 font-mono text-[10px] text-ink/60">
                 {timeAgo(r.submittedAt)}
               </span>
             </li>

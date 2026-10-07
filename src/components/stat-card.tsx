@@ -67,8 +67,8 @@ export function StatCard({
     <div
       className={
         accent
-          ? 'rounded-2xl bg-accent-solid p-5 text-on-accent shadow-md transition-shadow hover:shadow-lg'
-          : 'rounded-2xl border border-ink/10 bg-card p-5 shadow-sm transition-shadow hover:shadow-md'
+          ? 'rounded-lg bg-accent-solid p-5 text-on-accent shadow-md transition-shadow hover:shadow-lg'
+          : 'slip p-5 transition-shadow hover:shadow-md'
       }
     >
       <div className="flex items-center justify-between gap-3">
@@ -76,7 +76,7 @@ export function StatCard({
           className={
             accent
               ? 'truncate font-mono text-[11px] uppercase tracking-wider text-on-accent/70'
-              : 'truncate font-mono text-[11px] uppercase tracking-wider text-ink/50'
+              : 'truncate font-mono text-[11px] uppercase tracking-wider text-ink/60'
           }
         >
           {label}
@@ -87,7 +87,7 @@ export function StatCard({
         {numeric === null ? value : shown.toLocaleString('en-US')}
       </p>
       {sub ? (
-        <p className={accent ? 'mt-1.5 text-[13px] text-on-accent/70' : 'mt-1.5 text-[13px] text-ink/50'}>{sub}</p>
+        <p className={accent ? 'mt-1.5 text-[13px] text-on-accent/70' : 'mt-1.5 text-[13px] text-ink/60'}>{sub}</p>
       ) : null}
     </div>
   );

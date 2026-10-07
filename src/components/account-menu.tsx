@@ -65,12 +65,12 @@ export function AccountMenu() {
       {open ? (
         <div
           role="menu"
-          className="animate-pop absolute right-0 top-11 z-50 w-60 rounded-2xl border border-ink/10 bg-card p-1.5 shadow-lg"
+          className="animate-pop absolute right-0 top-11 z-50 w-60 rounded-lg border border-ink/10 bg-card p-1.5 shadow-lg"
         >
           <div className="px-3 py-2.5">
             <p className="truncate text-[13px] font-semibold">{name}</p>
             {user.email ? (
-              <p className="truncate font-mono text-[11px] text-ink/50">{user.email}</p>
+              <p className="truncate font-mono text-[11px] text-ink/60">{user.email}</p>
             ) : null}
           </div>
           <button
@@ -81,7 +81,7 @@ export function AccountMenu() {
               await signOut();
               router.push('/');
             }}
-            className="flex w-full items-center gap-2 rounded-xl border-t border-ink/[0.06] px-3 py-2.5 text-left text-[13px] font-medium text-ink/70 transition hover:bg-ink/[0.05] hover:text-ink"
+            className="flex w-full items-center gap-2 rounded-lg border-t border-ink/10 px-3 py-2.5 text-left text-[13px] font-medium text-ink/70 transition hover:bg-ink/[0.05] hover:text-ink"
           >
             <LogOut className="size-4" aria-hidden />
             Sign out

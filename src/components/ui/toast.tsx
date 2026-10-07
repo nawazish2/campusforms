@@ -36,7 +36,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           role={toast.tone === 'error' ? 'alert' : 'status'}
           aria-live={toast.tone === 'error' ? 'assertive' : 'polite'}
         >
-          <div className="flex items-start gap-2.5 rounded-2xl bg-ink py-2.5 pl-3.5 pr-5 text-sm font-medium text-paper shadow-lg shadow-black/20 sm:rounded-full sm:items-center">
+          <div className="flex items-start gap-2.5 rounded-lg bg-ink py-2.5 pl-3.5 pr-5 text-sm font-medium text-paper shadow-lg shadow-black/20 sm:rounded-full sm:items-center">
             {toast.tone === 'error' ? (
               <TriangleAlert className="mt-0.5 size-4 shrink-0 text-amber-400 sm:mt-0" />
             ) : (

@@ -14,8 +14,8 @@ export function SetupRequired({ variant = 'organizer' }: { variant?: 'organizer'
     <div className="min-h-svh">
       {variant === 'public' ? <SiteHeader /> : <DashboardHeader />}
       <div className="mx-auto max-w-xl px-4 py-20 text-center">
-        <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
-          <DatabaseZap className="size-7 text-ink/40" aria-hidden />
+        <span className="mx-auto grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
+          <DatabaseZap className="size-7 text-ink/60" aria-hidden />
         </span>
         <h1 className="mt-5 font-display text-2xl font-semibold tracking-tight">
           The database isn’t connected yet

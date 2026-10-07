@@ -20,7 +20,7 @@ export function PhotoAnswer({ path }: { path: string }) {
   }, [db, path]);
 
   if (!url) {
-    return <span className="text-ink/40">Photo</span>;
+    return <span className="text-ink/60">Photo</span>;
   }
 
   return (
@@ -29,7 +29,7 @@ export function PhotoAnswer({ path }: { path: string }) {
       <img
         src={url}
         alt="Attached photo"
-        className="max-h-56 rounded-xl border border-ink/10 object-contain"
+        className="max-h-56 rounded-lg border border-ink/10 object-contain"
       />
     </a>
   );

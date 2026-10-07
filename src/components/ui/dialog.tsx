@@ -92,13 +92,13 @@ export function Dialog({ open, onClose, title, description, children }: DialogPr
       <div
         ref={panel}
         tabIndex={-1}
-        className="animate-pop relative w-full max-w-md rounded-2xl border border-ink/10 bg-card p-6 shadow-xl outline-none"
+        className="animate-pop relative w-full max-w-md slip p-6 outline-none"
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-4 top-4 grid size-8 place-items-center rounded-lg text-ink/40 transition hover:bg-ink/[0.05] hover:text-ink"
+          className="absolute right-4 top-4 grid size-8 place-items-center rounded-lg text-ink/60 transition hover:bg-ink/[0.05] hover:text-ink"
         >
           <X className="size-4" />
         </button>

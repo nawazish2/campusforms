@@ -104,7 +104,7 @@ export default function StatusPage() {
               autoCapitalize="characters"
               autoCorrect="off"
               spellCheck={false}
-              className="h-12 w-full rounded-xl border border-ink/10 bg-card text-center font-mono text-sm font-semibold uppercase tracking-[0.18em] text-ink shadow-sm outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ring focus:ring-2 focus:ring-ring/25"
+              className="h-12 w-full rounded-lg border border-input bg-card text-center font-mono text-sm font-semibold uppercase tracking-[0.18em] text-ink outline-none transition placeholder:tracking-normal placeholder:text-ink/30 focus:border-ring focus:ring-2 focus:ring-ring/25"
             />
           </div>
           <Button size="lg" type="submit" disabled={loading || ref.length !== 16}>
@@ -120,9 +120,9 @@ export default function StatusPage() {
         ) : null}
 
         {notFound ? (
-          <div className="mx-auto mt-8 max-w-xl rounded-3xl border border-ink/10 bg-card px-6 py-12 text-center shadow-sm">
-            <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-ink/[0.05]">
-              <FileQuestion className="size-7 text-ink/40" aria-hidden />
+          <div className="mx-auto mt-8 max-w-xl slip px-6 py-12 text-center">
+            <span className="mx-auto grid size-14 place-items-center rounded-lg bg-ink/[0.05]">
+              <FileQuestion className="size-7 text-ink/60" aria-hidden />
             </span>
             <h2 className="mt-4 font-display text-xl font-semibold tracking-tight">
               Nothing with that code
@@ -136,15 +136,15 @@ export default function StatusPage() {
         ) : null}
 
         {result && statusMeta ? (
-          <div className="animate-pop mx-auto mt-8 max-w-xl rounded-3xl border border-ink/10 bg-card shadow-sm">
-            <div className="flex items-center gap-2 border-b border-ink/[0.06] px-6 py-4 sm:px-8">
+          <div className="animate-pop mx-auto mt-8 max-w-xl slip">
+            <div className="flex items-center gap-2 border-b border-ink/10 px-6 py-4 sm:px-8">
               <CategoryBadge category={result.form_category} />
-              <span className="ml-auto font-mono text-[11px] uppercase tracking-wider text-ink/40">
+              <span className="ml-auto font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 REF #{lookedUpRef}
               </span>
             </div>
             <div className="p-6 sm:p-8">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-ink/40">
+              <p className="font-mono text-[11px] uppercase tracking-wider text-ink/60">
                 {result.form_title}
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -157,13 +157,13 @@ export default function StatusPage() {
                   <span className="size-1.5 rounded-full bg-current" aria-hidden />
                   {statusMeta.label}
                 </span>
-                <span className="font-mono text-[11px] text-ink/50">
+                <span className="font-mono text-[11px] text-ink/60">
                   Submitted {fmtDateTime(result.submitted_at)}
                 </span>
               </div>
 
               {result.public_note ? (
-                <div className="mt-5 rounded-xl border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
+                <div className="mt-5 rounded-lg border border-ballpoint-200 bg-ballpoint-50 px-4 py-3">
                   <p className="text-sm font-medium text-ballpoint-700">From the organizer</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-ballpoint-900">
                     {result.public_note}
@@ -190,7 +190,7 @@ export default function StatusPage() {
                             'grid size-7 place-items-center rounded-full border text-[12px] font-bold transition',
                             done && 'border-tick-solid bg-tick-solid text-on-tick',
                             active && 'border-accent-solid bg-accent-solid text-on-accent shadow-sm',
-                            !done && !active && 'border-ink/15 bg-ink/[0.04] text-ink/40'
+                            !done && !active && 'border-ink/15 bg-ink/[0.04] text-ink/60'
                           )}
                         >
                           {done ? '✓' : i + 1}
@@ -198,7 +198,7 @@ export default function StatusPage() {
                         <span
                           className={cn(
                             'whitespace-nowrap text-[11px] font-medium',
-                            active ? 'text-ink' : 'text-ink/45'
+                            active ? 'text-ink' : 'text-ink/60'
                           )}
                         >
                           {meta.label}
@@ -218,8 +218,8 @@ export default function StatusPage() {
                 })}
               </ol>
 
-              <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink/70">
-                <EyeOff className="mt-0.5 size-4 shrink-0 text-ink/40" aria-hidden />
+              <p className="mt-5 flex items-start gap-2.5 rounded-lg border border-ink/10 bg-paper px-4 py-3 text-sm leading-relaxed text-ink/70">
+                <EyeOff className="mt-0.5 size-4 shrink-0 text-ink/60" aria-hidden />
                 {result.is_anonymous
                   ? 'This was an anonymous response. The organizer sees the status above; the answers stay with them, not this page.'
                   : 'The organizer has your answers. This page only shows where they sit in the queue.'}
@@ -228,7 +228,7 @@ export default function StatusPage() {
           </div>
         ) : null}
 
-        <p className="mt-10 text-center text-sm text-ink/50">
+        <p className="mt-10 text-center text-sm text-ink/60">
           Lost the code? It’s on the confirmation screen from when you
           submitted.{' '}
           <Link href="/browse" className="font-medium text-ballpoint-700 hover:underline">

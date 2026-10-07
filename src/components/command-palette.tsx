@@ -102,9 +102,9 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
         className="absolute inset-0 cursor-default bg-ink/40 backdrop-blur-[2px]"
         onClick={() => setOpen(false)}
       />
-      <div className="absolute inset-x-4 top-[12vh] mx-auto max-w-lg overflow-hidden rounded-2xl border border-ink/10 bg-card shadow-xl">
+      <div className="absolute inset-x-4 top-[12vh] mx-auto max-w-lg overflow-hidden rounded-lg border border-ink/10 bg-card shadow-xl">
         <div className="flex items-center gap-2.5 border-b border-ink/[0.07] px-4">
-          <Search className="size-4 shrink-0 text-ink/40" aria-hidden />
+          <Search className="size-4 shrink-0 text-ink/60" aria-hidden />
           <input
             ref={inputRef}
             autoFocus
@@ -131,13 +131,13 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
             aria-label="Command palette"
             className="h-12 w-full bg-transparent text-[15px] outline-none placeholder:text-ink/35"
           />
-          <kbd className="hidden shrink-0 rounded-md border border-ink/10 bg-ink/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-ink/50 sm:block">
+          <kbd className="hidden shrink-0 rounded-md border border-ink/10 bg-ink/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-ink/60 sm:block">
             ESC
           </kbd>
         </div>
         <div ref={listRef} className="max-h-[46vh] overflow-y-auto p-2">
           {entries.length === 0 ? (
-            <p className="px-3 py-8 text-center text-sm text-ink/50">
+            <p className="px-3 py-8 text-center text-sm text-ink/60">
               No forms match “{query}”.
             </p>
           ) : (
@@ -148,7 +148,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
                   e.group !== lastGroup ? (
                     <p
                       key={e.group}
-                      className="px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/40"
+                      className="px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/60"
                     >
                       {e.group}
                     </p>
@@ -165,7 +165,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
                         e.run(false);
                       }}
                       className={cn(
-                        'flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition',
+                        'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition',
                         cursor === i ? 'bg-ink/[0.05]' : 'bg-transparent'
                       )}
                     >
@@ -181,7 +181,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm font-medium">{e.title}</span>
                         {e.sub ? (
-                          <span className="block truncate text-xs text-ink/50">{e.sub}</span>
+                          <span className="block truncate text-xs text-ink/60">{e.sub}</span>
                         ) : null}
                       </span>
                       {e.badge}
@@ -192,7 +192,7 @@ export function CommandPalette({ forms }: { forms: FormSummary[] }) {
             })()
           )}
         </div>
-        <div className="hidden items-center gap-4 border-t border-ink/[0.07] px-4 py-2.5 font-mono text-[10px] text-ink/40 sm:flex">
+        <div className="hidden items-center gap-4 border-t border-ink/[0.07] px-4 py-2.5 font-mono text-[10px] text-ink/60 sm:flex">
           <span className="inline-flex items-center gap-1">
             <CornerDownLeft className="size-3" aria-hidden /> results
           </span>

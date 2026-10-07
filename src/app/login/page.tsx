@@ -69,7 +69,7 @@ function LoginCard() {
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="rounded-3xl border border-ink/10 bg-card p-8 shadow-md sm:p-10">
+      <div className="slip p-8 sm:p-10">
         <Logo />
         <h1 className="mt-7 font-display text-[28px] font-semibold leading-tight tracking-tight">
           Sign in to run forms
@@ -82,7 +82,7 @@ function LoginCard() {
         {error ? (
           <div
             role="alert"
-            className="mt-6 flex items-start gap-2.5 rounded-xl border border-warn-bd bg-warn-bg px-4 py-3"
+            className="mt-6 flex items-start gap-2.5 rounded-lg border border-warn-bd bg-warn-bg px-4 py-3"
           >
             <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warn-tx" aria-hidden />
             <p className="text-[13px] leading-relaxed text-warn-tx">
@@ -116,7 +116,7 @@ function LoginCard() {
             {busy ? 'Opening Google…' : 'Continue with Google'}
           </Button>
         ) : (
-          <div className="mt-7 rounded-xl border border-dashed border-ink/20 bg-paper px-4 py-4">
+          <div className="mt-7 rounded-lg border border-dashed border-ink/20 bg-paper px-4 py-4">
             <p className="text-[13px] font-semibold">Sign-in isn’t configured yet</p>
             <p className="mt-1 text-[13px] leading-relaxed text-ink/60">
               Add <code className="font-mono text-xs">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
@@ -127,13 +127,13 @@ function LoginCard() {
           </div>
         )}
 
-        <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink/50">
+        <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-ink/60">
           <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           Sign-in is limited to approved organizers. We store your name and
           email to label the forms you create.
         </p>
 
-        <div className="mt-6 border-t border-ink/[0.06] pt-5">
+        <div className="mt-6 border-t border-ink/10 pt-5">
           <button
             type="button"
             onClick={() => setRequestOpen((o) => !o)}
@@ -203,7 +203,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-svh items-center justify-center bg-paper px-4 py-12">
       <div className="w-full">
-        <Suspense fallback={<div className="mx-auto h-[420px] w-full max-w-md animate-pulse rounded-3xl bg-card/70" />}>
+        <Suspense fallback={<div className="mx-auto h-[420px] w-full max-w-md animate-pulse rounded-lg bg-card/70" />}>
           <LoginCard />
         </Suspense>
       </div>
