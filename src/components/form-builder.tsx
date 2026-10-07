@@ -214,7 +214,10 @@ export function FormBuilder({
             : 'Changes saved'
           : 'Draft saved'
       );
-      router.push(`/dashboard/form/${saved.id}`);
+      // Going live for the first time lands on the share page; everything
+      // else goes back to results.
+      const justPublished = status === 'open' && existing?.status !== 'open';
+      router.push(`/dashboard/form/${saved.id}${justPublished ? '/share' : ''}`);
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Couldn’t save this form', 'error');
     } finally {
