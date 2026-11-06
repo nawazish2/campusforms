@@ -5,6 +5,15 @@ open the link and fill it in. No student account, ever.
 
 **[campusforms.vercel.app](https://campusforms.vercel.app)**
 
+![CampusForms home page](docs/screenshot.jpg)
+
+**At a glance**
+
+- 10 question types, 14 campus templates, QR codes for the notice board, CSV export
+- Anonymous forms never store who answered: no name, no email, no IP
+- Every rule (deadline, flood limit, answer types, ownership) is checked on the server and covered by tests
+- Built with Next.js 16, React 19, TypeScript, Tailwind v4 and Convex
+
 ## Why it exists
 
 The alternative on most campuses is a Google Form whose responses land in a
